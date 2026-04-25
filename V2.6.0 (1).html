@@ -1,0 +1,3106 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Defensa Cibernética v2.6.0 — Digitalización Total</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
+
+        :root {
+            --bg-color: #050814;
+            --panel-bg: #0f172a;
+            --text-main: #e2e8f0;
+            --cyan-glow: #00f0ff;
+            --red-alert: #ff3366;
+            --green-safe: #00ff66;
+            --yellow-warn: #ffcc00;
+            --purple-enc: #b266ff;
+            --orange-dot: #ff7700;
+            --emp-col: #ffffff;
+        }
+
+        body { margin:0; background-color:var(--bg-color); color:var(--text-main); font-family:'Share Tech Mono',monospace; display:flex; height:100vh; overflow:hidden; user-select:none; }
+
+        .screen { position:absolute; top:0; left:0; width:100%; height:100%; display:flex; z-index:100; background-color:var(--bg-color); transition:opacity 0.5s ease; }
+        .hidden { display:none !important; }
+
+        #start-screen { flex-direction:column; justify-content:center; align-items:center; background:radial-gradient(circle at center,#0f172a 0%,#050814 100%); overflow-y:auto; }
+
+        .title-glitch { font-size:3.5rem; color:var(--cyan-glow); text-shadow:0 0 20px rgba(0,240,255,0.5); margin-bottom:5px; letter-spacing:5px; text-align:center; }
+        .subtitle { font-size:1.3rem; color:var(--yellow-warn); margin-bottom:30px; letter-spacing:2px; }
+
+        .login-box { background:rgba(15,23,42,0.8); border:1px solid var(--cyan-glow); padding:25px; border-radius:8px; box-shadow:0 0 30px rgba(0,240,255,0.1); text-align:center; width:400px; max-width:95vw; }
+        .input-group { margin-bottom:15px; }
+        .input-group label { display:block; margin-bottom:8px; color:#94a3b8; }
+        input[type="text"] { width:90%; padding:10px; background:#050814; border:1px solid #334155; color:var(--cyan-glow); font-family:inherit; font-size:1.1rem; text-align:center; border-radius:4px; }
+        input[type="text"]:focus { outline:none; border-color:var(--cyan-glow); }
+
+        .record-display { margin:15px 0; padding:12px; background:#1e293b; border-radius:4px; font-size:1rem; }
+        .record-display span { color:var(--green-safe); font-weight:bold; font-size:1.4rem; }
+
+        .menu-section-title { font-size:0.75rem; color:#475569; letter-spacing:3px; text-align:left; margin:12px 0 6px 0; border-bottom:1px solid #1e293b; padding-bottom:4px; }
+        .menu-buttons { display:flex; flex-direction:column; gap:10px; }
+        .btn-main { background:transparent; color:var(--text-main); border:2px solid var(--cyan-glow); padding:12px; font-family:inherit; font-size:1.1rem; cursor:pointer; transition:all 0.3s; border-radius:4px; text-transform:uppercase; }
+        .btn-main:hover { background:var(--cyan-glow); color:var(--bg-color); box-shadow:0 0 20px rgba(0,240,255,0.6); }
+        .btn-info { border-color:#b266ff; color:#b266ff; }
+        .btn-info:hover { background:#b266ff; color:var(--bg-color); }
+        .btn-event { border-color:var(--red-alert); color:var(--red-alert); }
+        .btn-event:hover { background:var(--red-alert); color:var(--text-main); }
+        .btn-escasez { border-color:var(--yellow-warn); color:var(--yellow-warn); }
+        .btn-escasez:hover { background:var(--yellow-warn); color:var(--bg-color); }
+        .btn-ddos { border-color:var(--orange-dot); color:var(--orange-dot); }
+        .btn-ddos:hover { background:var(--orange-dot); color:var(--bg-color); }
+
+        /* MODAL CODEX */
+        .modal-overlay { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); display:flex; justify-content:center; align-items:center; z-index:200; }
+        .modal-content { background:#0f172a; border:2px solid var(--cyan-glow); width:820px; max-width:95vw; padding:25px; border-radius:8px; box-shadow:0 0 50px rgba(0,240,255,0.2); max-height:88vh; overflow-y:auto; }
+        .modal-title { color:var(--cyan-glow); font-size:1.6rem; border-bottom:1px solid #334155; padding-bottom:10px; margin-top:0; text-align:center; }
+        .codex-section-title { font-size:1rem; color:var(--yellow-warn); margin:18px 0 10px 0; letter-spacing:2px; border-left:3px solid var(--yellow-warn); padding-left:10px; }
+        .codex-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:10px; }
+        .codex-card { background:#162032; border:1px solid #2a3b5c; padding:13px; border-radius:6px; }
+        .codex-card h3 { margin-top:0; border-bottom:1px solid #334155; padding-bottom:5px; font-size:0.95rem; }
+        .codex-stat { display:flex; justify-content:space-between; font-size:0.82rem; margin-bottom:4px; color:#94a3b8; }
+        .codex-stat span { color:var(--text-main); font-weight:bold; }
+        .codex-note { font-size:0.8rem; color:#cbd5e1; font-style:italic; margin-top:8px; border-top:1px dashed #334155; padding-top:8px; }
+        .codex-weakness { font-size:0.78rem; color:var(--red-alert); margin-top:5px; }
+
+        /* INTERFAZ JUEGO */
+        #game-interface { flex-direction:row; }
+        #game-container { flex:1; display:flex; justify-content:center; align-items:center; position:relative; }
+        canvas { background-color:#080c1a; border:2px solid #1e293b; border-radius:8px; cursor:crosshair; }
+        canvas.sell-cursor { cursor:crosshair; }
+
+        #game-message-overlay { position:absolute; top:30%; left:50%; transform:translateX(-50%); font-size:32px; text-align:center; text-shadow:0 0 15px; opacity:0; pointer-events:none; transition:opacity 0.5s; z-index:50; white-space:nowrap; }
+
+        #ui-panel { width:330px; background-color:var(--panel-bg); border-left:2px solid #1e293b; padding:12px; display:flex; flex-direction:column; z-index:10; overflow-y:auto; }
+        .panel-header { display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #334155; padding-bottom:8px; margin-bottom:12px; }
+        .operator-info { font-size:0.85rem; color:#94a3b8; }
+        .operator-name { color:var(--cyan-glow); font-weight:bold; }
+        .btn-small { background:transparent; border:1px solid; cursor:pointer; padding:4px 8px; font-family:inherit; border-radius:3px; font-size:0.75rem; }
+        .btn-abort { border-color:var(--red-alert); color:var(--red-alert); }
+        .btn-abort:hover { background:var(--red-alert); color:white; }
+        .btn-codex-ingame { border-color:#b266ff; color:#b266ff; margin-right:4px; }
+        .btn-codex-ingame:hover { background:#b266ff; color:white; }
+
+        .stats-container { display:flex; justify-content:space-between; margin-bottom:12px; gap:5px; }
+        .stat-box { background:#162032; padding:8px; border-radius:4px; border:1px solid #2a3b5c; text-align:center; flex:1; }
+        .stat-title { font-size:10px; color:#94a3b8; }
+        .stat-value { font-size:20px; font-weight:bold; }
+        #health-val { color:var(--cyan-glow); }
+        #money-val { color:#ffd700; }
+
+        .wave-box { background:#162032; padding:8px; text-align:center; border-radius:4px; margin-bottom:12px; border:1px solid #334155; }
+        #wave-status { font-size:16px; color:var(--text-main); margin-top:4px; }
+
+        .btn-action { background:#1e293b; color:var(--cyan-glow); border:1px solid var(--cyan-glow); padding:10px; font-family:inherit; font-size:14px; cursor:pointer; transition:all 0.2s; border-radius:4px; text-transform:uppercase; margin-bottom:8px; width:100%; }
+        .btn-action:hover { background:var(--cyan-glow); color:var(--bg-color); }
+        .btn-action:disabled { background:#162032; border-color:#334155; color:#475569; cursor:not-allowed; }
+        .btn-sell { border-color:var(--yellow-warn); color:var(--yellow-warn); }
+        .btn-sell:hover { background:var(--yellow-warn); color:var(--bg-color); }
+        .btn-sell.active { background:var(--yellow-warn); color:var(--bg-color); font-weight:bold; }
+
+        .info-tip { font-size:10px; color:var(--text-main); text-align:center; margin-bottom:12px; border:1px dashed #334155; padding:6px; border-radius:4px; line-height:1.5; }
+
+        .tower-list { flex:1; overflow-y:auto; display:flex; flex-direction:column; gap:6px; padding-right:4px; }
+        .tower-card { background:#162032; border:1px solid #2a3b5c; padding:8px; border-radius:6px; cursor:pointer; transition:all 0.2s; position:relative; }
+        .tower-card:hover { border-color:#475569; }
+        .tower-card.selected { border-color:var(--cyan-glow); background:rgba(0,240,255,0.05); }
+        .tower-card.locked-card { opacity:0.4; cursor:not-allowed; }
+        .tower-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:3px; }
+        .tower-name { font-weight:bold; font-size:13px; }
+        .tower-cost { color:#ffd700; font-size:12px; }
+        .tower-desc { font-size:10px; color:#94a3b8; line-height:1.3; font-style:italic; }
+        .lock-badge { position:absolute; top:4px; right:4px; background:rgba(255,51,102,0.85); color:white; font-size:9px; padding:2px 5px; border-radius:3px; }
+
+        .color-morada { color:#b266ff; }
+        .color-azul { color:#3388ff; }
+        .color-roja { color:var(--red-alert); }
+        .color-verde { color:var(--green-safe); }
+        .color-naranja { color:var(--orange-dot); }
+        .color-blanco { color:#ffffff; }
+        .color-cyan { color:var(--cyan-glow); }
+
+        ::-webkit-scrollbar { width:5px; }
+        ::-webkit-scrollbar-track { background:#0f172a; }
+        ::-webkit-scrollbar-thumb { background:#334155; border-radius:3px; }
+
+        /* ── PATCH NOTES MODAL ── */
+        #patch-modal {
+            position: fixed; top:0; left:0; width:100%; height:100%;
+            background: rgba(0,0,0,0.92);
+            display: flex; justify-content: center; align-items: center;
+            z-index: 500;
+            animation: fadeInPatch 0.6s ease;
+        }
+        @keyframes fadeInPatch {
+            from { opacity:0; transform: scale(0.92); }
+            to   { opacity:1; transform: scale(1); }
+        }
+        /* patch-modal hidden handled by .hidden above */
+        #patch-box {
+            background: #050814;
+            border: 2px solid var(--cyan-glow);
+            box-shadow: 0 0 60px rgba(0,240,255,0.25), inset 0 0 40px rgba(0,240,255,0.03);
+            border-radius: 10px;
+            width: 700px; max-width: 95vw;
+            max-height: 88vh;
+            overflow-y: auto;
+            padding: 30px 35px;
+            position: relative;
+        }
+        #patch-box::-webkit-scrollbar { width:5px; }
+        #patch-box::-webkit-scrollbar-thumb { background:#334155; border-radius:3px; }
+        .patch-header {
+            text-align: center; margin-bottom: 6px;
+        }
+        .patch-version {
+            font-size: 2.2rem; color: var(--cyan-glow);
+            text-shadow: 0 0 25px rgba(0,240,255,0.6);
+            letter-spacing: 6px;
+        }
+        .patch-subtitle {
+            font-size: 0.9rem; color: var(--yellow-warn);
+            letter-spacing: 3px; margin-bottom: 4px;
+        }
+        .patch-date {
+            font-size: 0.75rem; color: #475569;
+            margin-bottom: 20px;
+        }
+        .patch-divider {
+            border: none; border-top: 1px solid #1e293b;
+            margin: 18px 0;
+        }
+        .patch-section {
+            margin-bottom: 22px;
+        }
+        .patch-section-title {
+            font-size: 0.85rem; letter-spacing: 3px;
+            margin-bottom: 12px;
+            padding: 6px 10px;
+            border-radius: 4px;
+        }
+        .ps-new    { color:#00f0ff; background:rgba(0,240,255,0.07); border-left:3px solid #00f0ff; }
+        .ps-fix    { color:#00ff66; background:rgba(0,255,102,0.07); border-left:3px solid #00ff66; }
+        .ps-enemy  { color:#ff7700; background:rgba(255,119,0,0.07); border-left:3px solid #ff7700; }
+        .ps-mode   { color:#b266ff; background:rgba(178,102,255,0.07); border-left:3px solid #b266ff; }
+        .ps-ui     { color:#ffcc00; background:rgba(255,204,0,0.07); border-left:3px solid #ffcc00; }
+        .patch-item {
+            display: flex; gap: 10px; margin-bottom: 9px;
+            font-size: 0.85rem; line-height: 1.5; align-items: flex-start;
+        }
+        .patch-tag {
+            flex-shrink: 0;
+            font-size: 0.7rem; font-weight: bold; padding: 2px 7px;
+            border-radius: 3px; margin-top: 2px;
+        }
+        .tag-new    { background:#00f0ff; color:#050814; }
+        .tag-fix    { background:#00ff66; color:#050814; }
+        .tag-buff   { background:#b266ff; color:#050814; }
+        .tag-rework { background:#ff7700; color:#050814; }
+        .tag-nerf   { background:#ff3366; color:#ffffff; }
+        .patch-item-text { color: #cbd5e1; }
+        .patch-item-text strong { color: var(--text-main); }
+        .patch-footer {
+            text-align: center; margin-top: 20px;
+            font-size: 0.78rem; color: #475569;
+            border-top: 1px dashed #1e293b;
+            padding-top: 14px;
+        }
+        #btn-close-patch {
+            display: block; margin: 16px auto 0 auto;
+            background: var(--cyan-glow);
+            border: 2px solid var(--cyan-glow);
+            color: #050814;
+            font-family: inherit; font-size: 1.1rem;
+            padding: 14px 50px; border-radius: 5px;
+            cursor: pointer; text-transform: uppercase;
+            letter-spacing: 2px; font-weight: bold;
+            transition: all 0.3s;
+            position: sticky; bottom: 10px;
+            box-shadow: 0 0 30px rgba(0,240,255,0.6);
+            z-index: 10;
+        }
+        #btn-close-patch:hover {
+            background: var(--cyan-glow); color: var(--bg-color);
+            box-shadow: 0 0 20px rgba(0,240,255,0.5);
+        }
+        #btn-patch-notes-open {
+            font-size: 0.72rem; padding: 7px; margin-top: 4px;
+            border-color: #1e3a5f; color: #334155;
+            letter-spacing: 1px;
+        }
+        #btn-patch-notes-open:hover {
+            border-color: var(--cyan-glow); color: var(--cyan-glow);
+            background: transparent; box-shadow: none;
+        }
+
+        /* ════════════════════════════════════════════
+           MOBILE / RESPONSIVE — v2.5.0
+           ════════════════════════════════════════════ */
+
+        /* Canvas escala al contenedor, nunca desborda */
+        canvas {
+            max-width: 100% !important;
+            max-height: 100% !important;
+            touch-action: none;
+        }
+
+        /* Layout del juego: columna en móvil, fila en desktop */
+        #game-interface { flex-direction: column !important; }
+
+        /* Contenedor canvas toma todo el espacio disponible */
+        #game-container {
+            flex: 1 1 0;
+            min-height: 0;
+            overflow: hidden;
+        }
+
+        /* Panel lateral se convierte en barra inferior en móvil */
+        #ui-panel {
+            width: 100% !important;
+            max-height: 42vh;
+            border-left: none !important;
+            border-top: 2px solid #1e293b;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+
+        /* En landscape o pantalla >= 700px: layout horizontal */
+        @media (min-width: 700px) and (orientation: landscape) {
+            #game-interface { flex-direction: row !important; }
+            #ui-panel {
+                width: 300px !important;
+                max-height: 100vh;
+                border-top: none !important;
+                border-left: 2px solid #1e293b !important;
+            }
+            #game-container { flex: 1 1 0; }
+        }
+
+        /* Lista de torres: scroll horizontal en móvil portrait */
+        @media (max-width: 699px), (orientation: portrait) {
+            .tower-list {
+                flex-direction: row !important;
+                overflow-x: auto !important;
+                overflow-y: hidden !important;
+                gap: 6px;
+                padding-bottom: 4px;
+            }
+            .tower-card { min-width: 130px; flex-shrink: 0; }
+            .stats-container { gap: 4px; }
+        }
+
+        /* Botones táctiles más grandes */
+        .btn-action, .btn-main { min-height: 44px; }
+        .btn-small { min-height: 36px; min-width: 44px; }
+
+        /* Menú inicio: scroll si no cabe todo */
+        #start-screen { overflow-y: auto; padding: 10px 0; }
+        .login-box { max-height: none; }
+
+        /* Botón mute flotante */
+        #btn-mute {
+            position: fixed; bottom: 12px; right: 12px;
+            z-index: 9999;
+            background: rgba(5,8,20,0.85);
+            border: 1px solid var(--cyan-glow);
+            color: var(--cyan-glow);
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 18px;
+            width: 44px; height: 44px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            transition: all 0.2s;
+        }
+        #btn-mute:hover { background: var(--cyan-glow); color: #050814; }
+        #btn-mute.muted { border-color: #475569; color: #475569; }
+
+        /* ── DECK PANEL ── */
+        .deck-panel { background:#0c1830; border:1px solid #1e3a5f; border-radius:6px; padding:8px; margin-bottom:8px; }
+        .deck-panel-title { font-size:0.7rem; color:#475569; letter-spacing:2px; margin-bottom:6px; }
+        .deck-slots { display:flex; gap:4px; flex-wrap:wrap; }
+        .deck-tab { background:transparent; border:1px solid #334155; color:#94a3b8; padding:3px 8px; font-family:inherit; font-size:0.7rem; cursor:pointer; border-radius:3px; }
+        .deck-tab.active-deck { border-color:var(--cyan-glow); color:var(--cyan-glow); background:rgba(0,240,255,0.07); }
+        .deck-slot { width:40px; height:40px; background:#162032; border:2px dashed #334155; border-radius:4px; cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:10px; color:#475569; transition:all 0.2s; }
+        .deck-slot.filled { border:2px solid var(--cyan-glow); color:var(--cyan-glow); font-size:9px; background:rgba(0,240,255,0.08); }
+        .deck-slot:hover { border-color:#00f0ff; }
+        /* ── TOWER HP BAR ── */
+        .tower-hp-bar { position:absolute; bottom:2px; left:4px; right:4px; height:3px; background:#1e293b; border-radius:2px; }
+        .tower-hp-fill { height:100%; background:var(--green-safe); border-radius:2px; transition:width 0.3s; }
+        .tower-card { position:relative; }
+        /* ── CONEXION INESTABLE ── */
+        .btn-inestable { border-color:#ff6600; color:#ff6600; }
+        .btn-inestable:hover { background:#ff6600; color:var(--bg-color); }
+        /* ── REFLECTOR enemy ── */
+        .reflector-warning { color:#ff66ff; font-size:9px; }
+        /* ── WAVE UNLOCK BADGE ── */
+        .wave-badge { position:absolute; top:4px; right:4px; background:rgba(0,240,255,0.15); color:var(--cyan-glow); font-size:8px; padding:2px 5px; border-radius:3px; border:1px solid rgba(0,240,255,0.3); }
+        /* ── HARDWARE INTEGRITY ── */
+        #hw-integrity-bar { display:none; background:#162032; padding:6px; border-radius:4px; border:1px solid #ff6600; margin-bottom:8px; font-size:10px; color:#ff6600; text-align:center; }
+        /* ── SOPORTE VITAL locked ── */
+        .soporte-locked { opacity:0.35; cursor:not-allowed !important; }
+
+    </style>
+</head>
+<body>
+
+
+
+<!-- MUTE BUTTON -->
+<button id="btn-mute" title="Silenciar/Activar sonido">🔊</button>
+
+<!-- ═══════════════════ PATCH NOTES MODAL v2.5.0 ═══════════════════ -->
+<div id="patch-modal">
+  <div id="patch-box">
+
+    <div class="patch-header">
+      <div class="patch-version">v2.6.0</div>
+      <div class="patch-subtitle">DIGITALIZACIÓN TOTAL — NOTAS DE PARCHE</div>
+      <div class="patch-date">// ACTUALIZACIÓN OFICIAL · 2026 · DEFENSA CIBERNÉTICA //</div>
+    </div>
+
+    <hr class="patch-divider">
+
+    <!-- COMUNICADO DEL DESARROLLADOR -->
+    <div class="patch-section" style="background:rgba(0,240,255,0.04);border:1px solid rgba(0,240,255,0.2);border-radius:6px;padding:16px;margin-bottom:22px;">
+      <div class="patch-section-title ps-new" style="font-size:1rem;letter-spacing:2px;">🌐 COMUNICADO DEL DESARROLLADOR: PROYECTO DEFENSA CIBERNÉTICA</div>
+      <p style="color:#00f0ff;font-size:0.95rem;font-weight:bold;margin:8px 0 4px;">¡Bienvenidos a la Versión 2.5 - Digitalización Total!</p>
+      <p style="color:#cbd5e1;font-size:0.82rem;line-height:1.7;margin:6px 0;">Es para mí, <strong style="color:#fff;">Christopher Alejo</strong>, un verdadero placer y un orgullo presentarles esta nueva etapa de nuestra arquitectura defensiva. Lo que comenzó como un simple sistema de protección de nodos ha evolucionado en una experiencia de supervivencia digital completa, y estoy encantado de que formen parte de este despliegue.</p>
+      <p style="color:#ffcc00;font-size:0.85rem;font-weight:bold;margin:10px 0 4px;">🎮 Sobre la Actualización 2.5</p>
+      <p style="color:#cbd5e1;font-size:0.82rem;line-height:1.7;margin:0 0 8px;">Esta versión no es solo una mejora visual; es una reestructuración de la lógica de combate. Introducimos mecánicas de <strong style="color:#fff;">Integridad de Hardware</strong>, donde sus torres ahora sufren el desgaste de la guerra, y nuevas amenazas como el <strong style="color:#ff66ff;">Reflector</strong>, que pondrán a prueba su capacidad de adaptación. Mi mayor deseo es que disfruten cada oleada, que comprendan las nuevas capas estratégicas y que encuentren en este reto una experiencia única.</p>
+      <p style="color:#ff3366;font-size:0.85rem;font-weight:bold;margin:10px 0 4px;">🛡️ Propiedad Intelectual y Responsabilidad</p>
+      <p style="color:#cbd5e1;font-size:0.82rem;line-height:1.7;margin:0 0 4px;">Este proyecto es fruto de un esfuerzo creativo y técnico constante. Por ello, les pido encarecidamente ser responsables con el uso del software:</p>
+      <ul style="color:#94a3b8;font-size:0.8rem;margin:4px 0 8px;padding-left:18px;line-height:1.8;">
+        <li>Por favor, eviten compartir el código o los archivos con personas que puedan incurrir en el plagio.</li>
+        <li>Se prohíbe la edición, alteración o distribución no autorizada de este juego.</li>
+        <li>Respetemos el trabajo del desarrollador para que podamos seguir expandiendo este universo digital.</li>
+      </ul>
+      <p style="color:#00ff66;font-size:0.85rem;font-weight:bold;margin:10px 0 4px;">📩 Contacto y Soporte</p>
+      <p style="color:#cbd5e1;font-size:0.82rem;line-height:1.7;margin:0 0 4px;">Sus comentarios, reportes de errores o sugerencias son fundamentales para la mejora del sistema. Pueden escribirme directamente al correo:</p>
+      <p style="color:#00f0ff;font-size:0.9rem;margin:4px 0 8px;">👉 cseuropa1890@gmail.com</p>
+      <p style="color:#cbd5e1;font-size:0.82rem;line-height:1.7;margin:0;">Gracias por su lealtad a la red. Prepárense para la Digitalización Total.</p>
+      <p style="color:#94a3b8;font-size:0.78rem;margin:8px 0 0;font-style:italic;">Atentamente,<br><strong style="color:#fff;">Christopher Alejo</strong><br>Lead Developer — Defensa Cibernética</p>
+    </div>
+
+    <hr class="patch-divider">
+
+    <!-- NUEVAS MECÁNICAS -->
+    <div class="patch-section">
+      <div class="patch-section-title ps-new">⚙ NUEVAS MECÁNICAS v2.5</div>
+      <div class="patch-item">
+        <span class="patch-tag tag-new">NUEVO</span>
+        <span class="patch-item-text"><strong>Integridad de Hardware:</strong> las torres ahora tienen puntos de vida (HP). El enemigo Reflector devuelve daño a quien lo golpee. Si el HP de una torre llega a 0, es destruida.</span>
+      </div>
+      <div class="patch-item">
+        <span class="patch-tag tag-new">NUEVO</span>
+        <span class="patch-item-text"><strong>Panel de Mazos (Pre‑Partida):</strong> crea hasta 3 mazos (máx 7 torres cada uno) <strong>antes</strong> de entrar a Modo Estándar. En partida solo verás las torres del mazo activo.</span>
+      </div>
+      <div class="patch-item">
+        <span class="patch-tag tag-new">NUEVO</span>
+        <span class="patch-item-text"><strong>Desbloqueo por oleada (Modo Estándar):</strong> ahora es <strong>por MAZO</strong>. Al crear tu mazo eliges la oleada (1–15) de cada torre. A <strong>oleada 15</strong> todas tus torres del mazo deben estar desbloqueadas.</span>
+      </div>
+      <div class="patch-item">
+        <span class="patch-tag tag-rework">REWORK</span>
+        <span class="patch-item-text"><strong>Modo Infiltración:</strong> ahora dura 10 oleadas (antes 5). Todas las armas se desbloquean automáticamente excepto el Emisor Adaptativo si no se ha ganado antes.</span>
+      </div>
+      <div class="patch-item">
+        <span class="patch-tag tag-rework">REWORK</span>
+        <span class="patch-item-text"><strong>Inyector SQL y Pulso EMP</strong> ahora operan en una sola capa/sector. El jugador debe cambiar manualmente (igual que el resto de torres, excepto el Láser que sigue siendo dual).</span>
+      </div>
+    </div>
+
+    <!-- NUEVAS TORRES -->
+    <div class="patch-section">
+      <div class="patch-section-title ps-new">🔫 NUEVAS TORRES (×6)</div>
+      <div class="patch-item">
+        <span class="patch-tag tag-new">NUEVO</span>
+        <span class="patch-item-text"><strong>Nodo de Interferencia:</strong> reduce la armadura de todos los enemigos en área (AoE) en −30%. Ideal antes de una salva de daño.</span>
+      </div>
+      <div class="patch-item">
+        <span class="patch-tag tag-new">NUEVO</span>
+        <span class="patch-item-text"><strong>Trampa de Latencia:</strong> congela los enemigos en área durante 3 segundos. Cadencia MUY baja (control de emergencia).</span>
+      </div>
+      <div class="patch-item">
+        <span class="patch-tag tag-new">NUEVO</span>
+        <span class="patch-item-text"><strong>Inyector de Código Corrupto:</strong> aplica DoT e infecta a otros enemigos cercanos al objetivo. El veneno se propaga.</span>
+      </div>
+      <div class="patch-item">
+        <span class="patch-tag tag-new">NUEVO</span>
+        <span class="patch-item-text"><strong>Muralla de Datos:</strong> torre de bloqueo pasivo. No dispara, pero ralentiza a los enemigos que pasan por su celda adyacente.</span>
+      </div>
+      <div class="patch-item">
+        <span class="patch-tag tag-new">NUEVO</span>
+        <span class="patch-item-text"><strong>Satélite de Relevo:</strong> aumenta el rango de las torres aliadas cercanas en +30px. Soporte puro.</span>
+      </div>
+      <div class="patch-item">
+        <span class="patch-tag tag-new">NUEVO</span>
+        <span class="patch-item-text"><strong>Descompilador:</strong> desactiva temporalmente el escudo de reflexión del enemigo Reflector. Esencial para eliminarlo sin daño rebotado.</span>
+      </div>
+    </div>
+
+    <!-- UNIDAD DE SOPORTE -->
+    <div class="patch-section">
+      <div class="patch-section-title ps-mode">💚 UNIDAD DE SOPORTE</div>
+      <div class="patch-item">
+        <span class="patch-tag tag-new">NUEVO</span>
+        <span class="patch-item-text"><strong>Soporte Vital:</strong> torre de reparación AoE. Restaura HP a las torres aliadas en su radio. Se desbloquea globalmente al ganar 12 rondas en Conexión Inestable. Mientras no se desbloquee, solo disponible en ese modo.</span>
+      </div>
+    </div>
+
+    <!-- NUEVO MODO -->
+    <div class="patch-section">
+      <div class="patch-section-title ps-mode">🎮 NUEVO MODO — CONEXIÓN INESTABLE</div>
+      <div class="patch-item">
+        <span class="patch-tag tag-new">NUEVO</span>
+        <span class="patch-item-text"><strong>Conexión Inestable:</strong> 10 oleadas. Las torres pierden 1 HP/seg. Solo 6 armas permitidas (incluyendo Soporte Vital). Ganar 12 rondas desbloquea el Soporte Vital para todos los modos.</span>
+      </div>
+    </div>
+
+    <!-- NUEVOS ENEMIGOS -->
+    <div class="patch-section">
+      <div class="patch-section-title ps-enemy">🦠 NUEVOS ENEMIGOS</div>
+      <div class="patch-item">
+        <span class="patch-tag tag-new">NUEVO</span>
+        <span class="patch-item-text"><strong>Reflector:</strong> refleja el 30% del daño recibido de vuelta a la torre atacante. Interacción especial con el Láser de Precisión (200 dmg → 60 de daño reflejado a la torre).</span>
+      </div>
+      <div class="patch-item">
+        <span class="patch-tag tag-new">NUEVO</span>
+        <span class="patch-item-text"><strong>Gusano Replicante</strong> ahora disponible también en <strong>Modo Estándar</strong> con probabilidad escalonada por oleadas (2% en 1–5, 5% en 5–10, 15% en 10–15, 25% en 15+).</span>
+      </div>
+    </div>
+
+    <!-- SPAWN POR OLEADAS (ESTÁNDAR) -->
+    <div class="patch-section">
+      <div class="patch-section-title ps-ui">📊 SPAWN POR OLEADAS — MODO ESTÁNDAR</div>
+      <div style="font-size:0.8rem;color:#94a3b8;line-height:1.8;">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+          <div style="background:#162032;padding:8px;border-radius:4px;border:1px solid #2a3b5c;">
+            <div style="color:#00f0ff;font-weight:bold;margin-bottom:4px;">Oleadas 1–5</div>
+            Estándar: 100% | Portador: 50%<br>Ransomware: 20% | Troyano: 15%<br>Gusano: 2% | Minero: 15%
+          </div>
+          <div style="background:#162032;padding:8px;border-radius:4px;border:1px solid #2a3b5c;">
+            <div style="color:#00f0ff;font-weight:bold;margin-bottom:4px;">Oleadas 5–10</div>
+            Estándar: 100% | Portador: 50%<br>Ransomware: 20% | Troyano: 15%<br>Gusano: 5% | Minero: 25%
+          </div>
+          <div style="background:#162032;padding:8px;border-radius:4px;border:1px solid #2a3b5c;">
+            <div style="color:#ffcc00;font-weight:bold;margin-bottom:4px;">Oleadas 10–15</div>
+            Estándar: 100% | Portador: 50%<br>Ransomware: 20% | Troyano: 30%<br>Gusano: 15% | Minero: 50%
+          </div>
+          <div style="background:#162032;padding:8px;border-radius:4px;border:1px solid #ff3366;">
+            <div style="color:#ff3366;font-weight:bold;margin-bottom:4px;">Oleadas 15+</div>
+            Estándar: 50% | Portador: 30%<br>Ransomware: 50% | Troyano: 50%<br>Gusano: 25% | Minero: 60%
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="patch-footer">
+      Defensa Cibernética v2.5.0 — Digitalización Total<br>
+      "Cada brecha superada nos hace más fuertes. El protocolo evoluciona."
+    </div>
+
+    <button id="btn-close-patch">[ ENTENDIDO — INICIAR SISTEMA ]</button>
+
+  </div>
+</div>
+
+<!-- ═══════════════════ CODEX MODAL ═══════════════════ -->
+<div id="codex-modal" class="modal-overlay hidden">
+  <div class="modal-content">
+    <h2 class="modal-title">⬡ CODEX TÁCTICO v2.5.0 ⬡</h2>
+
+    <!-- TORRES -->
+    <div class="codex-section-title">🔫 ARSENAL — TORRES DE DEFENSA</div>
+    <div class="codex-grid">
+
+      <div class="codex-card">
+        <h3 class="color-morada">Cañón de Iones</h3>
+        <div class="codex-stat">Coste: <span>30 Datos</span></div>
+        <div class="codex-stat">Daño: <span>12</span></div>
+        <div class="codex-stat">Cadencia: <span>Rápida</span></div>
+        <div class="codex-stat">Rango: <span>120px</span></div>
+        <div class="codex-note">"Económico y confiable. Foco en una sola capa (clic para cambiar). Ideal para early game."</div>
+      </div>
+
+      <div class="codex-card">
+        <h3 class="color-azul">Trituradora Cuántica</h3>
+        <div class="codex-stat">Coste: <span>115 Datos</span></div>
+        <div class="codex-stat">Daño base: <span>8 (+125% máx)</span></div>
+        <div class="codex-stat">Cadencia: <span>Alta</span></div>
+        <div class="codex-stat">Rango: <span>140px</span></div>
+        <div class="codex-note">"Daño acumulativo. Mejor contra el mismo objetivo (Anti-Tanque obligatorio en late game)."</div>
+      </div>
+
+      <div class="codex-card">
+        <h3 class="color-roja">Láser de Precisión</h3>
+        <div class="codex-stat">Coste: <span>100 Datos</span></div>
+        <div class="codex-stat">Daño: <span>200 (Masivo)</span></div>
+        <div class="codex-stat">Cadencia: <span>Muy Lenta</span></div>
+        <div class="codex-stat">Rango: <span>220px</span></div>
+        <div class="codex-note">"El Verdugo. Visión dual (ambas capas). Siempre apunta al enemigo con más HP. Vital contra Jefes."</div>
+      </div>
+
+      <div class="codex-card">
+        <h3 class="color-verde">Emisor Adaptativo</h3>
+        <div class="codex-stat">Coste: <span>110 Datos</span></div>
+        <div class="codex-stat">Daño: <span>15 (Sniper: 90)</span></div>
+        <div class="codex-stat">Efecto: <span>Lentitud −50% / 3s</span></div>
+        <div class="codex-stat">Rango: <span>250px (Sniper)</span></div>
+        <div class="codex-stat">Desbloqueo: <span>Completar Infiltración</span></div>
+        <div class="codex-note">"Reinicia el timer de lentitud con cada golpe. Úsalo para retener Tanques en el rango de Trituradoras."</div>
+      </div>
+
+      <div class="codex-card">
+        <h3 class="color-naranja">Inyector SQL</h3>
+        <div class="codex-stat">Coste: <span>80 Datos</span></div>
+        <div class="codex-stat">Daño DOT: <span>3/seg durante 5s</span></div>
+        <div class="codex-stat">Cadencia: <span>Media</span></div>
+        <div class="codex-stat">Rango: <span>130px</span></div>
+        <div class="codex-note">"Infecta al enemigo. El veneno sigue actuando aunque salga del rango. Ideal al inicio de la ruta."</div>
+        <div class="codex-weakness">⚠ Ineficaz contra Ransomware (blindado)</div>
+      </div>
+
+      <div class="codex-card">
+        <h3 class="color-blanco">Pulso EMP</h3>
+        <div class="codex-stat">Coste: <span>140 Datos</span></div>
+        <div class="codex-stat">Daño AoE: <span>60 en radio 80px</span></div>
+        <div class="codex-stat">Cadencia: <span>Lenta</span></div>
+        <div class="codex-stat">Rango: <span>160px</span></div>
+        <div class="codex-note">"Explosión de área. Daña a todos los enemigos en radio. Esencial para el Evento DDoS."</div>
+      </div>
+
+    </div>
+
+    <!-- ENEMIGOS -->
+    <div class="codex-section-title">🦠 AMENAZAS IDENTIFICADAS</div>
+    <div class="codex-grid">
+
+      <div class="codex-card">
+        <h3 style="color:#ff9900;">Paquete Estándar</h3>
+        <div class="codex-stat">HP: <span>Escala con ola</span></div>
+        <div class="codex-stat">Velocidad: <span>Media</span></div>
+        <div class="codex-stat">Recompensa: <span>3–5 Datos</span></div>
+        <div class="codex-note">"Carne de cañón. Muy numerosos en oleadas avanzadas."</div>
+      </div>
+
+      <div class="codex-card">
+        <h3 style="color:#ffd700;">Portador Cifrado</h3>
+        <div class="codex-stat">HP: <span>4× base</span></div>
+        <div class="codex-stat">Velocidad: <span>Lenta</span></div>
+        <div class="codex-stat">Recompensa: <span>40 Datos</span></div>
+        <div class="codex-note">"Cuadrado. Más resistente. Aparece cada 2 oleadas."</div>
+      </div>
+
+      <div class="codex-card">
+        <h3 style="color:#ff0000;">Ransomware (Tanque)</h3>
+        <div class="codex-stat">HP: <span>8× base</span></div>
+        <div class="codex-stat">Velocidad: <span>Muy Lenta</span></div>
+        <div class="codex-stat">Daño Base: <span>5 + roba 30 Datos</span></div>
+        <div class="codex-stat">Blindaje: <span>−70% daño DOT</span></div>
+        <div class="codex-note">"Casi indestructible con Inyector SQL. Usa Láser de Precisión o Trituradora."</div>
+        <div class="codex-weakness">⚠ PRIORIDAD MÁXIMA si llega a la base roba recursos</div>
+      </div>
+
+      <div class="codex-card">
+        <h3 style="color:#ff66ff;">Troyano (Escurridizo)</h3>
+        <div class="codex-stat">HP: <span>2× base</span></div>
+        <div class="codex-stat">Velocidad: <span>Alta</span></div>
+        <div class="codex-stat">Habilidad: <span>Fase 2s al 50% HP</span></div>
+        <div class="codex-note">"Cuando su vida llega al 50%, se vuelve intocable 2 segundos (parpadea). Área de juego en Infiltración."</div>
+        <div class="codex-weakness">⚠ El Pulso EMP lo saca de fase si está en AoE</div>
+      </div>
+
+      <div class="codex-card">
+        <h3 style="color:#aaffaa;">Gusano Replicante</h3>
+        <div class="codex-stat">HP: <span>3× base</span></div>
+        <div class="codex-stat">Al morir: <span>Se divide en 3 Mini-Gusanos</span></div>
+        <div class="codex-stat">Mini-Gusanos: <span>Rápidos, HP bajo</span></div>
+        <div class="codex-note">"Destruirlo no es suficiente. Ten torres al final de la ruta para limpiar los fragmentos."</div>
+      </div>
+
+      <div class="codex-card">
+        <h3 style="color:#88aaff;">Minero Oculto</h3>
+        <div class="codex-stat">HP: <span>1.5× base</span></div>
+        <div class="codex-stat">Velocidad: <span>Media-Baja</span></div>
+        <div class="codex-stat">Efecto: <span>Reduce tus ingresos −50%</span></div>
+        <div class="codex-note">"Mientras esté vivo, cada enemigo eliminado da la mitad de recompensa. Elímínalo primero."</div>
+        <div class="codex-weakness">⚠ PRIORIDAD MÁXIMA — detectado por brillo azul pulsante</div>
+      </div>
+
+    </div>
+
+    <!-- MODOS -->
+    <div class="codex-section-title">🎮 MODOS DE JUEGO</div>
+    <div class="codex-grid">
+      <div class="codex-card">
+        <h3 class="color-cyan">Modo Estándar</h3>
+        <div class="codex-note">"El protocolo base. Oleadas infinitas escalando en dificultad. Máxima ola guardada como récord."</div>
+      </div>
+      <div class="codex-card">
+        <h3 class="color-roja">Infiltración (Difícil)</h3>
+        <div class="codex-note">"10 oleadas. Enemigos 50% más rápidos. Todas las armas desbloqueadas (salvo Emisor Adaptativo si no se ganó). Completarlo desbloquea el Emisor Adaptativo."</div>
+      </div>
+      <div class="codex-card">
+        <h3 class="color-naranja">Escasez de RAM</h3>
+        <div class="codex-note">"Los enemigos dan 1 Dato al morir. Recursos mínimos. Cero margen de error. Solo para expertos."</div>
+      </div>
+      <div class="codex-card">
+        <h3 style="color:var(--orange-dot)">Evento DDoS</h3>
+        <div class="codex-note">"Asalto masivo. Oleadas enormes y rápidas. Aparece un Jefe al final. Usar EMP es obligatorio."</div>
+      </div>
+    </div>
+
+
+    <!-- NUEVAS TORRES v2.5 -->
+    <div class="codex-section-title">🔧 NUEVAS DEFENSAS v2.5</div>
+    <div class="codex-grid">
+      <div class="codex-card">
+        <h3 style="color:#ff9966;">Nodo de Interferencia</h3>
+        <div class="codex-stat">Coste: <span>95 Datos</span></div>
+        <div class="codex-stat">Efecto: <span>−30% armadura AoE (radio 100px)</span></div>
+        <div class="codex-stat">Cadencia: <span>Lenta</span></div>
+        <div class="codex-stat">HP: <span>60</span></div>
+        <div class="codex-note">"Reduce la resistencia de todos los enemigos cercanos. Combínalo con Láser o EMP para daño devastador."</div>
+      </div>
+      <div class="codex-card">
+        <h3 style="color:#66ccff;">Trampa de Latencia</h3>
+        <div class="codex-stat">Coste: <span>90 Datos</span></div>
+        <div class="codex-stat">Efecto: <span>Congela 3s (AoE radio 90px) — Cadencia muy baja</span></div>
+        <div class="codex-stat">Cadencia: <span>Muy Lenta</span></div>
+        <div class="codex-stat">HP: <span>50</span></div>
+        <div class="codex-note">"No inflige daño. Detiene grupos enteros durante 3 segundos. Ideal antes de una salva de EMP."</div>
+      </div>
+      <div class="codex-card">
+        <h3 style="color:#cc44ff;">Inyector Código Corrupto</h3>
+        <div class="codex-stat">Coste: <span>105 Datos</span></div>
+        <div class="codex-stat">DoT: <span>5/seg × 4s + contagio</span></div>
+        <div class="codex-stat">Contagio: <span>Radio 60px al morir</span></div>
+        <div class="codex-stat">HP: <span>55</span></div>
+        <div class="codex-note">"El veneno se extiende a enemigos cercanos cuando el objetivo muere. Letal en grupos densos."</div>
+      </div>
+      <div class="codex-card">
+        <h3 style="color:#aaaaff;">Muralla de Datos</h3>
+        <div class="codex-stat">Coste: <span>70 Datos</span></div>
+        <div class="codex-stat">Efecto: <span>Ralentiza −40% adyacentes</span></div>
+        <div class="codex-stat">Tipo: <span>Pasiva (no dispara)</span></div>
+        <div class="codex-stat">HP: <span>120</span></div>
+        <div class="codex-note">"Sin daño propio. Convierte la celda en un cuello de botella. Alta durabilidad."</div>
+      </div>
+      <div class="codex-card">
+        <h3 style="color:#ffdd44;">Satélite de Relevo</h3>
+        <div class="codex-stat">Coste: <span>130 Datos</span></div>
+        <div class="codex-stat">Buff: <span>+30px rango torres aliadas (radio 140px)</span></div>
+        <div class="codex-stat">Tipo: <span>Soporte pasivo</span></div>
+        <div class="codex-stat">HP: <span>45</span></div>
+        <div class="codex-note">"Amplía el alcance de tus defensas cercanas. Una sola unidad puede transformar toda una línea defensiva."</div>
+      </div>
+      <div class="codex-card">
+        <h3 style="color:#ff44aa;">Descompilador</h3>
+        <div class="codex-stat">Coste: <span>55 Datos</span></div>
+        <div class="codex-stat">Efecto: <span>Desactiva escudo Reflector 5s</span></div>
+        <div class="codex-stat">Cadencia: <span>Media</span></div>
+        <div class="codex-stat">HP: <span>50</span></div>
+        <div class="codex-note">"Imprescindible contra Reflectores. Sin él, atacarlos dañará tus propias torres."</div>
+        <div class="codex-weakness">⚠ Úsalo ANTES de disparar con Láser o EMP al Reflector</div>
+      </div>
+      <div class="codex-card">
+        <h3 style="color:#00ff66;">Soporte Vital</h3>
+        <div class="codex-stat">Coste: <span>150 Datos</span></div>
+        <div class="codex-stat">Reparación: <span>+5 HP/seg (AoE radio 110px)</span></div>
+        <div class="codex-stat">Desbloqueo: <span>12 rondas en Conexión Inestable</span></div>
+        <div class="codex-stat">HP: <span>70</span></div>
+        <div class="codex-note">"Repara torres aliadas pasivamente. Esencial en Conexión Inestable. Solo disponible allí hasta ser desbloqueado."</div>
+        <div class="codex-weakness">⚠ Requiere ganar 12 rondas en Conexión Inestable para uso global</div>
+      </div>
+    </div>
+
+    <!-- NUEVO ENEMIGO: REFLECTOR -->
+    <div class="codex-section-title">⚡ NUEVA AMENAZA v2.5</div>
+    <div class="codex-grid">
+      <div class="codex-card" style="border-color:#ff66ff;">
+        <h3 style="color:#ff66ff;">Reflector</h3>
+        <div class="codex-stat">HP: <span>2.5× base</span></div>
+        <div class="codex-stat">Velocidad: <span>Media</span></div>
+        <div class="codex-stat">Escudo: <span>Refleja 30% del daño recibido</span></div>
+        <div class="codex-stat">vs Láser: <span>200 dmg → 60 rebota a la torre</span></div>
+        <div class="codex-note">"Cada golpe que recibe devuelve el 30% a la torre atacante como daño de hardware. El Láser es especialmente peligroso sin Descompilador."</div>
+        <div class="codex-weakness">⚠ Usa Descompilador para anular el escudo antes de atacar</div>
+      </div>
+      <div class="codex-card" style="border-color:#33aaff;">
+        <h3 style="color:#33aaff;">Notas de Combate v2.5</h3>
+        <div class="codex-note" style="margin-top:0;">
+          <strong style="color:#fff;">Integridad de Hardware:</strong> las torres tienen HP. Pierden salud principalmente cuando el Reflector devuelve daño. Si el HP llega a 0, la torre es destruida permanentemente en esa partida.<br><br>
+          <strong style="color:#fff;">Conexión Inestable:</strong> 10 oleadas. −1 HP/seg a todas las torres. Solo 6 torres permitidas. El Soporte Vital es crucial para mantenerte.<br><br>
+          <strong style="color:#fff;">Mazos:</strong> prepara tus 3 mazos antes de entrar al modo que los requiera.
+        </div>
+      </div>
+    </div>
+
+    <!-- MODOS ACTUALIZADOS -->
+    <div class="codex-section-title">🎮 MODOS DE JUEGO</div>
+    <div class="codex-grid">
+      <div class="codex-card">
+        <h3 class="color-cyan">Modo Estándar</h3>
+        <div class="codex-note">"El protocolo base. Oleadas infinitas. Antes de entrar eliges un MAZO (máx 7 torres) y en partida solo verás esas torres. Cada torre se desbloquea en la oleada (1–15) que configures en tu mazo."</div>
+      </div>
+      <div class="codex-card">
+        <h3 class="color-roja">Infiltración (Difícil)</h3>
+        <div class="codex-note">"10 oleadas. Enemigos 50% más rápidos y +40% HP. Todas las armas disponibles salvo Emisor Adaptativo (si no se ganó). Completarlo desbloquea el Adaptativo."</div>
+      </div>
+      <div class="codex-card">
+        <h3 class="color-naranja">Escasez de RAM</h3>
+        <div class="codex-note">"Los enemigos dan 1 Dato al morir. Recursos mínimos. Cero margen de error. Solo para expertos."</div>
+      </div>
+      <div class="codex-card">
+        <h3 style="color:var(--orange-dot)">Evento DDoS</h3>
+        <div class="codex-note">"Asalto masivo. Oleadas enormes y rápidas. Aparece un Jefe al final. Usar EMP es obligatorio."</div>
+      </div>
+      <div class="codex-card" style="border-color:#ff6600;">
+        <h3 style="color:#ff6600;">Conexión Inestable ★ NUEVO</h3>
+        <div class="codex-note">"10 oleadas. Las torres pierden 1 HP/seg. Solo 6 torres permitidas (incluye Soporte Vital). Ganar 12 rondas desbloquea el Soporte Vital globalmente."</div>
+      </div>
+    </div>
+
+    <button id="btn-close-codex" class="btn-main" style="width:100%;margin-top:15px;">CERRAR CODEX</button>
+  </div>
+</div>
+
+<!-- ═══════════════════ PANTALLA INICIO ═══════════════════ -->
+<div id="start-screen" class="screen">
+    <h1 class="title-glitch">DEFENSA CIBERNÉTICA</h1>
+    <div class="subtitle">v2.6.0 // DIGITALIZACIÓN TOTAL</div>
+
+    <div class="login-box">
+        <div class="input-group">
+            <label for="username">IDENTIFICACIÓN DE OPERADOR:</label>
+            <input type="text" id="username" placeholder="Ingresa tu Alias" maxlength="15">
+        </div>
+        <div class="record-display">Mayor Oleada Alcanzada:<br><span id="record-val">0</span></div>
+
+        <div class="menu-buttons">
+            <div class="menu-section-title">— MODOS PRINCIPALES —</div>
+            <button id="btn-mode-normal" class="btn-main">▶ MODO ESTÁNDAR</button>
+            <button id="btn-mode-event" class="btn-main btn-event">⚠ INFILTRACIÓN (DIFÍCIL)</button>
+
+            <div class="menu-section-title">— EVENTOS ESPECIALES —</div>
+            <button id="btn-mode-escasez" class="btn-main btn-escasez">💾 ESCASEZ DE RAM</button>
+            <button id="btn-mode-ddos" class="btn-main btn-ddos">💥 EVENTO DDoS</button>
+
+            <div class="menu-section-title">— SISTEMA —</div>
+            <button id="btn-open-codex-menu" class="btn-main btn-info">📖 CODEX TÁCTICO</button>
+                <button id="btn-mode-inestable" class="btn-main btn-inestable">🌩 CONEXIÓN INESTABLE</button>
+            <button id="btn-patch-notes-open" class="btn-main" style="font-size:0.72rem;padding:7px;border-color:#1e3a5f;color:#475569;">📋 VER NOTAS DE PARCHE v2.5</button>
+            <button id="btn-reset-data" class="btn-main" style="font-size:0.75rem;padding:8px;border-color:#475569;color:#94a3b8;">BORRAR REGISTROS</button>
+            <button id="btn-open-deck" class="btn-main btn-info">🃏 GESTIONAR MAZOS</button>
+        </div>
+    </div>
+</div>
+
+<!-- ═══════════════════ INTERFAZ JUEGO ═══════════════════ -->
+<div id="game-interface" class="screen hidden">
+    <div id="game-container">
+        <canvas id="gameCanvas" width="800" height="600"></canvas>
+        <div id="game-message-overlay">MENSAJE</div>
+    </div>
+
+    <div id="ui-panel">
+        <div class="panel-header">
+            <div class="operator-info">Op: <span class="operator-name" id="ui-op-name">Invitado</span></div>
+            <div>
+                <button id="btn-open-codex-game" class="btn-small btn-codex-ingame">INFO</button>
+                <button id="btn-abort" class="btn-small btn-abort">ABORTAR</button>
+            </div>
+        </div>
+
+        <div class="stats-container">
+            <div class="stat-box"><div class="stat-title">INTEGRIDAD</div><div class="stat-value" id="health-val">20</div></div>
+            <div class="stat-box"><div class="stat-title">DATOS</div><div class="stat-value" id="money-val">120</div></div>
+        </div>
+
+        <div class="wave-box">
+            <div class="stat-title" id="mode-title-ui">MODO ESTÁNDAR</div>
+            <div id="wave-status">Esperando conexión...</div>
+        </div>
+
+        <div id="enemy-counter" style="background:#162032;padding:6px;text-align:center;border-radius:4px;margin-bottom:8px;border:1px solid #334155;font-size:12px;color:#94a3b8;display:none;">
+            <span id="enemy-count-text">Enemigos restantes: 0</span>
+        </div>
+
+        <button id="btn-start-wave" class="btn-action">INICIAR OLEADA</button>
+        <button id="btn-toggle-sell" class="btn-action btn-sell">MODO VENTA: OFF</button>
+
+        <div class="info-tip">Hover → rango. Clic torre colocada: cambiar sector. Láser: dual.<br>Modo Estándar: solo torres del mazo activo. Desbloqueo por oleada definido en mazo (1–15). HP visible en torres. Reflector devuelve daño.</div>
+        <div id="hw-integrity-bar">⚠ MODO INESTABLE — Las torres pierden 1 HP/seg</div>
+
+        <div class="tower-list" id="tower-list">
+            <div class="tower-card selected" data-type="0">
+                <div class="tower-header"><span class="tower-name color-morada">Cañón de Iones</span><span class="tower-cost">30D</span></div>
+                <div class="tower-desc">Daño rápido (12). Foco manual. Capa única.</div>
+            </div>
+            <div class="tower-card" data-type="1">
+                <div class="tower-header"><span class="tower-name color-azul">Trituradora Cuántica</span><span class="tower-cost">115D</span></div>
+                <div class="tower-desc">Daño acumulativo (8→+125%). Anti-Tanques.</div>
+            </div>
+            <div class="tower-card" data-type="2">
+                <span class="wave-badge" id="wb-2">🔒 OLA 5</span>
+                <div class="tower-header"><span class="tower-name color-roja">Láser de Precisión</span><span class="tower-cost">100D</span></div>
+                <div class="tower-desc">Daño masivo (200). Dual. Prioriza HP alto.</div>
+            </div>
+            <div class="tower-card" data-type="3" id="tower-adaptive-card">
+                <span class="lock-badge" id="adaptive-locked">🔒 BLOQUEADO</span>
+                <div class="tower-header"><span class="tower-name color-verde">Emisor Adaptativo</span><span class="tower-cost">110D</span></div>
+                <div class="tower-desc">Lentitud −50% / 3s. Sniper (250px).</div>
+            </div>
+            <div class="tower-card" data-type="4">
+                <span class="wave-badge" id="wb-4">🔒 OLA 5</span>
+                <div class="tower-header"><span class="tower-name color-naranja">Inyector SQL</span><span class="tower-cost">80D</span></div>
+                <div class="tower-desc">DOT: 3 daño/seg × 5s. Veneno persiste.</div>
+            </div>
+            <div class="tower-card" data-type="5">
+                <span class="wave-badge" id="wb-5">🔒 OLA 15</span>
+                <div class="tower-header"><span class="tower-name color-blanco">Pulso EMP</span><span class="tower-cost">140D</span></div>
+                <div class="tower-desc">AoE 60dmg radio 80px. Sector único.</div>
+            </div>
+            <!-- NEW TOWERS v2.5 -->
+            <div class="tower-card" data-type="6">
+                <div class="tower-header"><span class="tower-name" style="color:#ff9966;">Nodo Interferencia</span><span class="tower-cost">95D</span></div>
+                <div class="tower-desc">Reduce armadura −30% AoE. HP:60</div>
+            </div>
+            <div class="tower-card" data-type="7">
+                <div class="tower-header"><span class="tower-name" style="color:#66ccff;">Trampa Latencia</span><span class="tower-cost">90D</span></div>
+                <div class="tower-desc">Congela 3s área. Sin daño directo. HP:50</div>
+            </div>
+            <div class="tower-card" data-type="8">
+                <div class="tower-header"><span class="tower-name" style="color:#cc44ff;">Cód. Corrupto</span><span class="tower-cost">105D</span></div>
+                <div class="tower-desc">DoT 5/s + contagio cercano. HP:55</div>
+            </div>
+            <div class="tower-card" data-type="9">
+                <div class="tower-header"><span class="tower-name" style="color:#aaaaff;">Muralla de Datos</span><span class="tower-cost">70D</span></div>
+                <div class="tower-desc">Pasiva: ralentiza −40% adyacentes. HP:120</div>
+            </div>
+            <div class="tower-card" data-type="10">
+                <div class="tower-header"><span class="tower-name" style="color:#ffdd44;">Satélite Relevo</span><span class="tower-cost">130D</span></div>
+                <div class="tower-desc">+30px rango torres cercanas. HP:45</div>
+            </div>
+            <div class="tower-card" data-type="11">
+                <div class="tower-header"><span class="tower-name" style="color:#ff44aa;">Descompilador</span><span class="tower-cost">55D</span></div>
+                <div class="tower-desc">Anula escudo Reflector 5s. Daño 25. HP:50</div>
+            </div>
+            <div class="tower-card soporte-locked" data-type="12" id="soporte-vital-card">
+                <span class="lock-badge" id="soporte-locked-badge">🔒 BLOQUEADO</span>
+                <div class="tower-header"><span class="tower-name color-verde">Soporte Vital</span><span class="tower-cost">150D</span></div>
+                <div class="tower-desc">Repara +5HP/s torres AoE. Especial.</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- ═══════════════════ DECK MANAGER MODAL v2.5.1 ═══════════════════ -->
+<div id="deck-modal" class="modal-overlay hidden">
+  <div class="modal-content" style="max-width:860px;">
+    <h2 class="modal-title">🃏 GESTOR DE MAZOS — v2.5.8</h2>
+
+    <div style="display:flex;gap:8px;justify-content:center;margin:10px 0 14px;flex-wrap:wrap;">
+      <button class="deck-tab active-deck" data-deck="0" id="deck-tab-0">MAZO 1</button>
+      <button class="deck-tab" data-deck="1" id="deck-tab-1">MAZO 2</button>
+      <button class="deck-tab" data-deck="2" id="deck-tab-2">MAZO 3</button>
+    </div>
+
+    <div style="display:flex;gap:14px;flex-wrap:wrap;">
+      <div style="flex:1;min-width:280px;">
+        <div class="codex-section-title" style="margin-top:0;">✅ Tu mazo activo (máx 7)</div>
+        <div id="deck-slots-display" class="deck-slots"></div>
+        <div style="font-size:11px;color:#94a3b8;line-height:1.6;margin-top:8px;">
+          Reglas del modo Estándar:<br>
+          • Solo verás en partida las torres de este mazo.<br>
+          • Cada torre se desbloquea en una <strong style="color:#fff;">oleada automática</strong> según su precio (más cara = más tarde).<br>
+          • Las torres más caras se desbloquean al final del mazo.
+        </div>
+      </div>
+
+      <div style="flex:1.2;min-width:320px;">
+        <div class="codex-section-title" style="margin-top:0;">📦 Arsenal (clic para añadir al slot seleccionado)</div>
+        <div id="deck-arsenal" style="display:grid;grid-template-columns:1fr 1fr;gap:8px;"></div>
+        <div style="font-size:11px;color:#475569;margin-top:8px;">Las oleadas de desbloqueo se asignan automáticamente según el precio de cada torre.</div>
+      </div>
+    </div>
+
+    <button id="btn-close-deck" class="btn-main" style="width:100%;margin-top:15px;border-color:#b266ff;color:#b266ff;">CERRAR GESTOR DE MAZOS</button>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════════
+//  DEFENSA CIBERNÉTICA v2.5.0 — DIGITALIZACIÓN TOTAL
+// ═══════════════════════════════════════════════════════════════
+
+const STORAGE_KEY = 'cyberDefense_v260';
+
+// ── STORAGE SAFE LAYER (no rompe si el navegador bloquea localStorage) ──
+function _storageGet(key) {
+    try { return localStorage.getItem(key); } catch(e) { return null; }
+}
+function _storageSet(key, val) {
+    try { localStorage.setItem(key, val); return true; } catch(e) { return false; }
+}
+function _storageRemove(key) {
+    try { localStorage.removeItem(key); return true; } catch(e) { return false; }
+}
+
+let userData = { name:'', highScore:0, unlockedAdaptive:false, unlockedSoporteVital:false, inestableClearCount:0, decks:[[],[],[]], activeDeck:0 };
+
+function loadData() {
+    // Nunca debe romper el arranque del juego
+    try {
+        const s = _storageGet(STORAGE_KEY);
+        if (s) {
+            let d = null;
+            try {
+                d = JSON.parse(s);
+            } catch(parseErr) {
+                // Si hay JSON corrupto, lo ignoramos y seguimos con defaults
+                d = null;
+            }
+            if (d) {
+                userData = Object.assign({ name:'', highScore:0, unlockedAdaptive:false, unlockedSoporteVital:false, inestableClearCount:0, decks:[[],[],[]], activeDeck:0 }, d);
+                const u = document.getElementById('username');
+                if (u) u.value = userData.name || '';
+                _normalizeDeckData();
+            }
+        }
+    } catch(e) {
+        // Si localStorage está bloqueado, seguimos sin persistencia
+    }
+    updateRecordDisplay();
+}
+function saveData() {
+    // Guardado resiliente: si falla storage, no rompe los botones
+    const u = document.getElementById('username');
+    userData.name = (u && u.value) ? u.value : (userData.name || 'Operador');
+    try {
+        _storageSet(STORAGE_KEY, JSON.stringify(userData));
+    } catch(e) {}
+    updateRecordDisplay();
+}
+function updateRecordDisplay() {
+    document.getElementById('record-val').innerText = userData.highScore;
+    document.getElementById('ui-op-name').innerText = userData.name || 'Invitado';
+    const lockEl = document.getElementById('adaptive-locked');
+    if (lockEl) lockEl.style.display = userData.unlockedAdaptive ? 'none' : 'inline';
+    // Soporte Vital
+    const svCard = document.getElementById('soporte-vital-card');
+    const svBadge = document.getElementById('soporte-locked-badge');
+    if (svCard && svBadge) {
+        if (userData.unlockedSoporteVital) {
+            svCard.classList.remove('soporte-locked');
+            svBadge.style.display = 'none';
+        } else {
+            svCard.classList.add('soporte-locked');
+            svBadge.style.display = 'inline';
+        }
+    }
+
+}
+
+// ── DOM REFS ──────────────────────────────────────────────────
+const screenStart  = document.getElementById('start-screen');
+const screenGame   = document.getElementById('game-interface');
+const modalCodex   = document.getElementById('codex-modal');
+const canvas       = document.getElementById('gameCanvas');
+const ctx          = canvas.getContext('2d');
+const moneyEl      = document.getElementById('money-val');
+const healthEl     = document.getElementById('health-val');
+const waveStatusEl = document.getElementById('wave-status');
+const btnStartWave = document.getElementById('btn-start-wave');
+const btnToggleSell= document.getElementById('btn-toggle-sell');
+const towerCards   = document.querySelectorAll('.tower-card');
+const msgOverlay   = document.getElementById('game-message-overlay');
+const modeTitleUI  = document.getElementById('mode-title-ui');
+
+// ── BOTONES MENÚ ──────────────────────────────────────────────
+document.getElementById('btn-open-codex-menu').addEventListener('click', () => modalCodex.classList.remove('hidden'));
+document.getElementById('btn-open-codex-game').addEventListener('click', () => modalCodex.classList.remove('hidden'));
+document.getElementById('btn-close-codex').addEventListener('click',     () => modalCodex.classList.add('hidden'));
+
+document.getElementById('btn-mode-normal').addEventListener('click',  () => {
+    try {
+    saveData();
+    _normalizeDeckData();
+    const deck = userData.decks[userData.activeDeck] || [];
+    if (deck.length===0) { alert('Primero crea un MAZO (máx 7 torres) antes de entrar a Modo Estándar.'); openDeckModal(); return; }
+    initGame('normal');
+    } catch(e) { console.error('Error al iniciar modo normal:', e); alert('Error al iniciar. Recarga la página.'); }
+});
+document.getElementById('btn-mode-event').addEventListener('click',   () => { try { saveData(); initGame('infiltracion'); } catch(e) { console.error('Error infiltracion:', e); alert('Error al iniciar. Recarga la página.'); } });
+document.getElementById('btn-mode-escasez').addEventListener('click', () => { try { saveData(); initGame('escasez'); } catch(e) { console.error('Error escasez:', e); alert('Error al iniciar. Recarga la página.'); } });
+document.getElementById('btn-mode-ddos').addEventListener('click',    () => { try { saveData(); initGame('ddos'); } catch(e) { console.error('Error ddos:', e); alert('Error al iniciar. Recarga la página.'); } });
+document.getElementById('btn-mode-inestable').addEventListener('click', () => { try { saveData(); initGame('inestable'); } catch(e) { console.error('Error inestable:', e); alert('Error al iniciar. Recarga la página.'); } });
+
+document.getElementById('btn-reset-data').addEventListener('click', () => {
+    if (confirm('¿Purgar base de datos?')) {
+        _storageRemove(STORAGE_KEY);
+        userData = { name:'', highScore:0, unlockedAdaptive:false, unlockedSoporteVital:false, inestableClearCount:0, decks:[[],[],[]], activeDeck:0 };
+        document.getElementById('username').value = '';
+        updateRecordDisplay();
+    }
+});
+document.getElementById('btn-abort').addEventListener('click', () => {
+    if (confirm('¿Abortar misión?')) endGame(false);
+});
+
+try { loadData(); } catch(e) { /* ignore */ }
+
+// ── CONSTANTES ────────────────────────────────────────────────
+const TILE  = 40;
+const COLS  = canvas.width  / TILE;
+const ROWS  = canvas.height / TILE;
+
+// ── CAMINOS ───────────────────────────────────────────────────
+const pathA = [{x:0,y:3},{x:4,y:3},{x:4,y:11},{x:10,y:11},{x:10,y:4},{x:16,y:4},{x:16,y:13},{x:19,y:13}];
+const pathB = [{x:0,y:8},{x:6,y:8},{x:6,y:2},{x:13,y:2},{x:13,y:8},{x:19,y:8}];
+
+// ── ESTADO GLOBAL ─────────────────────────────────────────────
+let gameLoopId;
+let gameState = {};
+let towers=[], enemies=[], projectiles=[], particles=[], beams=[];
+let mouseX=-100, mouseY=-100;
+
+// ── TORRE COSTS & UNLOCK WAVES ──────────────────────────────────
+// 0=Ion,1=Quantica,2=Laser,3=Adaptativo,4=SQL,5=EMP
+// 6=Nodo,7=Trampa,8=Corrupto,9=Muralla,10=Satelite,11=Descomp,12=SoporteVital
+const TOWER_COSTS        = [30, 115, 100, 110, 80,  140, 95,  90,  105, 70,  130, 55, 150];
+const TOWER_UNLOCK_WAVE  = [1,  1,   5,   10,  5,   15,  1,   1,   5,   5,   10,  10,  999];
+// HP of each tower type
+const TOWER_BASE_HP      = [70, 110, 80, 85, 75, 95, 60, 50, 55, 120, 45, 50, 70];
+function getTowerCost(t) { return TOWER_COSTS[t] || 25; }
+function getTowerUnlockWave(t) { return TOWER_UNLOCK_WAVE[t] || 1; }
+function getTowerBaseHP(t) { return TOWER_BASE_HP[t] || 0; }
+
+
+
+// ══════════════════════════════════════════════════════════════
+//  DECK SYSTEM (pre-partida)
+//  userData.decks: [ [ {type:int, unlock:int}, ...], ...]
+// ══════════════════════════════════════════════════════════════
+function _defaultUnlockForType(t) {
+    const c = getTowerCost(t);
+    // basado en precio: más caro = más tarde. brackets de 12D desde c=25
+    // Ion (30D) = oleada 1, el resto se escalona gradualmente hasta oleada 11+
+    return Math.max(1, Math.min(15, 1 + Math.floor((c - 25) / 12)));
+}
+
+function _normalizeDeckData() {
+    if (!userData.decks) userData.decks = [[],[],[]];
+    for (let di=0; di<3; di++) {
+        const d = userData.decks[di] || [];
+        const norm = [];
+        for (const item of d) {
+            if (typeof item === 'number') {
+                norm.push({type:item, unlock:_defaultUnlockForType(item)});
+            } else if (item && typeof item === 'object' && item.type !== undefined) {
+                norm.push({
+                    type: parseInt(item.type),
+                    unlock: Math.max(1, Math.min(15, parseInt(item.unlock || _defaultUnlockForType(item.type))))
+                });
+            }
+        }
+        userData.decks[di] = norm.slice(0,7);
+    }
+    if (userData.activeDeck === undefined) userData.activeDeck = 0;
+}
+
+function _shortName(t) {
+    const names = ['Ion','Qnt','Lsr','Adp','SQL','EMP','Nodo','Lat','Corr','Mur','Sat','Desc','SV'];
+    return names[t] || ('T'+t);
+}
+
+let deckSelectedSlot = 0;
+
+function renderDeckModal() {
+    try {
+    _normalizeDeckData();
+    const panel = document.getElementById('deck-slots-display');
+    const arsenal = document.getElementById('deck-arsenal');
+    if (!panel || !arsenal) return;
+
+    // Tabs
+    document.querySelectorAll('#deck-modal .deck-tab').forEach(tab => {
+        tab.classList.toggle('active-deck', parseInt(tab.getAttribute('data-deck')) === userData.activeDeck);
+    });
+
+    const deck = userData.decks[userData.activeDeck] || [];
+    panel.innerHTML = '';
+
+    for (let i=0; i<7; i++) {
+        const slot = document.createElement('div');
+        const filled = deck[i] !== undefined;
+        slot.className = 'deck-slot' + (filled ? ' filled' : '');
+        slot.style.outline = (i===deckSelectedSlot) ? '2px solid #00f0ff' : 'none';
+
+        if (filled) {
+            slot.textContent = _shortName(deck[i].type);
+            slot.title = `Slot ${i+1} — ${_shortName(deck[i].type)} — Oleada ${deck[i].unlock}`;
+        } else {
+            slot.textContent = '+';
+            slot.title = 'Slot vacío — clic para seleccionar';
+        }
+
+        slot.addEventListener('click', () => { deckSelectedSlot = i; renderDeckModal(); });
+        slot.addEventListener('dblclick', () => {
+            if (!filled) return;
+            deck.splice(i,1);
+            saveData(); renderDeckModal();
+        });
+
+        panel.appendChild(slot);
+    }
+
+    // Arsenal list
+    let allTypes = [0,1,2,3,4,5,6,7,8,9,10,11];
+    if (userData.unlockedSoporteVital) allTypes.push(12);
+    const labels = {
+        0:'Cañón de Iones',1:'Trituradora Cuántica',2:'Láser de Precisión',3:'Emisor Adaptativo',4:'Inyector SQL',5:'Pulso EMP',
+        6:'Nodo Interferencia',7:'Trampa Latencia',8:'Código Corrupto',9:'Muralla de Datos',10:'Satélite Relevo',11:'Descompilador',12:'Soporte Vital'
+    };
+
+    arsenal.innerHTML = '';
+    allTypes.forEach(t => {
+        const btn = document.createElement('button');
+        btn.className = 'btn-action';
+        btn.style.marginBottom = '0';
+        btn.style.fontSize = '12px';
+        btn.textContent = labels[t] + ' — ' + getTowerCost(t) + 'D';
+        btn.addEventListener('click', () => {
+            const deck = userData.decks[userData.activeDeck];
+            // prevent duplicates
+            if (deck.some(x => x.type === t)) { alert('Esa torre ya está en el mazo.'); return; }
+            if (deck.length >= 7) { alert('Mazo lleno (máx 7).'); return; }
+
+            // Oleada de desbloqueo automática según precio
+            let unlock = _defaultUnlockForType(t);
+
+            // Insert into selected slot position (shift right)
+            const entry = {type:t, unlock:unlock};
+            deck.splice(deckSelectedSlot, 0, entry);
+            // Trim to 7
+            userData.decks[userData.activeDeck] = deck.slice(0,7);
+            saveData();
+            renderDeckModal();
+        });
+        arsenal.appendChild(btn);
+    });
+    } catch(e) { console.error('renderDeckModal error:', e); }
+}
+
+function openDeckModal() {
+    const m = document.getElementById('deck-modal');
+    if (!m) return;
+    m.classList.remove('hidden');
+    renderDeckModal();
+}
+function closeDeckModal() {
+    const m = document.getElementById('deck-modal');
+    if (!m) return;
+    m.classList.add('hidden');
+}
+
+// Hook deck modal buttons
+(function hookDeckModal() {
+    function _hookNow() {
+        const openBtn = document.getElementById('btn-open-deck');
+        const closeBtn = document.getElementById('btn-close-deck');
+        if (openBtn) openBtn.addEventListener('click', openDeckModal);
+        if (closeBtn) closeBtn.addEventListener('click', closeDeckModal);
+        document.querySelectorAll('#deck-modal .deck-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                userData.activeDeck = parseInt(tab.getAttribute('data-deck'));
+                saveData();
+                renderDeckModal();
+            });
+        });
+    }
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', _hookNow);
+    } else {
+        _hookNow();
+    }
+})();
+
+// ══════════════════════════════════════════════════════════════
+//  CLASES DE PARTÍCULAS
+// ══════════════════════════════════════════════════════════════
+class Particle {
+    constructor(x,y,c) {
+        this.x=x; this.y=y; this.c=c;
+        this.vx=(Math.random()-0.5)*5; this.vy=(Math.random()-0.5)*5;
+        this.life=20;
+    }
+    update() { this.x+=this.vx; this.y+=this.vy; this.life--; }
+    draw() { ctx.globalAlpha=this.life/20; ctx.fillStyle=this.c; ctx.fillRect(this.x,this.y,3,3); ctx.globalAlpha=1; }
+}
+
+class FloatingText {
+    constructor(x,y,t,c) { this.x=x; this.y=y; this.t=t; this.c=c; this.life=50; }
+    update() { this.y-=0.8; this.life--; }
+    draw() { ctx.globalAlpha=this.life/50; ctx.fillStyle=this.c; ctx.font="bold 13px 'Share Tech Mono'"; const w=ctx.measureText(this.t).width; ctx.fillText(this.t,this.x-w/2,this.y); ctx.globalAlpha=1; }
+}
+
+class LaserBeam {
+    constructor(sx,sy,tx,ty,c) { this.sx=sx; this.sy=sy; this.tx=tx; this.ty=ty; this.c=c; this.life=15; this.max=15; }
+    update() { this.life--; }
+    draw() {
+        let a=this.life/this.max;
+        ctx.beginPath(); ctx.moveTo(this.sx,this.sy); ctx.lineTo(this.tx,this.ty);
+        ctx.strokeStyle=`rgba(255,51,102,${a})`; ctx.lineWidth=4+a*2; ctx.shadowBlur=15; ctx.shadowColor=this.c; ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(this.sx,this.sy); ctx.lineTo(this.tx,this.ty);
+        ctx.strokeStyle=`rgba(255,255,255,${a})`; ctx.lineWidth=2; ctx.shadowBlur=0; ctx.stroke();
+    }
+}
+
+function createParticles(x,y,c,n) { for(let i=0;i<n;i++) particles.push(new Particle(x,y,c)); }
+
+// ══════════════════════════════════════════════════════════════
+//  CLASE PROYECTIL
+// ══════════════════════════════════════════════════════════════
+class Projectile {
+    constructor(x,y,target,dmg,col,spd,opts={}) {
+        this.x=x; this.y=y; this.target=target; this.dmg=dmg; this.col=col; this.spd=spd;
+        this.isSlow       = opts.isSlow       || false;
+        this.isDot        = opts.isDot        || false;
+        this.isEmp        = opts.isEmp        || false;
+        this.isArmorDebuff= opts.isArmorDebuff|| false;
+        this.isFreeze     = opts.isFreeze     || false;
+        this.isDotSpread  = opts.isDotSpread  || false;
+        this.isDecompile  = opts.isDecompile  || false;
+        this.empRadius    = opts.empRadius    || 80;
+        this.act=true;
+    }
+    update() {
+        if (!this.target || this.target.hp<=0) { this.act=false; return; }
+        let dx=this.target.x-this.x, dy=this.target.y-this.y, dist=Math.hypot(dx,dy);
+        if (dist < this.spd) {
+            if (this.isEmp) {
+                enemies.forEach(e => {
+                    if (Math.hypot(e.x-this.target.x, e.y-this.target.y) <= this.empRadius) {
+                        e.hp -= this.dmg;
+                        // Reflector: bounce 30% to source tower (AoE too)
+                        if (e.variant==='reflector' && (e.decompileTimer||0)<=0 && this.srcTower && this.srcTower.maxHp>0) {
+                            const bounce = Math.floor(this.dmg * 0.30);
+                            this.srcTower.hp = Math.max(0, this.srcTower.hp - bounce);
+                            particles.push(new FloatingText(this.srcTower.x, this.srcTower.y-20, '-'+bounce+' REBOTE', '#ff66ff'));
+                            createParticles(this.srcTower.x, this.srcTower.y, '#ff66ff', 6);
+                        }
+                        createParticles(e.x, e.y, '#ffffff', 5);
+                    }
+                });
+                createParticles(this.target.x, this.target.y, '#ffffff', 30);
+                particles.push(new FloatingText(this.target.x, this.target.y-20, 'EMP!', '#ffffff'));
+            } else if (this.isArmorDebuff) {
+                // Nodo: AoE armor reduction
+                enemies.forEach(e => {
+                    if (Math.hypot(e.x-this.target.x, e.y-this.target.y) <= 100) {
+                        e.armorReduced = 120; // 2s @60fps
+                    }
+                });
+                createParticles(this.target.x, this.target.y, '#ff9966', 15);
+                particles.push(new FloatingText(this.target.x, this.target.y-20, 'ARMADURA−30%', '#ff9966'));
+            } else if (this.isFreeze) {
+                // Trampa: freeze AoE
+                enemies.forEach(e => {
+                    if (Math.hypot(e.x-this.target.x, e.y-this.target.y) <= 90) {
+                        e.freezeTimer = 180; // 3s @60fps
+                    }
+                });
+                createParticles(this.target.x, this.target.y, '#66ccff', 20);
+                particles.push(new FloatingText(this.target.x, this.target.y-20, 'LATENCIA 3s', '#66ccff'));
+            } else if (this.isDecompile) {
+                // Descompilador: removes Reflector shield
+                if (this.target.variant==='reflector') {
+                    this.target.decompileTimer = 300; // 5s
+                    particles.push(new FloatingText(this.target.x, this.target.y-20, 'ESCUDO OFF', '#ff44aa'));
+                }
+                this.target.hp -= this.dmg;
+                createParticles(this.target.x, this.target.y, '#ff44aa', 8);
+            } else {
+                let finalDmg = this.dmg;
+                // armor reduction check
+                if (this.target.armorReduced > 0) finalDmg = Math.floor(finalDmg * 1.3);
+                // reflector check (non-laser handled here)
+                if (this.target.variant==='reflector' && (this.target.decompileTimer||0)<=0) {
+                    let bounce = Math.floor(finalDmg * 0.30);
+                    // find the tower that shot this projectile and damage it
+                    // we mark the source tower in opts
+                    if (this.srcTower && this.srcTower.maxHp>0) {
+                        this.srcTower.hp = Math.max(0, this.srcTower.hp - bounce);
+                        particles.push(new FloatingText(this.srcTower.x, this.srcTower.y-20, '-'+bounce+' REBOTE', '#ff66ff'));
+                    }
+                }
+                this.target.hp -= finalDmg;
+                if (this.isSlow)  this.target.applySlow(180);
+                if (this.isDot)   this.target.applyDot(3, 300);
+                if (this.isDotSpread) {
+                    this.target.applyDot(5, 240);
+                    // spread to nearby
+                    enemies.forEach(e => {
+                        if(e!==this.target && Math.hypot(e.x-this.target.x,e.y-this.target.y)<=60) {
+                            e.applyDot(3, 180);
+                            createParticles(e.x,e.y,'#cc44ff',4);
+                        }
+                    });
+                }
+                createParticles(this.target.x, this.target.y, this.col, 4);
+            }
+            this.act=false;
+        } else {
+            this.x+=(dx/dist)*this.spd; this.y+=(dy/dist)*this.spd;
+        }
+    }
+    draw() {
+        ctx.beginPath();
+        if (this.isEmp) {
+            ctx.arc(this.x,this.y,5,0,Math.PI*2);
+            ctx.fillStyle='#ffffff';
+        } else {
+            ctx.arc(this.x,this.y,3,0,Math.PI*2);
+            ctx.fillStyle=this.col;
+        }
+        ctx.fill();
+    }
+}
+
+// ══════════════════════════════════════════════════════════════
+//  CLASE ENEMIGO
+// ══════════════════════════════════════════════════════════════
+class Enemy {
+    constructor(pathType, variant='normal') {
+        this.pathType  = pathType;
+        this.path      = pathType==='A' ? pathA : pathB;
+        this.isEncrypted = (pathType==='B');
+        this.variant   = variant; // normal, carrier, tank, trojan, worm, miner
+        this.pathIndex = 0;
+        this.x = this.path[0].x*TILE + TILE/2 - 40;
+        this.y = this.path[0].y*TILE + TILE/2;
+
+        let hpMult = Math.pow(1.18, gameState.wave);
+        let baseHp = 20 * hpMult;
+        this.baseSpeed = 1.0 + (gameState.wave * 0.04);
+        let modeBoost = (gameState.mode==='infiltracion'||gameState.mode==='ddos') ? 1.4 : 1.0;
+        let speedBoost= (gameState.mode==='infiltracion') ? 1.5 : (gameState.mode==='ddos') ? 1.3 : 1.0;
+        baseHp *= modeBoost;
+        this.baseSpeed *= speedBoost;
+
+        this.slowTimer = 0;
+        this.dotTimer  = 0;
+        this.dotDamage = 0;
+        this.dotInterval = 0;
+        this.phaseTimer = 0; // Troyano: intangible
+        this.phaseTriggered = false;
+        this.mined = false;
+        this.dead = false;
+
+        this.decompileTimer = 0; // Reflector: timer when shield is disabled
+        this.armorReduced   = 0; // armor debuff timer
+        this.freezeTimer    = 0; // freeze timer
+        switch(variant) {
+            case 'reflector':
+                this.maxHp=baseHp*2.5; this.baseSpeed*=0.8; this.reward=45; this.radius=13; this.color='#ff66ff'; this.dmgToPlayer=2; break;
+            case 'carrier':
+                this.maxHp=baseHp*4; this.baseSpeed*=0.6; this.reward=40; this.radius=15; this.color='#ffd700'; this.dmgToPlayer=3; break;
+            case 'tank': // Ransomware
+                this.maxHp=baseHp*8; this.baseSpeed*=0.4; this.reward=80; this.radius=18; this.color='#ff0000'; this.dmgToPlayer=5; this.armorDotReduction=0.7; break;
+            case 'trojan':
+                this.maxHp=baseHp*2; this.baseSpeed*=1.3; this.reward=25; this.radius=11; this.color='#ff44ff'; this.dmgToPlayer=2; break;
+            case 'worm':
+                this.maxHp=baseHp*3; this.baseSpeed*=0.9; this.reward=35; this.radius=14; this.color='#aaffaa'; this.dmgToPlayer=2; break;
+            case 'miner':
+                this.maxHp=baseHp*1.5; this.baseSpeed*=0.85; this.reward=50; this.radius=12; this.color='#88aaff'; this.dmgToPlayer=1; break;
+            default: // normal
+                this.maxHp=baseHp*(Math.random()>0.8?1.5:1.0); this.baseSpeed*=(Math.random()>0.7?1.3:1.0);
+                this.reward=(gameState.mode==='escasez')?1:3; this.radius=11; this.color=(gameState.mode==='infiltracion'||gameState.mode==='ddos')?'#ff3366':'#ff9900'; this.dmgToPlayer=1;
+        }
+        this.hp = this.maxHp;
+        this.speed = this.baseSpeed;
+    }
+
+    applySlow(frames, factor=0.5) {
+        this.slowTimer = Math.max(this.slowTimer||0, frames);
+        // Non-stack: keep the strongest (lowest factor)
+        this.slowFactor = Math.min(this.slowFactor||1.0, factor);
+    }
+    applyDot(dmgPerSec, frames) {
+        // Ransomware tiene reducción al DOT
+        let mult = (this.variant==='tank') ? (1 - (this.armorDotReduction||0)) : 1;
+        this.dotDamage   = dmgPerSec * mult;
+        this.dotTimer    = frames;
+        this.dotInterval = 0;
+    }
+
+    update() {
+        // Troyano: fase a 50% HP
+        if (this.variant==='trojan' && !this.phaseTriggered && this.hp <= this.maxHp*0.5) {
+            this.phaseTriggered = true;
+            this.phaseTimer = 120; // 2s @ 60fps
+            particles.push(new FloatingText(this.x, this.y-20, 'FASE!', '#ff44ff'));
+        }
+        if (this.phaseTimer > 0) { this.phaseTimer--; }
+
+        // DOT
+        if (this.dotTimer > 0) {
+            this.dotTimer--; this.dotInterval++;
+            if (this.dotInterval >= 60) {
+                this.hp -= this.dotDamage;
+                this.dotInterval = 0;
+                createParticles(this.x, this.y, '#ff7700', 3);
+            }
+        }
+
+        // Decompile timer
+        if (this.decompileTimer > 0) this.decompileTimer--;
+        // Armor reduced timer
+        if (this.armorReduced > 0) this.armorReduced--;
+        // Freeze timer
+        if (this.freezeTimer > 0) { this.freezeTimer--; this.speed=0; return true; }
+        // Slow
+        if (this.slowTimer > 0) {
+            const f = (this.slowFactor===undefined)?0.5:this.slowFactor;
+            this.speed = this.baseSpeed * f;
+            this.slowTimer--;
+            if (this.slowTimer<=0) this.slowFactor = 1.0;
+        } else {
+            this.speed = this.baseSpeed;
+            this.slowFactor = 1.0;
+        }
+
+        const target = this.path[this.pathIndex];
+        const tx=target.x*TILE+TILE/2, ty=target.y*TILE+TILE/2;
+        const dx=tx-this.x, dy=ty-this.y, dist=Math.hypot(dx,dy);
+
+        if (dist < this.speed) {
+            this.x=tx; this.y=ty; this.pathIndex++;
+            if (this.pathIndex >= this.path.length) {
+                // Llegó a base
+                gameState.health -= this.dmgToPlayer;
+                // Ransomware roba datos
+                if (this.variant==='tank') {
+                    let stolen = 30;
+                    gameState.money = Math.max(0, gameState.money - stolen);
+                    particles.push(new FloatingText(this.x, this.y-30, `-${stolen} DATOS ROBADOS`, '#ff0000'));
+                }
+                updateGameUI(); return false;
+            }
+        } else {
+            this.x+=(dx/dist)*this.speed; this.y+=(dy/dist)*this.speed;
+        }
+        return true;
+    }
+
+    isUntargetable() { return this.phaseTimer > 0; }
+
+    draw() {
+        ctx.save(); ctx.translate(this.x, this.y);
+        if (this.isEncrypted) {
+            ctx.globalAlpha = 0.55;
+            if (Math.random()>0.8) ctx.translate((Math.random()-0.5)*4, 0);
+        }
+        // Fase troyano: parpadeo
+        if (this.phaseTimer>0 && Math.floor(this.phaseTimer/5)%2===0) { ctx.restore(); return; }
+
+        ctx.beginPath();
+        if (this.variant==='carrier'||this.variant==='tank'||this.variant==='worm') {
+            ctx.rect(-this.radius,-this.radius,this.radius*2,this.radius*2);
+        } else {
+            ctx.moveTo(this.radius,0); ctx.lineTo(-this.radius,-this.radius); ctx.lineTo(-this.radius,this.radius);
+        }
+        ctx.closePath();
+
+        // Efectos visuales
+        if (this.slowTimer>0) { ctx.shadowBlur=10; ctx.shadowColor='#00ff66'; }
+        if (this.dotTimer>0)  { ctx.shadowBlur=10; ctx.shadowColor='#ff7700'; }
+        if (this.variant==='miner' && Math.floor(Date.now()/300)%2===0) { ctx.shadowBlur=15; ctx.shadowColor='#88aaff'; }
+        if (this.variant==='reflector') {
+            ctx.shadowBlur=12; ctx.shadowColor='#ff66ff';
+            if(this.decompileTimer>0) ctx.shadowColor='#ff44aa'; // shield off = orange tint
+        }
+
+        ctx.fillStyle=this.color; ctx.fill();
+        ctx.lineWidth=this.isEncrypted?1:2;
+        ctx.strokeStyle=this.slowTimer>0?'#00ff66':(this.isEncrypted?'#ff00ff':'#fff');
+        ctx.stroke(); ctx.shadowBlur=0;
+
+        // Persistent armor debuff indicator (orange outline)
+        if (this.armorReduced > 0) {
+            ctx.shadowBlur = 8;
+            ctx.shadowColor = '#ff9966';
+            ctx.strokeStyle = '#ff9966';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+            ctx.shadowBlur = 0;
+        }
+        // Persistent decompile indicator (green outline)
+        if (this.decompileTimer > 0) {
+            ctx.shadowBlur = 8;
+            ctx.shadowColor = '#00ff66';
+            ctx.strokeStyle = '#00ff66';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+            ctx.shadowBlur = 0;
+        }
+
+        const hpP=this.hp/this.maxHp;
+        ctx.globalAlpha=1;
+        ctx.fillStyle='#f00'; ctx.fillRect(-10,-18,20,4);
+        ctx.fillStyle='#0f0'; ctx.fillRect(-10,-18,20*hpP,4);
+        ctx.restore();
+    }
+}
+
+// ══════════════════════════════════════════════════════════════
+//  CLASE TORRE
+// ══════════════════════════════════════════════════════════════
+class Tower {
+    constructor(gx,gy,type) {
+        this.gx=gx; this.gy=gy;
+        this.x=gx*TILE+TILE/2; this.y=gy*TILE+TILE/2;
+        this.type=type; this.angle=0; this.cooldown=0; this.target=null;
+        this.scanMode=false; // false=PathA, true=PathB
+        this.ramp=1.0; this.lTarget=null; // Trituradora
+
+        // Stats por tipo
+        const stats = [
+            { col:'#b266ff', rng:120, dmg:12,  fr:35  },  // 0 Ion
+            { col:'#3388ff', rng:140, dmg:8,   fr:12  },  // 1 Trituradora
+            { col:'#ff3366', rng:220, dmg:200, fr:140 },  // 2 Laser
+            { col:'#00ff66', rng:250, dmg:15,  fr:18  },  // 3 Adaptativo
+            { col:'#ff7700', rng:130, dmg:5,   fr:45  },  // 4 SQL DOT
+            { col:'#ffffff', rng:160, dmg:60,  fr:100 },  // 5 EMP AoE
+            { col:'#ff9966', rng:100, dmg:0,   fr:90  },  // 6 Nodo (AoE armor debuff)
+            { col:'#66ccff', rng:90,  dmg:0,   fr:450 },  // 7 Trampa Latencia (freeze) — nerf: mucho más lenta
+            { col:'#cc44ff', rng:120, dmg:5,   fr:50  },  // 8 Codigo Corrupto (DoT+spread)
+            { col:'#aaaaff', rng:50,  dmg:0,   fr:999 },  // 9 Muralla (passive slow)
+            { col:'#ffdd44', rng:140, dmg:0,   fr:999 },  // 10 Satelite (range buff)
+            { col:'#ff44aa', rng:140, dmg:25,  fr:60  },  // 11 Descompilador
+            { col:'#00ff66', rng:110, dmg:0,   fr:60  },  // 12 Soporte Vital (repair)
+        ];
+        const s = stats[type] || stats[0];
+        this.col=s.col; this.rng=s.rng; this.dmg=s.dmg; this.fr=s.fr;
+        // Hardware Integrity
+        this.maxHp = getTowerBaseHP(type);
+        this.hp    = this.maxHp;
+        this.decompiled = 0; // Descompilador timer (disables reflector reflection TO this tower)
+        this.rangeBonus = 0; // Satellite buff
+    }
+
+    toggleScan() {
+        if (this.type===2) { particles.push(new FloatingText(this.x,this.y-20,'AUTO: DUAL','#ff3366')); return; }
+        // Types 4,5 now also use manual sector toggle (like 0,1,3) — NOT auto-detect anymore
+        this.scanMode=!this.scanMode;
+        let msg=this.scanMode?'PLANO: SUB':'PLANO: SUP';
+        let col=this.scanMode?'#b266ff':'#00f0ff';
+        particles.push(new FloatingText(this.x,this.y-20,msg,col));
+        createParticles(this.x,this.y,col,10);
+        if(this.type===1) this.ramp=1.0;
+        this.target=null;
+    }
+
+    _getTarget() {
+        const effectiveRange = this.rng + (this.rangeBonus || 0);
+        // Type 2 (Laser): dual layer, targets highest HP
+        if (this.type===2) {
+            let best=null, maxHp=-1;
+            for(let e of enemies){
+                if(e.isUntargetable()) continue;
+                let d=Math.hypot(e.x-this.x,e.y-this.y);
+                if(d<=effectiveRange && e.hp>maxHp){ maxHp=e.hp; best=e; }
+            }
+            return best;
+        }
+        // Type 9 (Muralla): no targeting
+        if (this.type===9||this.type===10||this.type===12) return null;
+        // All other towers: single sector (scanMode)
+        let expectedPath = this.scanMode?'B':'A';
+        let best=null, closest=effectiveRange;
+        for(let e of enemies){
+            if(e.isUntargetable()) continue;
+            if(e.pathType!==expectedPath) continue;
+            let d=Math.hypot(e.x-this.x,e.y-this.y);
+            if(d<closest){ closest=d; best=e; }
+        }
+        return best;
+    }
+
+    update() {
+        if(this.cooldown>0) this.cooldown--;
+        if(this.decompiled>0) this.decompiled--;
+
+        // SATELLITE: buff nearby towers range
+        if(this.type===10) {
+            towers.forEach(t=>{
+                if(t!==this && Math.hypot(t.x-this.x,t.y-this.y)<=this.rng+this.rangeBonus) {
+                    t.rangeBonus=30;
+                }
+            });
+            return;
+        }
+
+        // MURALLA: slow adjacent enemies passively
+        if(this.type===9) {
+            enemies.forEach(e=>{
+                let d=Math.hypot(e.x-this.x,e.y-this.y);
+                if(d<=60) e.applySlow(15, 0.6); // −40% (non acumulativo)
+            });
+            return;
+        }
+
+        // SOPORTE VITAL: repair nearby towers
+        if(this.type===12) {
+            if(this.cooldown<=0) {
+                this.cooldown=this.fr;
+                towers.forEach(t=>{
+                    if(t!==this && t.maxHp>0) {
+                        let d=Math.hypot(t.x-this.x,t.y-this.y);
+                        if(d<=this.rng+this.rangeBonus) {
+                            t.hp=Math.min(t.maxHp, t.hp+5);
+                            particles.push(new FloatingText(t.x,t.y-15,'+5 HP','#00ff66'));
+                        }
+                    }
+                });
+            }
+            return;
+        }
+
+        // rangeBonus is reset in updatePhysics two-phase system
+
+        // Validar objetivo actual
+        const effectiveRange = this.rng + (this.rangeBonus || 0);
+        let validTarget = false;
+        if (this.target && this.target.hp>0 && !this.target.isUntargetable()) {
+            let d=Math.hypot(this.target.x-this.x,this.target.y-this.y);
+            if(d<=effectiveRange) validTarget=true;
+        }
+        if(!validTarget) {
+            this.target=this._getTarget();
+            if(this.type===1 && this.target!==this.lTarget) this.ramp=1.0;
+        }
+
+        if(this.target){
+            this.angle=Math.atan2(this.target.y-this.y,this.target.x-this.x);
+            if(this.cooldown<=0) this.fire();
+        }
+    }
+
+    fire() {
+        this.cooldown=this.fr;
+        if(this.type===2){
+            // Laser: reflect damage if target is Reflector and not decompiled
+            let reflectDmg = 0;
+            if(this.target.variant==='reflector' && this.target.decompileTimer<=0) {
+                reflectDmg = Math.floor(this.dmg * 0.30); // 30% of 200 = 60
+            }
+            this.target.hp-=this.dmg;
+            createParticles(this.target.x,this.target.y,this.col,20);
+            beams.push(new LaserBeam(this.x,this.y,this.target.x,this.target.y,this.col));
+            if(reflectDmg>0 && this.maxHp>0) {
+                this.hp=Math.max(0,this.hp-reflectDmg);
+                particles.push(new FloatingText(this.x,this.y-20,'-'+reflectDmg+' REBOTE','#ff66ff'));
+                createParticles(this.x,this.y,'#ff66ff',8);
+            }
+            return;
+        }
+        let opts={};
+        if(this.type===1){ // Trituradora
+            if(this.target===this.lTarget) this.ramp=Math.min(2.25,this.ramp+0.15);
+            this.lTarget=this.target;
+            const pQ = new Projectile(this.x,this.y,this.target,this.dmg*this.ramp,this.col,8,{});
+            pQ.srcTower = this;
+            projectiles.push(pQ);
+            return;
+        }
+        if(this.type===3) opts.isSlow=true;
+        if(this.type===4) opts.isDot=true;
+        if(this.type===5) opts.isEmp=true;
+        // New tower types
+        if(this.type===6) { opts.isArmorDebuff=true; }
+        if(this.type===7) { opts.isFreeze=true; }
+        if(this.type===8) { opts.isDotSpread=true; }
+        if(this.type===11) { opts.isDecompile=true; }
+        const p25=new Projectile(this.x,this.y,this.target,this.dmg,this.col,(this.type===5||this.type===6||this.type===7?10:6),opts);
+        p25.srcTower=this;
+        projectiles.push(p25);
+    }
+
+    draw() {
+        ctx.save(); ctx.translate(this.x,this.y);
+        if(this.type!==2 && this.scanMode){
+            ctx.beginPath(); ctx.arc(0,0,18,0,Math.PI*2);
+            ctx.strokeStyle='rgba(178,102,255,0.8)'; ctx.setLineDash([4,4]); ctx.lineWidth=2; ctx.stroke(); ctx.setLineDash([]);
+        } else if(this.type===2){
+            ctx.beginPath(); ctx.arc(0,0,20,0,Math.PI*2);
+            ctx.strokeStyle='rgba(255,51,102,0.3)'; ctx.lineWidth=1; ctx.stroke();
+        }
+        ctx.rotate(this.angle);
+        ctx.beginPath(); ctx.arc(0,0,14,0,Math.PI*2); ctx.fillStyle='#0f172a'; ctx.fill();
+        ctx.lineWidth=2; ctx.strokeStyle=this.col; ctx.stroke();
+        ctx.fillStyle=this.col;
+        if(this.type===1){ ctx.fillRect(8,-6,10,3); ctx.fillRect(8,3,10,3); }
+        else if(this.type===2){ ctx.fillRect(0,-4,24,8); }
+        else if(this.type===5){
+            ctx.beginPath(); ctx.arc(0,0,8,0,Math.PI*2);
+            ctx.strokeStyle='#ffffff'; ctx.lineWidth=3; ctx.stroke();
+        }
+        else { ctx.beginPath(); ctx.moveTo(0,-6); ctx.lineTo(18,0); ctx.lineTo(0,6); ctx.fill(); }
+
+        // ── Hardware HP bar (visible) ──
+        if (this.maxHp > 0) {
+            const p = Math.max(0, Math.min(1, this.hp / this.maxHp));
+            // background
+            ctx.save();
+            ctx.rotate(-this.angle);
+            ctx.globalAlpha = 0.9;
+            ctx.fillStyle = '#1e293b';
+            ctx.fillRect(-16, 18, 32, 4);
+            // fill
+            let col = (p > 0.6) ? '#00ff66' : (p > 0.3) ? '#ffcc00' : '#ff3366';
+            ctx.fillStyle = col;
+            ctx.fillRect(-16, 18, 32 * p, 4);
+            ctx.restore();
+            ctx.globalAlpha = 1;
+        }
+        ctx.restore();
+    }
+}
+
+// ══════════════════════════════════════════════════════════════
+//  LÓGICA DE OLEADAS
+// ══════════════════════════════════════════════════════════════
+// Wave-range probability table for STANDARD mode
+function getStandardProbs(wave) {
+    if(wave<=5)       return {std:1.0,  carrier:0.50, tank:0.20, trojan:0.15, worm:0.02, miner:0.15};
+    else if(wave<=10) return {std:1.0,  carrier:0.50, tank:0.20, trojan:0.15, worm:0.05, miner:0.25};
+    else if(wave<=15) return {std:1.0,  carrier:0.50, tank:0.20, trojan:0.30, worm:0.15, miner:0.50};
+    else              return {std:0.50, carrier:0.30, tank:0.50, trojan:0.50, worm:0.25, miner:0.60};
+}
+
+function buildWave(wave, mode) {
+    let w = {
+        spawnsNormal:  0,
+        spawnsEncrypted:0,
+        spawnsCarrier: 0,
+        spawnsTank:    0,
+        spawnsTrojan:  0,
+        spawnsWorm:    0,
+        spawnsMiner:   0,
+        spawnsReflector:0,
+        spawnTimer: 20
+    };
+
+    if(mode==='normal') {
+        const P = getStandardProbs(wave);
+        const base = 10 + Math.floor(wave*1.5);
+        // Each potential spawn is a probability roll
+        if(Math.random()<P.std)    w.spawnsNormal   = base;
+        if(Math.random()<P.std)    w.spawnsEncrypted= 3+Math.floor(wave*0.8);
+        if(Math.random()<P.carrier)w.spawnsCarrier  = 1+Math.floor(wave/4);
+        if(Math.random()<P.tank)   w.spawnsTank     = 1+Math.floor(wave/6);
+        if(Math.random()<P.trojan) w.spawnsTrojan   = 1+Math.floor(wave/5);
+        if(Math.random()<P.worm)   w.spawnsWorm     = 1;
+        if(Math.random()<P.miner)  w.spawnsMiner    = 1;
+        // Reflector appears from wave 8 onwards with 20% chance
+        if(wave>=8 && Math.random()<0.20) w.spawnsReflector = 1;
+        // Ensure at least some normal enemies
+        if(w.spawnsNormal===0) w.spawnsNormal = 5+Math.floor(wave*0.8);
+    }
+
+    if(mode==='infiltracion'){
+        w.spawnsNormal  = 20+(wave*4);
+        w.spawnsEncrypted=12+(wave*5);
+        w.spawnsCarrier = 1+Math.floor(wave/2);
+        w.spawnsTank    = wave>=3?1:0;
+        w.spawnsTrojan  = Math.floor(wave/2)+1;
+        w.spawnsReflector = wave>=4?1:0;
+    }
+    if(mode==='escasez'){
+        w.spawnsNormal  = 8+Math.floor(wave*1.2);
+        w.spawnsEncrypted=2+Math.floor(wave*0.8);
+        w.spawnsTank    = wave>=5?1:0;
+        w.spawnsMiner   = wave>=3?1:0;
+    }
+    if(mode==='ddos'){
+        w.spawnsNormal  = 20+(wave*5);
+        w.spawnsEncrypted=15+(wave*4);
+        w.spawnsCarrier = 2+Math.floor(wave/2);
+        w.spawnsTank    = wave>=2?1+Math.floor(wave/3):0;
+        w.spawnsTrojan  = Math.floor(wave/2);
+        w.spawnsWorm    = Math.floor(wave/3);
+        w.spawnsReflector = wave>=3?1:0;
+        w.spawnTimer    = 15;
+        if(wave%5===0 && wave>0) w.spawnBoss=true;
+    }
+    if(mode==='inestable'){
+        w.spawnsNormal  = 12+(wave*2);
+        w.spawnsEncrypted=5+(wave*2);
+        w.spawnsCarrier = 1+Math.floor(wave/3);
+        w.spawnsTank    = wave>=4?1:0;
+        w.spawnsReflector = wave>=2?1:0;
+        w.spawnTimer    = 25;
+    }
+    return w;
+}
+
+// ══════════════════════════════════════════════════════════════
+//  INIT GAME
+// ══════════════════════════════════════════════════════════════
+function initGame(mode) {
+    screenStart.classList.add('hidden');
+    screenGame.classList.remove('hidden');
+
+    towers=[]; enemies=[]; projectiles=[]; particles=[]; beams=[];
+
+    const moneyMap   = {normal:120, infiltracion:200, escasez:80, ddos:250, inestable:150};
+    const healthMap  = {normal:20,  infiltracion:10,  escasez:15, ddos:25, inestable:15};
+    const titleMap   = {normal:'MODO ESTÁNDAR', infiltracion:'INFILTRACIÓN', escasez:'ESCASEZ DE RAM', ddos:'EVENTO DDoS', inestable:'CONEXIÓN INESTABLE'};
+    const colorMap   = {normal:'var(--cyan-glow)', infiltracion:'var(--red-alert)', escasez:'var(--yellow-warn)', ddos:'var(--orange-dot)', inestable:'#ff6600'};
+
+    gameState = {
+        mode, wave:0,
+        money:  moneyMap[mode]  ?? 120,
+        health: healthMap[mode] ?? 20,
+        maxWaves: (mode==='infiltracion') ? 10 : (mode==='ddos') ? 10 : (mode==='inestable') ? 10 : Infinity,
+        isWaveActive: false, sellMode: false, selectedTowerType: 0, isPlaying: true,
+        waveData: null,
+        minerActive: false // flag si hay minero vivo
+    };
+
+    if(gameState.sellMode) toggleSellMode();
+    modeTitleUI.innerText = titleMap[mode] ?? 'MODO';
+    modeTitleUI.style.color = colorMap[mode] ?? 'var(--cyan-glow)';
+
+    towerCards.forEach(c=>c.classList.remove('selected'));
+    towerCards[0].classList.add('selected');
+
+    // Bloqueos por modo (incluye mazos)
+    refreshTowerLocks();
+    updateGameUI();
+    // Show hardware integrity warning in Inestable mode
+    const hwBar = document.getElementById('hw-integrity-bar');
+    if (hwBar) hwBar.style.display = (mode==='inestable') ? 'block' : 'none';
+    cancelAnimationFrame(gameLoopId);
+    gameLoop();
+}
+
+function refreshTowerLocks() {
+    const wave = (gameState && gameState.wave) ? gameState.wave : 0;
+    const mode = (gameState && gameState.mode) ? gameState.mode : 'menu';
+
+    _normalizeDeckData();
+
+    // Inestable: show full arsenal (no mazo restriction). Soporte Vital usable aquí.
+    if (mode==='inestable') {
+        towerCards.forEach(card=>{ card.style.display=''; });
+    }
+
+    // Build allowed types for deck-limited modes
+    let allowed = null;
+    let unlockMap = {};
+    if (mode==='normal') {
+        if (gameState) { gameState.allowedDeckTypes = null; gameState.deckUnlockMap = null; }
+        allowed = [];
+        const deck = userData.decks[userData.activeDeck] || [];
+        deck.forEach(entry => {
+            if (!entry) return;
+            allowed.push(entry.type);
+            unlockMap[entry.type] = Math.max(1, Math.min(15, parseInt(entry.unlock || 1)));
+        });
+    }
+
+    towerCards.forEach(card=>{
+        let type = parseInt(card.getAttribute('data-type'));
+        let locked = false;
+
+        // Mode-specific restrictions
+        if (allowed) {
+            // persist for placement checks
+        if (gameState) { gameState.allowedDeckTypes = allowed.slice(); gameState.deckUnlockMap = Object.assign({}, unlockMap); }
+
+        // hide non-deck towers
+            if (!allowed.includes(type)) {
+                card.style.display = 'none';
+                return;
+            } else {
+                card.style.display = '';
+            }
+        } else {
+            card.style.display = '';
+        }
+
+        // Soporte Vital: only in inestable or if globally unlocked
+        if(type===12) {
+            locked = !(userData.unlockedSoporteVital || mode==='inestable');
+            card.classList.toggle('locked-card', locked);
+            return;
+        }
+
+        // In infiltracion: all weapons unlocked EXCEPT adaptativo (if not earned)
+        if(mode==='infiltracion') {
+            if(type===3 && !userData.unlockedAdaptive) locked=true;
+            card.classList.toggle('locked-card', locked);
+            return;
+        }
+
+        // Deck unlock waves
+        if (allowed) {
+            const req = unlockMap[type] || 1;
+            if (wave < req) locked = true;
+            // Adaptativo still requires earn
+            if (type===3 && !userData.unlockedAdaptive) locked = true;
+
+            // badge
+            let b = card.querySelector('.wave-badge');
+            if (!b) {
+                b = document.createElement('span');
+                b.className = 'wave-badge';
+                card.appendChild(b);
+            }
+            b.textContent = '🔒 OLA ' + req;
+            b.style.display = (wave>=req) ? 'none' : 'inline';
+
+            card.classList.toggle('locked-card', locked);
+            return;
+        }
+
+        // Non-deck modes: keep legacy unlock behavior (early/late)
+        // (still respect Adaptativo unlock)
+        if(type===3 && !userData.unlockedAdaptive) locked=true;
+        card.classList.toggle('locked-card', locked);
+    });
+}
+
+// ══════════════════════════════════════════════════════════════
+//  SELL / VENTA
+// ══════════════════════════════════════════════════════════════
+function toggleSellMode() {
+    gameState.sellMode=!gameState.sellMode;
+    btnToggleSell.innerText = gameState.sellMode?'MODO VENTA: ON':'MODO VENTA: OFF';
+    btnToggleSell.classList.toggle('active', gameState.sellMode);
+}
+btnToggleSell.addEventListener('click', toggleSellMode);
+
+// ══════════════════════════════════════════════════════════════
+//  CANVAS CLICK
+// ══════════════════════════════════════════════════════════════
+function handleCanvasClick(px,py) {
+    let gx=Math.floor(px/TILE), gy=Math.floor(py/TILE);
+    if(gx<0||gx>=COLS||gy<0||gy>=ROWS) return;
+    let idx=towers.findIndex(t=>t.gx===gx&&t.gy===gy);
+
+    if(gameState.sellMode){
+        if(idx!==-1){
+            let t=towers[idx];
+            let refund=Math.floor(getTowerCost(t.type)*0.5);
+            gameState.money+=refund; towers.splice(idx,1);
+            createParticles(t.x,t.y,'#ffcc00',20);
+            particles.push(new FloatingText(t.x,t.y,`+${refund}D`,'#ffcc00'));
+            updateGameUI();
+        }
+        return;
+    }
+    if(idx!==-1){ towers[idx].toggleScan(); return; }
+
+    // Bloquear caminos
+    let onPath=false;
+    [pathA,pathB].forEach(p=>{
+        for(let i=0;i<p.length-1;i++){
+            let a=p[i],b=p[i+1];
+            if(gx>=Math.min(a.x,b.x)&&gx<=Math.max(a.x,b.x)&&gy>=Math.min(a.y,b.y)&&gy<=Math.max(a.y,b.y)) onPath=true;
+        }
+    });
+    if(onPath) return;
+
+    let selType=gameState.selectedTowerType;
+    // Check wave unlock
+    let reqWave = getTowerUnlockWave(selType);
+    // Modo Estándar: desbloqueo por MAZO (oleada 1–15), y a oleada 15 todo el mazo está disponible
+    if (gameState.mode==='normal') {
+        const allowed = gameState.allowedDeckTypes || [];
+        if (!allowed.includes(selType)) { showGameMessage('NO ESTÁ EN TU MAZO','var(--red-alert)'); return; }
+        const m = gameState.deckUnlockMap || {};
+        reqWave = Math.max(1, Math.min(15, parseInt(m[selType] || 1)));
+    }
+    if(gameState.wave < reqWave) { showGameMessage('DISPONIBLE EN OLEADA '+reqWave,'var(--yellow-warn)'); return; }
+    if(selType===3 && !userData.unlockedAdaptive) { showGameMessage('REQUIERE INFILTRACIÓN','var(--red-alert)'); return; }
+    if(selType===12 && !userData.unlockedSoporteVital && gameState.mode!=='inestable') { showGameMessage('REQUIERE GANAR INESTABLE ×12','#ff6600'); return; }
+    // Inestable: max 6 towers
+    if(gameState.mode==='inestable' && towers.length>=6) { showGameMessage('MÁXIMO 6 DEFENSAS','var(--red-alert)'); return; }
+
+    let cost=getTowerCost(selType);
+    if(gameState.money>=cost){
+        gameState.money-=cost;
+        towers.push(new Tower(gx,gy,selType));
+        updateGameUI();
+    } else {
+        showGameMessage('DATOS INSUFICIENTES','var(--yellow-warn)');
+    }
+}
+
+// ══════════════════════════════════════════════════════════════
+//  OLEADAS
+// ══════════════════════════════════════════════════════════════
+function startNextWave() {
+    if(gameState.isWaveActive) return;
+    gameState.wave++;
+    gameState.isWaveActive=true;
+    gameState.waveData=buildWave(gameState.wave, gameState.mode);
+    if(gameState.mode==='infiltracion') showGameMessage(`PROTOCOLO ${gameState.wave}/10`,'var(--red-alert)');
+    if(gameState.mode==='ddos') showGameMessage(`OLEADA DDoS ${gameState.wave}`,'var(--orange-dot)');
+    if(gameState.mode==='inestable') showGameMessage(`INESTABLE — OLEADA ${gameState.wave}`,'#ff6600');
+    // Wave unlock notifications (Modo Estándar) — basado en tu MAZO
+    if(gameState.mode==='normal') {
+        const labels = {
+            0:'ION',1:'TRITURADORA',2:'LÁSER',3:'ADAPTATIVO',4:'SQL',5:'EMP',
+            6:'NODO',7:'LATENCIA',8:'CORRUPTO',9:'MURALLA',10:'SATÉLITE',11:'DESCOMP',12:'SOPORTE'
+        };
+        const deck = (userData.decks && userData.decks[userData.activeDeck]) ? userData.decks[userData.activeDeck] : [];
+        const unlockedNow = deck.filter(x => x && parseInt(x.unlock)===gameState.wave).map(x => labels[x.type] || ('T'+x.type));
+        if(unlockedNow.length>0) {
+            showGameMessage('DESBLOQUEADO: ' + unlockedNow.join(' + '), 'var(--cyan-glow)');
+        }
+        if(gameState.wave===15) {
+            showGameMessage('OLEADA 15: MAZO COMPLETO DESBLOQUEADO', 'var(--yellow-warn)');
+        }
+    }
+    refreshTowerLocks();
+    updateGameUI();
+}
+btnStartWave.addEventListener('click', startNextWave);
+
+function showGameMessage(text, color) {
+    msgOverlay.innerText=text; msgOverlay.style.color=color;
+    msgOverlay.style.textShadow=`0 0 15px ${color}`; msgOverlay.style.opacity=1;
+    setTimeout(()=>msgOverlay.style.opacity=0, 2500);
+}
+
+// ══════════════════════════════════════════════════════════════
+//  END GAME
+// ══════════════════════════════════════════════════════════════
+function endGame(victory) {
+    cancelAnimationFrame(gameLoopId);
+    if(gameState.mode==='normal' && gameState.wave>userData.highScore){
+        userData.highScore=gameState.wave;
+        alert(`¡NUEVO RÉCORD: OLEADA ${gameState.wave}!`);
+    }
+    if(gameState.mode==='infiltracion' && victory){
+        if(!userData.unlockedAdaptive){
+            userData.unlockedAdaptive=true;
+            alert('¡EXTRACCIÓN EXITOSA!\nDesbloqueado: [Emisor Adaptativo]');
+        } else alert('¡Misión superada! 10 oleadas completadas.');
+    }
+    if(gameState.mode==='ddos' && victory) alert('¡ATAQUE DDoS REPELIDO! Sistema defendido.');
+    if(gameState.mode==='inestable' && victory){
+        userData.inestableClearCount = (userData.inestableClearCount||0)+1;
+        if(!userData.unlockedSoporteVital && userData.inestableClearCount>=12) {
+            userData.unlockedSoporteVital=true;
+            alert('¡PROTOCOLO VITAL DESBLOQUEADO!\n[Soporte Vital] disponible en todos los modos.\nInestable completado: '+userData.inestableClearCount+'×');
+        } else {
+            alert('Conexión Inestable superada. Progreso: '+userData.inestableClearCount+'/12 para desbloquear Soporte Vital.');
+        }
+    }
+    if(!victory && gameState.health<=0) alert('SISTEMA COMPROMETIDO. Conexión cortada.');
+    saveData(); refreshTowerLocks();
+    screenGame.classList.add('hidden');
+    screenStart.classList.remove('hidden');
+}
+
+// ══════════════════════════════════════════════════════════════
+//  FÍSICA / UPDATE
+// ══════════════════════════════════════════════════════════════
+function updatePhysics() {
+    if(gameState.health<=0){ endGame(false); return; }
+
+    // Fin de modo acotado
+    let isLimitedMode = (gameState.mode==='infiltracion'||gameState.mode==='ddos'||gameState.mode==='inestable');
+    if(isLimitedMode && gameState.wave>=gameState.maxWaves && enemies.length===0 && !gameState.isWaveActive){ endGame(true); return; }
+
+    // Spawn
+    if(gameState.isWaveActive && gameState.waveData){
+        let wd=gameState.waveData;
+        wd.spawnTimer--;
+        if(wd.spawnTimer<=0){
+            let spawned=false;
+            if(wd.spawnsNormal>0)  { enemies.push(new Enemy('A','normal'));  wd.spawnsNormal--;  spawned=true; }
+            if(wd.spawnsEncrypted>0&&Math.random()>0.4){ enemies.push(new Enemy('B','normal')); wd.spawnsEncrypted--; spawned=true; }
+            if(wd.spawnsCarrier>0&&Math.random()>0.75){ enemies.push(new Enemy(Math.random()>0.5?'A':'B','carrier')); wd.spawnsCarrier--; spawned=true; }
+            if(wd.spawnsTank>0&&Math.random()>0.88){ enemies.push(new Enemy(Math.random()>0.7?'A':'B','tank')); wd.spawnsTank--; spawned=true; }
+            if(wd.spawnsTrojan>0&&Math.random()>0.7){ enemies.push(new Enemy(Math.random()>0.5?'A':'B','trojan')); wd.spawnsTrojan--; spawned=true; }
+            if(wd.spawnsWorm>0&&Math.random()>0.8){ enemies.push(new Enemy(Math.random()>0.5?'A':'B','worm')); wd.spawnsWorm--; spawned=true; }
+            if(wd.spawnsMiner>0&&Math.random()>0.85){ enemies.push(new Enemy(Math.random()>0.5?'A':'B','miner')); wd.spawnsMiner--; spawned=true; }
+            if(wd.spawnsReflector>0&&Math.random()>0.82){ enemies.push(new Enemy(Math.random()>0.5?'A':'B','reflector')); wd.spawnsReflector--; spawned=true; }
+            if(wd.spawnBoss && wd.spawnsNormal===0 && wd.spawnsEncrypted===0 && wd.spawnsTank===0 && wd.spawnsCarrier===0 && wd.spawnsTrojan===0 && wd.spawnsWorm===0){ spawnBoss(); wd.spawnBoss=false; spawned=true; }
+            if(spawned) wd.spawnTimer=(gameState.mode==='ddos')?15:35;
+        }
+        // Fin de oleada
+        let allZero = wd.spawnsNormal===0&&wd.spawnsEncrypted===0&&wd.spawnsCarrier===0&&wd.spawnsTank===0&&wd.spawnsTrojan===0&&wd.spawnsWorm===0&&wd.spawnsMiner===0&&wd.spawnsReflector===0&&(!wd.spawnBoss);
+        if(allZero && enemies.length===0){
+            gameState.isWaveActive=false;
+            updateGameUI();
+        }
+    }
+
+    // Minero activo → recompensas reducidas
+    gameState.minerActive = enemies.some(e=>e.variant==='miner');
+
+    // Conexión Inestable: towers lose 1 HP/sec (every 60 frames)
+    if(gameState.mode==='inestable') {
+        gameState._inestableTimer = (gameState._inestableTimer||0)+1;
+        if(gameState._inestableTimer>=60) {
+            gameState._inestableTimer=0;
+            towers.forEach(t=>{ if(t.maxHp>0) { t.hp=Math.max(0,t.hp-1); } });
+        }
+    }
+
+    // Phase 1: Calculate satellite range buffs
+    towers.forEach(t=>{ t.rangeBonus=0; });
+    towers.forEach(t=>{
+        if(t.type===10) {
+            towers.forEach(s=>{
+                if(s!==t && Math.hypot(s.x-t.x,s.y-t.y)<=t.rng) {
+                    s.rangeBonus=30;
+                }
+            });
+        }
+    });
+    // Phase 2: Update all towers
+    towers.forEach(t=>t.update());
+
+    // Check tower HP (Reflector damage or inestable drain)
+    for(let i=towers.length-1;i>=0;i--) {
+        const t=towers[i];
+        if(t.maxHp>0 && t.hp<=0) {
+            createParticles(t.x,t.y,'#ff3366',25);
+            particles.push(new FloatingText(t.x,t.y-20,'TORRE DESTRUIDA','#ff3366'));
+            towers.splice(i,1);
+        }
+    }
+
+    for(let i=projectiles.length-1;i>=0;i--){
+        projectiles[i].update();
+        if(!projectiles[i].act) projectiles.splice(i,1);
+    }
+    for(let i=beams.length-1;i>=0;i--){
+        beams[i].update();
+        if(beams[i].life<=0) beams.splice(i,1);
+    }
+    for(let i=enemies.length-1;i>=0;i--){
+        let e=enemies[i];
+        if(e.hp<=0){
+            let reward = gameState.minerActive && e.variant!=='miner' ? Math.floor(e.reward/2) : e.reward;
+            gameState.money+=reward;
+            createParticles(e.x,e.y,e.color,e.variant==='carrier'||e.variant==='tank'?30:15);
+            particles.push(new FloatingText(e.x,e.y-10,`+${reward}D`,'#ffd700'));
+            // Gusano se divide
+            if(e.variant==='worm') spawnMiniWorms(e);
+            enemies.splice(i,1);
+            updateGameUI();
+        } else {
+            if(!e.update()) enemies.splice(i,1);
+        }
+    }
+    for(let i=particles.length-1;i>=0;i--){
+        particles[i].update();
+        if(particles[i].life<=0) particles.splice(i,1);
+    }
+}
+
+function spawnMiniWorms(parent) {
+    for(let i=0;i<3;i++){
+        let mini = new Enemy(parent.pathType, 'normal');
+        mini.x = parent.x + (Math.random()-0.5)*20;
+        mini.y = parent.y + (Math.random()-0.5)*20;
+        mini.pathIndex = Math.max(0, parent.pathIndex-1);
+        mini.maxHp = parent.maxHp * 0.15;
+        mini.hp    = mini.maxHp;
+        mini.baseSpeed = parent.baseSpeed * 1.8;
+        mini.speed = mini.baseSpeed;
+        mini.radius = 7;
+        mini.color = '#88ff88';
+        mini.reward = 5;
+        mini.dmgToPlayer = 1;
+        enemies.push(mini);
+    }
+    particles.push(new FloatingText(parent.x, parent.y-25, '¡DIVISIÓN!', '#aaffaa'));
+}
+
+function spawnBoss(pathType) {
+    let pt = pathType || (Math.random()>0.5?'A':'B');
+    let boss = new Enemy(pt,'tank');
+    boss.maxHp *= 5; boss.hp = boss.maxHp;
+    boss.radius = 25; boss.color = '#ff00ff';
+    boss.reward = 250; boss.dmgToPlayer = 10;
+    enemies.push(boss);
+    showGameMessage('¡JEFE DETECTADO!', '#ff00ff');
+}
+
+// ══════════════════════════════════════════════════════════════
+//  RENDER
+// ══════════════════════════════════════════════════════════════
+function drawScene() {
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+
+    // Grid
+    ctx.strokeStyle='rgba(30,41,59,0.4)'; ctx.lineWidth=1;
+    for(let x=0;x<=canvas.width;x+=TILE){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,canvas.height);ctx.stroke();}
+    for(let y=0;y<=canvas.height;y+=TILE){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(canvas.width,y);ctx.stroke();}
+
+    // Ruta B
+    ctx.beginPath(); ctx.moveTo(pathB[0].x*TILE+20,pathB[0].y*TILE+20);
+    for(let i=1;i<pathB.length;i++) ctx.lineTo(pathB[i].x*TILE+20,pathB[i].y*TILE+20);
+    ctx.strokeStyle='#2d004d'; ctx.lineWidth=16; ctx.lineJoin='round'; ctx.stroke();
+    ctx.setLineDash([15,15]); ctx.strokeStyle='rgba(178,102,255,0.4)'; ctx.lineWidth=6; ctx.stroke(); ctx.setLineDash([]);
+
+    // Ruta A
+    ctx.beginPath(); ctx.moveTo(pathA[0].x*TILE+20,pathA[0].y*TILE+20);
+    for(let i=1;i<pathA.length;i++) ctx.lineTo(pathA[i].x*TILE+20,pathA[i].y*TILE+20);
+    ctx.strokeStyle='#004466'; ctx.lineWidth=14; ctx.lineJoin='round'; ctx.stroke();
+    ctx.strokeStyle='#00f0ff'; ctx.lineWidth=4; ctx.shadowBlur=10; ctx.shadowColor='#00f0ff'; ctx.stroke(); ctx.shadowBlur=0;
+
+    // Hover range
+    let gx=Math.floor(mouseX/TILE), gy=Math.floor(mouseY/TILE);
+    if(mouseX>=0&&mouseX<=canvas.width&&mouseY>=0&&mouseY<=canvas.height){
+        let ht=towers.find(t=>t.gx===gx&&t.gy===gy);
+        if(ht){
+            ctx.beginPath(); ctx.arc(ht.x,ht.y,ht.rng,0,Math.PI*2);
+            ctx.fillStyle=ht.col; ctx.globalAlpha=0.12; ctx.fill();
+            ctx.strokeStyle=ht.col; ctx.lineWidth=1; ctx.globalAlpha=0.35; ctx.stroke();
+            ctx.globalAlpha=1;
+        } else {
+            // Pre-visualización rango si hay celda libre
+            let selType=gameState.selectedTowerType;
+            let onPath=false;
+            [pathA,pathB].forEach(p=>{
+                for(let i=0;i<p.length-1;i++){
+                    let a=p[i],b=p[i+1];
+                    if(gx>=Math.min(a.x,b.x)&&gx<=Math.max(a.x,b.x)&&gy>=Math.min(a.y,b.y)&&gy<=Math.max(a.y,b.y)) onPath=true;
+                }
+            });
+            if(!onPath && gx>=0&&gx<COLS&&gy>=0&&gy<ROWS){
+                let dummy=new Tower(gx,gy,selType);
+                ctx.beginPath(); ctx.arc(dummy.x,dummy.y,dummy.rng,0,Math.PI*2);
+                ctx.strokeStyle=dummy.col; ctx.lineWidth=1; ctx.globalAlpha=0.25; ctx.setLineDash([6,6]); ctx.stroke();
+                ctx.setLineDash([]); ctx.globalAlpha=1;
+            }
+        }
+    }
+
+    // Minero activo: overlay advertencia
+    if(gameState.minerActive){
+        ctx.fillStyle='rgba(136,170,255,0.07)';
+        ctx.fillRect(0,0,canvas.width,canvas.height);
+    }
+
+    towers.forEach(t=>t.draw());
+    enemies.forEach(e=>e.draw());
+    projectiles.forEach(p=>p.draw());
+    beams.forEach(b=>b.draw());
+    particles.forEach(p=>p.draw());
+}
+
+let lastFrameTime = 0;
+const TARGET_FPS = 60;
+const FRAME_TIME = 1000 / TARGET_FPS;
+
+function gameLoop(timestamp) {
+    if (!lastFrameTime) lastFrameTime = timestamp;
+    const delta = timestamp - lastFrameTime;
+    
+    if (delta >= FRAME_TIME * 0.8) {
+        // Run physics step
+        const steps = Math.min(Math.round(delta / FRAME_TIME), 3);
+        for (let i = 0; i < steps; i++) {
+            updatePhysics();
+        }
+        lastFrameTime = timestamp - (delta % FRAME_TIME);
+    }
+    
+    drawScene();
+    gameLoopId = requestAnimationFrame(gameLoop);
+}
+
+// ══════════════════════════════════════════════════════════════
+//  UI UPDATE
+// ══════════════════════════════════════════════════════════════
+function updateGameUI() {
+    moneyEl.innerText = gameState.money;
+    healthEl.innerText = gameState.health;
+
+    if(gameState.isWaveActive){
+        waveStatusEl.innerText=`⚡ OLEADA ${gameState.wave} EN CURSO`;
+        waveStatusEl.style.color='var(--red-alert)';
+        btnStartWave.disabled=true; btnStartWave.innerText='SISTEMA EN COMBATE';
+    } else {
+        let nextLabel = (gameState.wave>=gameState.maxWaves) ? 'EXTRACCIÓN LISTA' : `INICIAR OLEADA ${gameState.wave+1}`;
+        waveStatusEl.innerText=`✅ ESPERANDO OLEADA ${gameState.wave+1}`;
+        waveStatusEl.style.color='var(--green-safe)';
+        btnStartWave.disabled=false; btnStartWave.innerText=nextLabel;
+    }
+
+    refreshTowerLocks();
+    towerCards.forEach(card=>{
+        let type=parseInt(card.getAttribute('data-type'));
+        let cost=getTowerCost(type);
+        if(card.classList.contains('locked-card')){ card.style.opacity='0.35'; card.style.cursor='not-allowed'; return; }
+        card.style.opacity=gameState.money<cost?'0.5':'1';
+        card.style.cursor='pointer';
+    });
+
+    // Advertencia minero
+    if(gameState.minerActive){
+        moneyEl.style.color='#88aaff';
+        moneyEl.title='⚠ MINERO ACTIVO: Recompensas reducidas al 50%';
+    } else {
+        moneyEl.style.color='#ffd700';
+        moneyEl.title='';
+    }
+
+    // Enemy counter
+    const counterEl = document.getElementById('enemy-counter');
+    const counterText = document.getElementById('enemy-count-text');
+    if (counterEl && counterText) {
+        if (gameState.isWaveActive && enemies.length > 0) {
+            counterEl.style.display = 'block';
+            counterText.textContent = 'Enemigos restantes: ' + enemies.length;
+        } else {
+            counterEl.style.display = 'none';
+        }
+    }
+}
+
+// ══════════════════════════════════════════════════════════════
+//  SELECCIÓN DE TORRES
+// ══════════════════════════════════════════════════════════════
+towerCards.forEach(card=>{
+    card.addEventListener('click',()=>{
+        if(gameState.sellMode) toggleSellMode();
+        let type=parseInt(card.getAttribute('data-type'));
+        // Block locked cards
+        if(card.classList.contains('locked-card')) return;
+        if(type===3 && !userData.unlockedAdaptive) return;
+        if(type===12 && !userData.unlockedSoporteVital && gameState.mode!=='inestable') return;
+        towerCards.forEach(c=>c.classList.remove('selected'));
+        card.classList.add('selected');
+        gameState.selectedTowerType=type;
+    });
+});
+
+// ══════════════════════════════════════════════════════════════
+//  MOUSE
+// ══════════════════════════════════════════════════════════════
+canvas.addEventListener('mousemove',(e)=>{
+    const r=canvas.getBoundingClientRect();
+    const scaleX = 800 / r.width;
+    const scaleY = 600 / r.height;
+    mouseX=(e.clientX-r.left)*scaleX; mouseY=(e.clientY-r.top)*scaleY;
+});
+canvas.addEventListener('mouseleave',()=>{ mouseX=-100; mouseY=-100; });
+canvas.addEventListener('mousedown',(e)=>{
+    const r=canvas.getBoundingClientRect();
+    const scaleX = 800 / r.width;
+    const scaleY = 600 / r.height;
+    handleCanvasClick((e.clientX-r.left)*scaleX, (e.clientY-r.top)*scaleY);
+});
+
+    // ── PATCH NOTES ────────────────────────────────────────────────
+    (function() {
+        function closePatch() {
+            var m = document.getElementById('patch-modal');
+            if (m) { m.style.display = 'none'; m.classList.add('hidden'); }
+        }
+        function openPatch() {
+            var m = document.getElementById('patch-modal');
+            if (m) { m.style.display = ''; m.classList.remove('hidden'); }
+        }
+        var btnClose  = document.getElementById('btn-close-patch');
+        var btnReopen = document.getElementById('btn-patch-notes-open');
+        if (btnClose)  btnClose.addEventListener('click', closePatch);
+        if (btnReopen) btnReopen.addEventListener('click', openPatch);
+    })();
+
+
+// ════════════════════════════════════════════════════════════════
+//  DEFENSA CIBERNÉTICA v2.5.0 — AUDIO ENGINE + MOBILE
+// ════════════════════════════════════════════════════════════════
+
+// ── CANVAS DINÁMICO (escala al viewport) ────────────────────────
+(function setupResponsiveCanvas() {
+    function resizeCanvas() {
+        const container = document.getElementById('game-container');
+        if (!container) return;
+        const cw = container.clientWidth  || window.innerWidth;
+        const ch = container.clientHeight || window.innerHeight;
+        const GAME_W = 800, GAME_H = 600;
+        const scale = Math.min(cw / GAME_W, ch / GAME_H, 1);
+        canvas.style.width  = Math.floor(GAME_W * scale) + 'px';
+        canvas.style.height = Math.floor(GAME_H * scale) + 'px';
+    }
+    window.addEventListener('resize', resizeCanvas);
+    window.addEventListener('orientationchange', () => setTimeout(resizeCanvas, 200));
+    resizeCanvas();
+})();
+
+// ── TOUCH → CANVAS CLICK ────────────────────────────────────────
+(function setupTouchEvents() {
+    canvas.addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        const t = e.touches[0];
+        const r = canvas.getBoundingClientRect();
+        const scaleX = 800 / r.width;
+        const scaleY = 600 / r.height;
+        const px = (t.clientX - r.left) * scaleX;
+        const py = (t.clientY - r.top)  * scaleY;
+        mouseX = px; mouseY = py;
+        // Single tap only - double tap no longer fires duplicate
+        handleCanvasClick(px, py);
+    }, { passive: false });
+
+    canvas.addEventListener('touchmove', (e) => {
+        e.preventDefault();
+        const t = e.touches[0];
+        const r = canvas.getBoundingClientRect();
+        const scaleX = 800 / r.width;
+        const scaleY = 600 / r.height;
+        mouseX = (t.clientX - r.left) * scaleX;
+        mouseY = (t.clientY - r.top)  * scaleY;
+    }, { passive: false });
+
+    canvas.addEventListener('touchend', (e) => {
+        e.preventDefault();
+        mouseX = -100; mouseY = -100;
+    }, { passive: false });
+})();
+
+// ════════════════════════════════════════════════════════════════
+//  WEB AUDIO ENGINE — sin archivos externos, todo sintetizado
+//  Música: procedural con osciladores
+//  SFX: bursts de ruido/tonos cortos
+// ════════════════════════════════════════════════════════════════
+const AudioEngine = (function() {
+    let ctx_a = null;
+    let masterGain = null;
+    let musicNode = null;
+    let muted = false;
+    let currentTrack = null;
+    let musicGain = null;
+    let sfxGain = null;
+    let musicInterval = null;
+
+    function init() {
+        if (ctx_a) return;
+        try {
+            ctx_a = new (window.AudioContext || window.webkitAudioContext)();
+            masterGain = ctx_a.createGain();
+            masterGain.gain.value = 0.7;
+            masterGain.connect(ctx_a.destination);
+
+            musicGain = ctx_a.createGain();
+            musicGain.gain.value = 0.35;
+            musicGain.connect(masterGain);
+
+            sfxGain = ctx_a.createGain();
+            sfxGain.gain.value = 0.6;
+            sfxGain.connect(masterGain);
+        } catch(e) { ctx_a = null; }
+    }
+
+    function resume() {
+        if (ctx_a && ctx_a.state === 'suspended') ctx_a.resume();
+    }
+
+    // ── utilidades de síntesis ──────────────────────────────────
+    function osc(freq, type, duration, gainVal, startTime, dest) {
+        if (!ctx_a) return;
+        const o = ctx_a.createOscillator();
+        const g = ctx_a.createGain();
+        o.type = type;
+        o.frequency.setValueAtTime(freq, startTime);
+        g.gain.setValueAtTime(gainVal, startTime);
+        g.gain.exponentialRampToValueAtTime(0.001, startTime + duration);
+        o.connect(g); g.connect(dest || sfxGain);
+        o.start(startTime);
+        o.stop(startTime + duration);
+    }
+
+    function noise(duration, gainVal, startTime, freq_lo, freq_hi) {
+        if (!ctx_a) return;
+        const buf = ctx_a.createBuffer(1, ctx_a.sampleRate * duration, ctx_a.sampleRate);
+        const data = buf.getChannelData(0);
+        for (let i=0; i<data.length; i++) data[i] = Math.random()*2-1;
+        const src = ctx_a.createBufferSource();
+        src.buffer = buf;
+        const filter = ctx_a.createBiquadFilter();
+        filter.type = 'bandpass';
+        filter.frequency.value = (freq_lo + freq_hi) / 2;
+        filter.Q.value = 0.5;
+        const g = ctx_a.createGain();
+        g.gain.setValueAtTime(gainVal, startTime);
+        g.gain.exponentialRampToValueAtTime(0.001, startTime + duration);
+        src.connect(filter); filter.connect(g); g.connect(sfxGain);
+        src.start(startTime);
+        src.stop(startTime + duration);
+    }
+
+    // ── MÚSICA PROCEDIMENTAL ─────────────────────────────────────
+    // Cada "track" es una función que llama a osc/noise en patrones
+
+    function stopMusic() {
+        if (musicInterval) { clearInterval(musicInterval); musicInterval = null; }
+        if (musicNode) { try { musicNode.disconnect(); } catch(e){} musicNode = null; }
+        currentTrack = null;
+    }
+
+    // BPM helpers
+    function beat(bpm) { return 60 / bpm; }
+
+    // ── Track NORMAL: ambient techno electrónico ─────────────────
+    function playNormal() {
+        if (!ctx_a) return;
+        stopMusic();
+        currentTrack = 'normal';
+        let step = 0;
+        // Baselines + arpegio
+        const BPM = 128;
+        const B = beat(BPM);
+        const bassNotes = [55, 55, 73.4, 55, 65.4, 55, 73.4, 82.4];
+        const arpNotes  = [220, 261.6, 329.6, 392, 440, 392, 329.6, 261.6];
+        musicInterval = setInterval(() => {
+            if (muted) return;
+            const t = ctx_a.currentTime;
+            const bi = step % bassNotes.length;
+            const ai = step % arpNotes.length;
+            // Bass
+            osc(bassNotes[bi], 'sawtooth', B*0.9, 0.18, t, musicGain);
+            // Sub bass
+            osc(bassNotes[bi]*0.5, 'sine', B*0.9, 0.12, t, musicGain);
+            // Arpegio
+            osc(arpNotes[ai], 'square', B*0.4, 0.07, t, musicGain);
+            osc(arpNotes[ai]*2, 'square', B*0.2, 0.04, t + B*0.5, musicGain);
+            // Hi-hat cada 2 pasos
+            if (step % 2 === 0) noise(0.05, 0.08, t, 8000, 15000);
+            // Kick en beat 1 y 5
+            if (step % 8 === 0 || step % 8 === 4) {
+                osc(80, 'sine', 0.25, 0.3, t, musicGain);
+                osc(40, 'sine', 0.15, 0.25, t + 0.01, musicGain);
+            }
+            step++;
+        }, B * 1000);
+    }
+
+    // ── Track INFILTRACION: tenso, oscuro, ritmo irregular ───────
+    function playInfiltracion() {
+        if (!ctx_a) return;
+        stopMusic();
+        currentTrack = 'infiltracion';
+        let step = 0;
+        const BPM = 145;
+        const B = beat(BPM);
+        const darkNotes = [41.2, 41.2, 43.6, 41.2, 36.7, 38.9, 41.2, 43.6];
+        const highNotes = [164.8, 174.6, 185, 164.8, 155.6, 164.8, 196, 207.6];
+        musicInterval = setInterval(() => {
+            if (muted) return;
+            const t = ctx_a.currentTime;
+            const ni = step % darkNotes.length;
+            const hi = step % highNotes.length;
+            osc(darkNotes[ni], 'sawtooth', B*1.8, 0.2, t, musicGain);
+            osc(darkNotes[ni]*2, 'sawtooth', B*0.3, 0.05, t, musicGain);
+            // Tono tenso agudo
+            if (step % 3 === 0) osc(highNotes[hi], 'square', B*0.2, 0.06, t, musicGain);
+            // Ruido glitch
+            if (Math.random() > 0.7) noise(0.03, 0.1, t + B*0.5, 3000, 8000);
+            // Kick pesado asimétrico
+            if (step % 7 === 0 || step % 7 === 4) {
+                osc(60, 'sine', 0.3, 0.35, t, musicGain);
+                osc(30, 'sine', 0.2, 0.25, t + 0.02, musicGain);
+            }
+            // Snare
+            if (step % 8 === 3 || step % 8 === 7) noise(0.12, 0.15, t, 200, 3000);
+            step++;
+        }, B * 1000);
+    }
+
+    // ── Track ESCASEZ: minimalista, solo pulsos ───────────────────
+    function playEscasez() {
+        if (!ctx_a) return;
+        stopMusic();
+        currentTrack = 'escasez';
+        let step = 0;
+        const BPM = 80;
+        const B = beat(BPM);
+        const pulseNotes = [65.4, 0, 73.4, 0, 65.4, 61.7, 0, 73.4];
+        musicInterval = setInterval(() => {
+            if (muted) return;
+            const t = ctx_a.currentTime;
+            const n = pulseNotes[step % pulseNotes.length];
+            if (n > 0) {
+                osc(n, 'sine', B*0.8, 0.15, t, musicGain);
+                osc(n*3, 'sine', B*0.3, 0.04, t, musicGain);
+            }
+            // Latido lento
+            if (step % 4 === 0) {
+                osc(50, 'sine', 0.1, 0.25, t, musicGain);
+                osc(50, 'sine', 0.08, 0.2, t + 0.12, musicGain);
+            }
+            // Silencio digital
+            if (Math.random() > 0.85) noise(0.04, 0.06, t, 500, 2000);
+            step++;
+        }, B * 1000);
+    }
+
+    // ── Track DDOS: caótico, rápido, industrial ───────────────────
+    function playDdos() {
+        if (!ctx_a) return;
+        stopMusic();
+        currentTrack = 'ddos';
+        let step = 0;
+        const BPM = 170;
+        const B = beat(BPM);
+        const chaosNotes = [110, 130.8, 110, 155.6, 110, 146.8, 123.5, 110];
+        const arpUp = [220, 246.9, 261.6, 293.7, 329.6, 349.2, 392, 440];
+        musicInterval = setInterval(() => {
+            if (muted) return;
+            const t = ctx_a.currentTime;
+            const ci = step % chaosNotes.length;
+            const ai = step % arpUp.length;
+            // Bajo distorsionado
+            osc(chaosNotes[ci], 'sawtooth', B*0.8, 0.22, t, musicGain);
+            osc(chaosNotes[ci]*0.5, 'sawtooth', B*0.5, 0.1, t, musicGain);
+            // Arpegio veloz
+            osc(arpUp[ai], 'square', B*0.15, 0.08, t, musicGain);
+            osc(arpUp[(ai+4)%8], 'square', B*0.12, 0.06, t + B*0.25, musicGain);
+            // Ruido industrial
+            noise(0.06, 0.12, t, 1000, 12000);
+            // Kick bombardeo
+            if (step % 4 === 0) {
+                osc(90, 'sine', 0.15, 0.4, t, musicGain);
+                osc(45, 'sine', 0.12, 0.35, t + 0.01, musicGain);
+            }
+            if (step % 2 === 0) noise(0.04, 0.1, t + B*0.5, 8000, 18000);
+            step++;
+        }, B * 1000);
+    }
+
+    // ── EFECTOS DE SONIDO (SFX) ──────────────────────────────────
+
+    function sfxShoot_ion() {          // Cañón de Iones: pew rápido
+        if (!ctx_a || muted) return;
+        const t = ctx_a.currentTime;
+        osc(800, 'square', 0.06, 0.15, t);
+        osc(400, 'sine',   0.08, 0.08, t + 0.02);
+    }
+
+    function sfxShoot_quantica() {     // Trituradora: doble chirp
+        if (!ctx_a || muted) return;
+        const t = ctx_a.currentTime;
+        osc(1200, 'sawtooth', 0.04, 0.1, t);
+        osc(900,  'sawtooth', 0.04, 0.1, t + 0.03);
+    }
+
+    function sfxShoot_laser() {        // Láser: zap largo
+        if (!ctx_a || muted) return;
+        const t = ctx_a.currentTime;
+        const o = ctx_a.createOscillator();
+        const g = ctx_a.createGain();
+        o.type = 'sawtooth';
+        o.frequency.setValueAtTime(1800, t);
+        o.frequency.exponentialRampToValueAtTime(300, t + 0.25);
+        g.gain.setValueAtTime(0.25, t);
+        g.gain.exponentialRampToValueAtTime(0.001, t + 0.25);
+        o.connect(g); g.connect(sfxGain);
+        o.start(t); o.stop(t + 0.25);
+    }
+
+    function sfxShoot_sql() {           // Inyector SQL: gota ácida
+        if (!ctx_a || muted) return;
+        const t = ctx_a.currentTime;
+        osc(600, 'sine', 0.05, 0.12, t);
+        osc(300, 'sine', 0.08, 0.1, t + 0.03);
+        noise(0.04, 0.07, t + 0.02, 400, 1200);
+    }
+
+    function sfxShoot_emp() {           // EMP: explosión electrostática
+        if (!ctx_a || muted) return;
+        const t = ctx_a.currentTime;
+        noise(0.18, 0.3, t, 200, 16000);
+        osc(150, 'sine', 0.2, 0.2, t);
+        osc(300, 'square', 0.1, 0.12, t + 0.05);
+        osc(80, 'sine', 0.15, 0.18, t + 0.08);
+    }
+
+    function sfxShoot_adaptive() {      // Emisor Adaptativo: pulse suave
+        if (!ctx_a || muted) return;
+        const t = ctx_a.currentTime;
+        osc(440, 'triangle', 0.12, 0.12, t);
+        osc(880, 'triangle', 0.06, 0.06, t + 0.04);
+    }
+
+    function sfxEnemyDie(isBig) {       // Muerte enemigo
+        if (!ctx_a || muted) return;
+        const t = ctx_a.currentTime;
+        if (isBig) {
+            noise(0.25, 0.35, t, 100, 4000);
+            osc(80,  'sine', 0.3, 0.3, t);
+            osc(160, 'sine', 0.2, 0.2, t + 0.05);
+        } else {
+            noise(0.1, 0.18, t, 500, 6000);
+            osc(200, 'sine', 0.08, 0.12, t);
+        }
+    }
+
+    function sfxEnemyReach() {          // Enemigo llega a base
+        if (!ctx_a || muted) return;
+        const t = ctx_a.currentTime;
+        osc(200, 'sawtooth', 0.3, 0.35, t);
+        osc(150, 'sawtooth', 0.25, 0.3, t + 0.1);
+        osc(100, 'sawtooth', 0.2, 0.25, t + 0.2);
+        noise(0.15, 0.2, t, 200, 3000);
+    }
+
+    function sfxWaveStart() {           // Inicio oleada
+        if (!ctx_a || muted) return;
+        const t = ctx_a.currentTime;
+        [440, 550, 660, 880].forEach((f, i) => osc(f, 'square', 0.12, 0.15, t + i*0.08));
+    }
+
+    function sfxWaveComplete() {        // Oleada completada
+        if (!ctx_a || muted) return;
+        const t = ctx_a.currentTime;
+        [523, 659, 784, 1047].forEach((f, i) => osc(f, 'sine', 0.2, 0.2, t + i*0.1));
+    }
+
+    function sfxTowerPlace() {          // Colocar torre
+        if (!ctx_a || muted) return;
+        const t = ctx_a.currentTime;
+        osc(523, 'sine', 0.08, 0.18, t);
+        osc(784, 'sine', 0.06, 0.14, t + 0.06);
+    }
+
+    function sfxTowerSell() {           // Vender torre
+        if (!ctx_a || muted) return;
+        const t = ctx_a.currentTime;
+        osc(784, 'sine', 0.06, 0.12, t);
+        osc(523, 'sine', 0.08, 0.15, t + 0.06);
+    }
+
+    function sfxCodexOpen() {           // Abrir Codex: clic techno
+        if (!ctx_a || muted) return;
+        const t = ctx_a.currentTime;
+        osc(1200, 'square', 0.03, 0.12, t);
+        osc(800,  'square', 0.03, 0.1,  t + 0.025);
+        osc(600,  'square', 0.03, 0.08, t + 0.05);
+    }
+
+    function sfxCodexClose() {          // Cerrar Codex: clic inverso
+        if (!ctx_a || muted) return;
+        const t = ctx_a.currentTime;
+        osc(600,  'square', 0.03, 0.1,  t);
+        osc(800,  'square', 0.03, 0.08, t + 0.025);
+        osc(1200, 'square', 0.03, 0.06, t + 0.05);
+    }
+
+    function sfxMenuClick() {           // Clic menú genérico
+        if (!ctx_a || muted) return;
+        const t = ctx_a.currentTime;
+        osc(660, 'triangle', 0.06, 0.12, t);
+        osc(880, 'triangle', 0.04, 0.08, t + 0.04);
+    }
+
+    function sfxScanToggle() {          // Cambio de plano de torre
+        if (!ctx_a || muted) return;
+        const t = ctx_a.currentTime;
+        osc(440, 'square', 0.04, 0.1, t);
+        osc(660, 'square', 0.04, 0.08, t + 0.05);
+    }
+
+    function sfxNoMoney() {             // Sin datos (no se puede comprar)
+        if (!ctx_a || muted) return;
+        const t = ctx_a.currentTime;
+        osc(200, 'sawtooth', 0.08, 0.15, t);
+        osc(150, 'sawtooth', 0.08, 0.12, t + 0.06);
+    }
+
+    function sfxGameOver() {            // Game Over
+        if (!ctx_a || muted) return;
+        const t = ctx_a.currentTime;
+        [400,320,250,180,100].forEach((f,i) => osc(f,'sawtooth',0.3,0.25,t+i*0.15, musicGain));
+        noise(0.4, 0.3, t + 0.5, 100, 5000);
+    }
+
+    function sfxVictory() {             // Victoria
+        if (!ctx_a || muted) return;
+        const t = ctx_a.currentTime;
+        [523,659,784,880,1047,1319].forEach((f,i) => osc(f,'sine',0.3,0.25,t+i*0.1, musicGain));
+    }
+
+    function sfxTrojanPhase() {         // Troyano: entra en fase
+        if (!ctx_a || muted) return;
+        const t = ctx_a.currentTime;
+        osc(1000, 'sine', 0.15, 0.15, t);
+        osc(2000, 'sine', 0.08, 0.1,  t + 0.05);
+        noise(0.1,  0.1, t + 0.08, 5000, 15000);
+    }
+
+    function sfxWormSplit() {           // Gusano: se divide
+        if (!ctx_a || muted) return;
+        const t = ctx_a.currentTime;
+        noise(0.12, 0.2, t, 300, 5000);
+        osc(300, 'sawtooth', 0.12, 0.15, t);
+        osc(450, 'sawtooth', 0.08, 0.12, t + 0.04);
+        osc(600, 'sawtooth', 0.06, 0.10, t + 0.08);
+    }
+
+    function sfxMinerAppear() {         // Minero aparece
+        if (!ctx_a || muted) return;
+        const t = ctx_a.currentTime;
+        osc(200, 'sine', 0.2, 0.15, t);
+        osc(400, 'sine', 0.15, 0.12, t + 0.1);
+        osc(200, 'sine', 0.2, 0.15, t + 0.2);
+    }
+
+    function sfxRansomwareSteal() {     // Ransomware roba datos
+        if (!ctx_a || muted) return;
+        const t = ctx_a.currentTime;
+        osc(150, 'sawtooth', 0.35, 0.3, t);
+        osc(100, 'sawtooth', 0.3,  0.28, t + 0.1);
+        noise(0.2, 0.25, t, 100, 2000);
+    }
+
+    // ── TOGGLE MUTE ──────────────────────────────────────────────
+    function toggleMute() {
+        muted = !muted;
+        if (masterGain) masterGain.gain.value = muted ? 0 : 0.7;
+        const btn = document.getElementById('btn-mute');
+        if (btn) {
+            btn.textContent = muted ? '🔇' : '🔊';
+            btn.classList.toggle('muted', muted);
+        }
+    }
+
+    // ── API pública ───────────────────────────────────────────────
+    return {
+        init, resume, stopMusic,
+        playNormal, playInfiltracion, playEscasez, playDdos,
+        sfxShoot_ion, sfxShoot_quantica, sfxShoot_laser,
+        sfxShoot_sql, sfxShoot_emp, sfxShoot_adaptive,
+        sfxEnemyDie, sfxEnemyReach, sfxWaveStart, sfxWaveComplete,
+        sfxTowerPlace, sfxTowerSell, sfxCodexOpen, sfxCodexClose,
+        sfxMenuClick, sfxScanToggle, sfxNoMoney,
+        sfxGameOver, sfxVictory,
+        sfxTrojanPhase, sfxWormSplit, sfxMinerAppear, sfxRansomwareSteal,
+        toggleMute,
+        isMuted: () => muted
+    };
+})();
+
+// ── Inicializar audio en primer gesto del usuario ─────────────
+(function hookAudioInit() {
+    const firstGesture = () => {
+        AudioEngine.init();
+        AudioEngine.resume();
+        document.removeEventListener('click',       firstGesture);
+        document.removeEventListener('touchstart',  firstGesture);
+        document.removeEventListener('keydown',     firstGesture);
+    };
+    document.addEventListener('click',      firstGesture, { once: true });
+    document.addEventListener('touchstart', firstGesture, { once: true, passive: true });
+    document.addEventListener('keydown',    firstGesture, { once: true });
+})();
+
+// ── Botón Mute ────────────────────────────────────────────────
+document.getElementById('btn-mute').addEventListener('click', () => {
+    AudioEngine.init();
+    AudioEngine.toggleMute();
+});
+
+// ── Hooks a botones MENÚ (SFX + música según modo) ───────────
+(function hookMenuSounds() {
+    const modal = document.getElementById('codex-modal');
+    const patchModal = document.getElementById('patch-modal');
+
+    // Codex
+    ['btn-open-codex-menu','btn-open-codex-game'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.addEventListener('click', () => { AudioEngine.init(); AudioEngine.resume(); AudioEngine.sfxCodexOpen(); });
+    });
+    ['btn-close-codex'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.addEventListener('click', () => AudioEngine.sfxCodexClose());
+    });
+
+    // Patch notes
+    const bcp = document.getElementById('btn-close-patch');
+    if (bcp) bcp.addEventListener('click', () => { AudioEngine.sfxCodexClose(); const pm = document.getElementById('patch-modal'); if(pm) pm.classList.add('hidden'); });
+    const bpno = document.getElementById('btn-patch-notes-open');
+    if (bpno) bpno.addEventListener('click', () => { AudioEngine.sfxCodexOpen(); const pm = document.getElementById('patch-modal'); if(pm){ pm.classList.remove('hidden'); pm.style.display=''; } });
+
+    // Botones de modo
+    const modeMap = {
+        'btn-mode-normal':   () => { AudioEngine.sfxMenuClick(); },
+        'btn-mode-event':    () => { AudioEngine.sfxMenuClick(); },
+        'btn-mode-escasez':  () => { AudioEngine.sfxMenuClick(); },
+        'btn-mode-ddos':     () => { AudioEngine.sfxMenuClick(); },
+        'btn-reset-data':    () => { AudioEngine.sfxMenuClick(); },
+        'btn-mode-inestable':() => { AudioEngine.sfxMenuClick(); },
+    };
+    Object.entries(modeMap).forEach(([id, fn]) => {
+        const el = document.getElementById(id);
+        if (el) el.addEventListener('click', fn);
+    });
+
+    // Venta y oleada
+    const btnSell = document.getElementById('btn-toggle-sell');
+    if (btnSell) btnSell.addEventListener('click', () => AudioEngine.sfxMenuClick());
+    const btnWave = document.getElementById('btn-start-wave');
+    if (btnWave) btnWave.addEventListener('click', () => {
+        AudioEngine.init();
+        AudioEngine.resume();
+        AudioEngine.sfxWaveStart();
+    });
+})();
+
+// ═══════════════════════════════════════════════════════════════
+//  MONKEY-PATCH: interceptar llamadas clave del motor para SFX
+// ═══════════════════════════════════════════════════════════════
+(function patchGameEngine() {
+
+    // ── Música al iniciar juego ─────────────────────────────────
+    const _initGame = initGame;
+    window.initGame = function(mode) {
+        _initGame(mode);
+        AudioEngine.init();
+        AudioEngine.resume();
+        switch(mode) {
+            case 'normal':      AudioEngine.playNormal();      break;
+            case 'infiltracion':AudioEngine.playInfiltracion();break;
+            case 'escasez':     AudioEngine.playEscasez();     break;
+            case 'ddos':        AudioEngine.playDdos();        break;
+            case 'inestable':   AudioEngine.playInfiltracion();break; // reuse dark track
+            default:            AudioEngine.playNormal();
+        }
+    };
+
+    // ── Detener música al terminar ──────────────────────────────
+    const _endGame = endGame;
+    window.endGame = function(victory) {
+        if (gameState) gameState.isPlaying = false;
+        AudioEngine.stopMusic();
+        if (victory)  AudioEngine.sfxVictory();
+        else          AudioEngine.sfxGameOver();
+        _endGame(victory);
+    };
+
+    // ── SFX: inicio oleada ──────────────────────────────────────
+    const _startNextWave = startNextWave;
+    window.startNextWave = function() {
+        _startNextWave();
+    };
+
+    // ── SFX en Torre.fire() ─────────────────────────────────────
+    const _TowerFire = Tower.prototype.fire;
+    Tower.prototype.fire = function() {
+        _TowerFire.call(this);
+        if (!AudioEngine.isMuted()) {
+            switch(this.type) {
+                case 0: AudioEngine.sfxShoot_ion();      break;
+                case 1: AudioEngine.sfxShoot_quantica(); break;
+                case 2: AudioEngine.sfxShoot_laser();    break;
+                case 3: AudioEngine.sfxShoot_adaptive(); break;
+                case 4: AudioEngine.sfxShoot_sql();      break;
+                case 5: AudioEngine.sfxShoot_emp();      break;
+            }
+        }
+    };
+
+    // ── SFX: muerte de enemigo (en updatePhysics, e.hp<=0) ──────
+    // Parche sobre handleCanvasClick para SFX torre colocada/vendida/sin dinero
+    const _handleCanvasClick = handleCanvasClick;
+    window.handleCanvasClick = function(px, py) {
+        const prevMoney = gameState.money;
+        _handleCanvasClick(px, py);
+        if (!gameState || !gameState.isPlaying) return;
+        if (gameState.money < prevMoney) {
+            // Se gastó dinero = torre colocada o vendida
+            if (gameState.sellMode === false) AudioEngine.sfxTowerPlace();
+            else AudioEngine.sfxTowerSell();
+        } else if (gameState.money === prevMoney) {
+            // Sin cambio = sin dinero o clic en scan
+            // (scan lo detectamos con sfxScanToggle en toggleScan)
+        }
+    };
+
+    // ── SFX en Tower.toggleScan ─────────────────────────────────
+    const _toggleScan = Tower.prototype.toggleScan;
+    Tower.prototype.toggleScan = function() {
+        _toggleScan.call(this);
+        AudioEngine.sfxScanToggle();
+    };
+
+    // ── SFX: worm split y troyano phase ─────────────────────────
+    const _spawnMiniWorms = spawnMiniWorms;
+    window.spawnMiniWorms = function(parent) {
+        AudioEngine.sfxWormSplit();
+        _spawnMiniWorms(parent);
+    };
+
+    // ── SFX: oleada completada (detectado en updatePhysics) ──────
+    const _updatePhysics = updatePhysics;
+    let _wasWaveActive = false;
+    window.updatePhysics = function() {
+        const wasBefore = gameState.isWaveActive;
+        _updatePhysics();
+        if (wasBefore && !gameState.isWaveActive) AudioEngine.sfxWaveComplete();
+        // Muerte de enemigos grandes
+    };
+
+    // ── SFX: Ransomware roba datos ───────────────────────────────
+    // Ya tiene FloatingText; añadimos sonido en Enemy.update
+    // Lo detecto por la variante 'tank' que llegó a base
+    const _EnemyUpdate2 = Enemy.prototype.update;
+    Enemy.prototype.update = function() {
+        if (this.variant === 'miner' && !this._minerSoundPlayed) {
+            this._minerSoundPlayed = true;
+            AudioEngine.sfxMinerAppear();
+        }
+        const prevHp = this.hp;
+        const result = _EnemyUpdate2.call(this);
+        if (result === false) {
+            if (this.variant === 'tank') AudioEngine.sfxRansomwareSteal();
+            else AudioEngine.sfxEnemyReach();
+        }
+        // Troyano: detectar entrada en fase
+        if (this.variant === 'trojan' && this.phaseTriggered && !this._phaseSoundPlayed && this.phaseTimer > 0) {
+            this._phaseSoundPlayed = true;
+            AudioEngine.sfxTrojanPhase();
+        }
+        return result;
+    };
+
+    // SFX muerte enemigo (desde el loop)
+    const _updatePhysics2 = window.updatePhysics;
+    window.updatePhysics = function() {
+        // Track which enemies die
+        const beforeIds = new Set(enemies.map(e => e));
+        _updatePhysics2();
+        const afterIds = new Set(enemies.map(e => e));
+        beforeIds.forEach(e => {
+            if (!afterIds.has(e)) {
+                const isBig = (e.variant==='carrier'||e.variant==='tank'||e.variant==='worm'||e.variant==='reflector');
+                AudioEngine.sfxEnemyDie(isBig);
+            }
+        });
+    };
+
+})();
+
+
+</script>
+
+</body>
+</html>
