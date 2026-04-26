@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Defensa Cibernética v2.6.0 — Digitalización Total</title>
+    <title data-i18n="page_title">Defensa Cibernética</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
 
@@ -111,7 +111,7 @@
         .tower-name { font-weight:bold; font-size:13px; }
         .tower-cost { color:#ffd700; font-size:12px; }
         .tower-desc { font-size:10px; color:#94a3b8; line-height:1.3; font-style:italic; }
-        .lock-badge { position:absolute; top:4px; right:4px; background:rgba(255,51,102,0.85); color:white; font-size:9px; padding:2px 5px; border-radius:3px; }
+        .lock-badge { display:block; text-align:right; font-size:9px; color:white; background:rgba(255,51,102,0.85); padding:2px 5px; border-radius:3px; margin-top:4px; }
 
         .color-morada { color:#b266ff; }
         .color-azul { color:#3388ff; }
@@ -125,118 +125,8 @@
         ::-webkit-scrollbar-track { background:#0f172a; }
         ::-webkit-scrollbar-thumb { background:#334155; border-radius:3px; }
 
-        /* ── PATCH NOTES MODAL ── */
-        #patch-modal {
-            position: fixed; top:0; left:0; width:100%; height:100%;
-            background: rgba(0,0,0,0.92);
-            display: flex; justify-content: center; align-items: center;
-            z-index: 500;
-            animation: fadeInPatch 0.6s ease;
-        }
-        @keyframes fadeInPatch {
-            from { opacity:0; transform: scale(0.92); }
-            to   { opacity:1; transform: scale(1); }
-        }
-        /* patch-modal hidden handled by .hidden above */
-        #patch-box {
-            background: #050814;
-            border: 2px solid var(--cyan-glow);
-            box-shadow: 0 0 60px rgba(0,240,255,0.25), inset 0 0 40px rgba(0,240,255,0.03);
-            border-radius: 10px;
-            width: 700px; max-width: 95vw;
-            max-height: 88vh;
-            overflow-y: auto;
-            padding: 30px 35px;
-            position: relative;
-        }
-        #patch-box::-webkit-scrollbar { width:5px; }
-        #patch-box::-webkit-scrollbar-thumb { background:#334155; border-radius:3px; }
-        .patch-header {
-            text-align: center; margin-bottom: 6px;
-        }
-        .patch-version {
-            font-size: 2.2rem; color: var(--cyan-glow);
-            text-shadow: 0 0 25px rgba(0,240,255,0.6);
-            letter-spacing: 6px;
-        }
-        .patch-subtitle {
-            font-size: 0.9rem; color: var(--yellow-warn);
-            letter-spacing: 3px; margin-bottom: 4px;
-        }
-        .patch-date {
-            font-size: 0.75rem; color: #475569;
-            margin-bottom: 20px;
-        }
-        .patch-divider {
-            border: none; border-top: 1px solid #1e293b;
-            margin: 18px 0;
-        }
-        .patch-section {
-            margin-bottom: 22px;
-        }
-        .patch-section-title {
-            font-size: 0.85rem; letter-spacing: 3px;
-            margin-bottom: 12px;
-            padding: 6px 10px;
-            border-radius: 4px;
-        }
-        .ps-new    { color:#00f0ff; background:rgba(0,240,255,0.07); border-left:3px solid #00f0ff; }
-        .ps-fix    { color:#00ff66; background:rgba(0,255,102,0.07); border-left:3px solid #00ff66; }
-        .ps-enemy  { color:#ff7700; background:rgba(255,119,0,0.07); border-left:3px solid #ff7700; }
-        .ps-mode   { color:#b266ff; background:rgba(178,102,255,0.07); border-left:3px solid #b266ff; }
-        .ps-ui     { color:#ffcc00; background:rgba(255,204,0,0.07); border-left:3px solid #ffcc00; }
-        .patch-item {
-            display: flex; gap: 10px; margin-bottom: 9px;
-            font-size: 0.85rem; line-height: 1.5; align-items: flex-start;
-        }
-        .patch-tag {
-            flex-shrink: 0;
-            font-size: 0.7rem; font-weight: bold; padding: 2px 7px;
-            border-radius: 3px; margin-top: 2px;
-        }
-        .tag-new    { background:#00f0ff; color:#050814; }
-        .tag-fix    { background:#00ff66; color:#050814; }
-        .tag-buff   { background:#b266ff; color:#050814; }
-        .tag-rework { background:#ff7700; color:#050814; }
-        .tag-nerf   { background:#ff3366; color:#ffffff; }
-        .patch-item-text { color: #cbd5e1; }
-        .patch-item-text strong { color: var(--text-main); }
-        .patch-footer {
-            text-align: center; margin-top: 20px;
-            font-size: 0.78rem; color: #475569;
-            border-top: 1px dashed #1e293b;
-            padding-top: 14px;
-        }
-        #btn-close-patch {
-            display: block; margin: 16px auto 0 auto;
-            background: var(--cyan-glow);
-            border: 2px solid var(--cyan-glow);
-            color: #050814;
-            font-family: inherit; font-size: 1.1rem;
-            padding: 14px 50px; border-radius: 5px;
-            cursor: pointer; text-transform: uppercase;
-            letter-spacing: 2px; font-weight: bold;
-            transition: all 0.3s;
-            position: sticky; bottom: 10px;
-            box-shadow: 0 0 30px rgba(0,240,255,0.6);
-            z-index: 10;
-        }
-        #btn-close-patch:hover {
-            background: var(--cyan-glow); color: var(--bg-color);
-            box-shadow: 0 0 20px rgba(0,240,255,0.5);
-        }
-        #btn-patch-notes-open {
-            font-size: 0.72rem; padding: 7px; margin-top: 4px;
-            border-color: #1e3a5f; color: #334155;
-            letter-spacing: 1px;
-        }
-        #btn-patch-notes-open:hover {
-            border-color: var(--cyan-glow); color: var(--cyan-glow);
-            background: transparent; box-shadow: none;
-        }
-
         /* ════════════════════════════════════════════
-           MOBILE / RESPONSIVE — v2.5.0
+           MOBILE / RESPONSIVE
            ════════════════════════════════════════════ */
 
         /* Canvas escala al contenedor, nunca desborda */
@@ -323,8 +213,8 @@
         .deck-slots { display:flex; gap:4px; flex-wrap:wrap; }
         .deck-tab { background:transparent; border:1px solid #334155; color:#94a3b8; padding:3px 8px; font-family:inherit; font-size:0.7rem; cursor:pointer; border-radius:3px; }
         .deck-tab.active-deck { border-color:var(--cyan-glow); color:var(--cyan-glow); background:rgba(0,240,255,0.07); }
-        .deck-slot { width:40px; height:40px; background:#162032; border:2px dashed #334155; border-radius:4px; cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:10px; color:#475569; transition:all 0.2s; }
-        .deck-slot.filled { border:2px solid var(--cyan-glow); color:var(--cyan-glow); font-size:9px; background:rgba(0,240,255,0.08); }
+        .deck-slot { width:28px; height:28px; background:#162032; border:1px dashed #334155; border-radius:3px; cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:9px; color:#475569; transition:all 0.2s; }
+        .deck-slot.filled { border:1px solid var(--cyan-glow); color:var(--cyan-glow); font-size:8px; }
         .deck-slot:hover { border-color:#00f0ff; }
         /* ── TOWER HP BAR ── */
         .tower-hp-bar { position:absolute; bottom:2px; left:4px; right:4px; height:3px; background:#1e293b; border-radius:2px; }
@@ -336,11 +226,94 @@
         /* ── REFLECTOR enemy ── */
         .reflector-warning { color:#ff66ff; font-size:9px; }
         /* ── WAVE UNLOCK BADGE ── */
-        .wave-badge { position:absolute; top:4px; right:4px; background:rgba(0,240,255,0.15); color:var(--cyan-glow); font-size:8px; padding:2px 5px; border-radius:3px; border:1px solid rgba(0,240,255,0.3); }
+        .wave-badge { display:block; text-align:right; font-size:8px; color:var(--cyan-glow); padding:2px 5px; border-radius:3px; border:1px solid rgba(0,240,255,0.3); background:rgba(0,240,255,0.08); margin-top:4px; }
         /* ── HARDWARE INTEGRITY ── */
         #hw-integrity-bar { display:none; background:#162032; padding:6px; border-radius:4px; border:1px solid #ff6600; margin-bottom:8px; font-size:10px; color:#ff6600; text-align:center; }
         /* ── SOPORTE VITAL locked ── */
         .soporte-locked { opacity:0.35; cursor:not-allowed !important; }
+
+        /* ── LANGUAGE SELECTOR ── */
+        #lang-selector {
+            position: fixed;
+            top: 8px;
+            right: 8px;
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-family: 'Share Tech Mono', monospace;
+        }
+        #lang-selector .lang-label {
+            color: var(--cyan-glow);
+            font-size: 11px;
+            letter-spacing: 1px;
+            text-shadow: 0 0 8px rgba(0,240,255,0.5);
+        }
+        #lang-selector select {
+            background: rgba(15,23,42,0.9);
+            color: var(--cyan-glow);
+            border: 1px solid var(--cyan-glow);
+            padding: 4px 8px;
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 11px;
+            border-radius: 4px;
+            cursor: pointer;
+            outline: none;
+            transition: all 0.2s;
+        }
+        #lang-selector select:hover, #lang-selector select:focus {
+            background: rgba(0,240,255,0.1);
+            box-shadow: 0 0 10px rgba(0,240,255,0.3);
+        }
+
+    /* ═══════════════════ TUTORIAL UI ═══════════════════ */
+    #tutorial-tooltip {
+        position: fixed; z-index: 10000;
+        background: rgba(0, 10, 20, 0.96); border: 2px solid #00ff00;
+        color: #00ff00; padding: 16px 20px; border-radius: 8px;
+        font-family: 'Share Tech Mono', monospace; font-size: 14px; line-height: 1.6;
+        max-width: 320px; box-shadow: 0 0 25px rgba(0,255,0,0.4), inset 0 0 15px rgba(0,255,0,0.05);
+        pointer-events: auto; transition: opacity 0.35s ease;
+        left: 50%; top: 50%; transform: translate(-50%, -50%);
+    }
+    #tutorial-tooltip.tut-positioned {
+        left: auto; top: auto; transform: none;
+    }
+    #tutorial-tooltip.tut-arrow::after {
+        content: ''; position: absolute; bottom: -12px; left: 50%; transform: translateX(-50%);
+        border-width: 12px 10px 0; border-style: solid; border-color: #00ff00 transparent transparent;
+    }
+    #tutorial-tooltip.tut-arrow-up::after {
+        content: ''; position: absolute; top: -12px; left: 50%; transform: translateX(-50%);
+        border-width: 0 10px 12px; border-style: solid; border-color: transparent transparent #00ff00;
+    }
+    #tutorial-tooltip.hidden { opacity: 0; pointer-events: none; }
+    .tut-phase-label { font-size: 10px; color: #ffcc00; margin-bottom: 4px; letter-spacing: 2px; text-transform: uppercase; }
+    .tut-step-counter { font-size: 10px; color: #00aa44; margin-bottom: 6px; letter-spacing: 2px; }
+    .tut-btn {
+        background: #003300; color: #00ff00; border: 1px solid #00ff00;
+        padding: 8px 16px; cursor: pointer; font-family: inherit;
+        font-size: 12px; transition: all 0.2s; border-radius: 3px;
+        text-transform: uppercase; letter-spacing: 1px;
+    }
+    .tut-btn:hover { background: #00ff00; color: #000; box-shadow: 0 0 10px rgba(0,255,0,0.4); }
+    .tut-btn.skip { background: transparent; border-color: #555; color: #888; }
+    .tut-btn.skip:hover { border-color: #00ff00; color: #00ff00; background: transparent; box-shadow: none; }
+    .tut-highlight {
+        position: fixed; border: 3px solid #00ffff; border-radius: 6px;
+        box-shadow: 0 0 18px #00ffff; pointer-events: none; z-index: 9999;
+        animation: tut-pulse 1.5s infinite;
+    }
+    @keyframes tut-pulse {
+        0%, 100% { box-shadow: 0 0 12px #00ffff; }
+        50% { box-shadow: 0 0 30px #00ffff, inset 0 0 12px rgba(0,255,255,0.15); }
+    }
+    .btn-tutorial-replay {
+        background: transparent; color: #00ff00; border: 1px solid #00ff00;
+        padding: 10px 16px; cursor: pointer; font-family: inherit; font-size: 0.85rem;
+        border-radius: 4px; transition: all 0.2s; text-transform: uppercase; letter-spacing: 1px;
+    }
+    .btn-tutorial-replay:hover { background: #00ff00; color: #000; box-shadow: 0 0 15px rgba(0,255,0,0.3); }
 
     </style>
 </head>
@@ -351,168 +324,14 @@
 <!-- MUTE BUTTON -->
 <button id="btn-mute" title="Silenciar/Activar sonido">🔊</button>
 
-<!-- ═══════════════════ PATCH NOTES MODAL v2.5.0 ═══════════════════ -->
-<div id="patch-modal">
-  <div id="patch-box">
-
-    <div class="patch-header">
-      <div class="patch-version">v2.6.0</div>
-      <div class="patch-subtitle">DIGITALIZACIÓN TOTAL — NOTAS DE PARCHE</div>
-      <div class="patch-date">// ACTUALIZACIÓN OFICIAL · 2026 · DEFENSA CIBERNÉTICA //</div>
-    </div>
-
-    <hr class="patch-divider">
-
-    <!-- COMUNICADO DEL DESARROLLADOR -->
-    <div class="patch-section" style="background:rgba(0,240,255,0.04);border:1px solid rgba(0,240,255,0.2);border-radius:6px;padding:16px;margin-bottom:22px;">
-      <div class="patch-section-title ps-new" style="font-size:1rem;letter-spacing:2px;">🌐 COMUNICADO DEL DESARROLLADOR: PROYECTO DEFENSA CIBERNÉTICA</div>
-      <p style="color:#00f0ff;font-size:0.95rem;font-weight:bold;margin:8px 0 4px;">¡Bienvenidos a la Versión 2.5 - Digitalización Total!</p>
-      <p style="color:#cbd5e1;font-size:0.82rem;line-height:1.7;margin:6px 0;">Es para mí, <strong style="color:#fff;">Christopher Alejo</strong>, un verdadero placer y un orgullo presentarles esta nueva etapa de nuestra arquitectura defensiva. Lo que comenzó como un simple sistema de protección de nodos ha evolucionado en una experiencia de supervivencia digital completa, y estoy encantado de que formen parte de este despliegue.</p>
-      <p style="color:#ffcc00;font-size:0.85rem;font-weight:bold;margin:10px 0 4px;">🎮 Sobre la Actualización 2.5</p>
-      <p style="color:#cbd5e1;font-size:0.82rem;line-height:1.7;margin:0 0 8px;">Esta versión no es solo una mejora visual; es una reestructuración de la lógica de combate. Introducimos mecánicas de <strong style="color:#fff;">Integridad de Hardware</strong>, donde sus torres ahora sufren el desgaste de la guerra, y nuevas amenazas como el <strong style="color:#ff66ff;">Reflector</strong>, que pondrán a prueba su capacidad de adaptación. Mi mayor deseo es que disfruten cada oleada, que comprendan las nuevas capas estratégicas y que encuentren en este reto una experiencia única.</p>
-      <p style="color:#ff3366;font-size:0.85rem;font-weight:bold;margin:10px 0 4px;">🛡️ Propiedad Intelectual y Responsabilidad</p>
-      <p style="color:#cbd5e1;font-size:0.82rem;line-height:1.7;margin:0 0 4px;">Este proyecto es fruto de un esfuerzo creativo y técnico constante. Por ello, les pido encarecidamente ser responsables con el uso del software:</p>
-      <ul style="color:#94a3b8;font-size:0.8rem;margin:4px 0 8px;padding-left:18px;line-height:1.8;">
-        <li>Por favor, eviten compartir el código o los archivos con personas que puedan incurrir en el plagio.</li>
-        <li>Se prohíbe la edición, alteración o distribución no autorizada de este juego.</li>
-        <li>Respetemos el trabajo del desarrollador para que podamos seguir expandiendo este universo digital.</li>
-      </ul>
-      <p style="color:#00ff66;font-size:0.85rem;font-weight:bold;margin:10px 0 4px;">📩 Contacto y Soporte</p>
-      <p style="color:#cbd5e1;font-size:0.82rem;line-height:1.7;margin:0 0 4px;">Sus comentarios, reportes de errores o sugerencias son fundamentales para la mejora del sistema. Pueden escribirme directamente al correo:</p>
-      <p style="color:#00f0ff;font-size:0.9rem;margin:4px 0 8px;">👉 cseuropa1890@gmail.com</p>
-      <p style="color:#cbd5e1;font-size:0.82rem;line-height:1.7;margin:0;">Gracias por su lealtad a la red. Prepárense para la Digitalización Total.</p>
-      <p style="color:#94a3b8;font-size:0.78rem;margin:8px 0 0;font-style:italic;">Atentamente,<br><strong style="color:#fff;">Christopher Alejo</strong><br>Lead Developer — Defensa Cibernética</p>
-    </div>
-
-    <hr class="patch-divider">
-
-    <!-- NUEVAS MECÁNICAS -->
-    <div class="patch-section">
-      <div class="patch-section-title ps-new">⚙ NUEVAS MECÁNICAS v2.5</div>
-      <div class="patch-item">
-        <span class="patch-tag tag-new">NUEVO</span>
-        <span class="patch-item-text"><strong>Integridad de Hardware:</strong> las torres ahora tienen puntos de vida (HP). El enemigo Reflector devuelve daño a quien lo golpee. Si el HP de una torre llega a 0, es destruida.</span>
-      </div>
-      <div class="patch-item">
-        <span class="patch-tag tag-new">NUEVO</span>
-        <span class="patch-item-text"><strong>Panel de Mazos (Pre‑Partida):</strong> crea hasta 3 mazos (máx 7 torres cada uno) <strong>antes</strong> de entrar a Modo Estándar. En partida solo verás las torres del mazo activo.</span>
-      </div>
-      <div class="patch-item">
-        <span class="patch-tag tag-new">NUEVO</span>
-        <span class="patch-item-text"><strong>Desbloqueo por oleada (Modo Estándar):</strong> ahora es <strong>por MAZO</strong>. Al crear tu mazo eliges la oleada (1–15) de cada torre. A <strong>oleada 15</strong> todas tus torres del mazo deben estar desbloqueadas.</span>
-      </div>
-      <div class="patch-item">
-        <span class="patch-tag tag-rework">REWORK</span>
-        <span class="patch-item-text"><strong>Modo Infiltración:</strong> ahora dura 10 oleadas (antes 5). Todas las armas se desbloquean automáticamente excepto el Emisor Adaptativo si no se ha ganado antes.</span>
-      </div>
-      <div class="patch-item">
-        <span class="patch-tag tag-rework">REWORK</span>
-        <span class="patch-item-text"><strong>Inyector SQL y Pulso EMP</strong> ahora operan en una sola capa/sector. El jugador debe cambiar manualmente (igual que el resto de torres, excepto el Láser que sigue siendo dual).</span>
-      </div>
-    </div>
-
-    <!-- NUEVAS TORRES -->
-    <div class="patch-section">
-      <div class="patch-section-title ps-new">🔫 NUEVAS TORRES (×6)</div>
-      <div class="patch-item">
-        <span class="patch-tag tag-new">NUEVO</span>
-        <span class="patch-item-text"><strong>Nodo de Interferencia:</strong> reduce la armadura de todos los enemigos en área (AoE) en −30%. Ideal antes de una salva de daño.</span>
-      </div>
-      <div class="patch-item">
-        <span class="patch-tag tag-new">NUEVO</span>
-        <span class="patch-item-text"><strong>Trampa de Latencia:</strong> congela los enemigos en área durante 3 segundos. Cadencia MUY baja (control de emergencia).</span>
-      </div>
-      <div class="patch-item">
-        <span class="patch-tag tag-new">NUEVO</span>
-        <span class="patch-item-text"><strong>Inyector de Código Corrupto:</strong> aplica DoT e infecta a otros enemigos cercanos al objetivo. El veneno se propaga.</span>
-      </div>
-      <div class="patch-item">
-        <span class="patch-tag tag-new">NUEVO</span>
-        <span class="patch-item-text"><strong>Muralla de Datos:</strong> torre de bloqueo pasivo. No dispara, pero ralentiza a los enemigos que pasan por su celda adyacente.</span>
-      </div>
-      <div class="patch-item">
-        <span class="patch-tag tag-new">NUEVO</span>
-        <span class="patch-item-text"><strong>Satélite de Relevo:</strong> aumenta el rango de las torres aliadas cercanas en +30px. Soporte puro.</span>
-      </div>
-      <div class="patch-item">
-        <span class="patch-tag tag-new">NUEVO</span>
-        <span class="patch-item-text"><strong>Descompilador:</strong> desactiva temporalmente el escudo de reflexión del enemigo Reflector. Esencial para eliminarlo sin daño rebotado.</span>
-      </div>
-    </div>
-
-    <!-- UNIDAD DE SOPORTE -->
-    <div class="patch-section">
-      <div class="patch-section-title ps-mode">💚 UNIDAD DE SOPORTE</div>
-      <div class="patch-item">
-        <span class="patch-tag tag-new">NUEVO</span>
-        <span class="patch-item-text"><strong>Soporte Vital:</strong> torre de reparación AoE. Restaura HP a las torres aliadas en su radio. Se desbloquea globalmente al ganar 12 rondas en Conexión Inestable. Mientras no se desbloquee, solo disponible en ese modo.</span>
-      </div>
-    </div>
-
-    <!-- NUEVO MODO -->
-    <div class="patch-section">
-      <div class="patch-section-title ps-mode">🎮 NUEVO MODO — CONEXIÓN INESTABLE</div>
-      <div class="patch-item">
-        <span class="patch-tag tag-new">NUEVO</span>
-        <span class="patch-item-text"><strong>Conexión Inestable:</strong> 10 oleadas. Las torres pierden 1 HP/seg. Solo 6 armas permitidas (incluyendo Soporte Vital). Ganar 12 rondas desbloquea el Soporte Vital para todos los modos.</span>
-      </div>
-    </div>
-
-    <!-- NUEVOS ENEMIGOS -->
-    <div class="patch-section">
-      <div class="patch-section-title ps-enemy">🦠 NUEVOS ENEMIGOS</div>
-      <div class="patch-item">
-        <span class="patch-tag tag-new">NUEVO</span>
-        <span class="patch-item-text"><strong>Reflector:</strong> refleja el 30% del daño recibido de vuelta a la torre atacante. Interacción especial con el Láser de Precisión (200 dmg → 60 de daño reflejado a la torre).</span>
-      </div>
-      <div class="patch-item">
-        <span class="patch-tag tag-new">NUEVO</span>
-        <span class="patch-item-text"><strong>Gusano Replicante</strong> ahora disponible también en <strong>Modo Estándar</strong> con probabilidad escalonada por oleadas (2% en 1–5, 5% en 5–10, 15% en 10–15, 25% en 15+).</span>
-      </div>
-    </div>
-
-    <!-- SPAWN POR OLEADAS (ESTÁNDAR) -->
-    <div class="patch-section">
-      <div class="patch-section-title ps-ui">📊 SPAWN POR OLEADAS — MODO ESTÁNDAR</div>
-      <div style="font-size:0.8rem;color:#94a3b8;line-height:1.8;">
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
-          <div style="background:#162032;padding:8px;border-radius:4px;border:1px solid #2a3b5c;">
-            <div style="color:#00f0ff;font-weight:bold;margin-bottom:4px;">Oleadas 1–5</div>
-            Estándar: 100% | Portador: 50%<br>Ransomware: 20% | Troyano: 15%<br>Gusano: 2% | Minero: 15%
-          </div>
-          <div style="background:#162032;padding:8px;border-radius:4px;border:1px solid #2a3b5c;">
-            <div style="color:#00f0ff;font-weight:bold;margin-bottom:4px;">Oleadas 5–10</div>
-            Estándar: 100% | Portador: 50%<br>Ransomware: 20% | Troyano: 15%<br>Gusano: 5% | Minero: 25%
-          </div>
-          <div style="background:#162032;padding:8px;border-radius:4px;border:1px solid #2a3b5c;">
-            <div style="color:#ffcc00;font-weight:bold;margin-bottom:4px;">Oleadas 10–15</div>
-            Estándar: 100% | Portador: 50%<br>Ransomware: 20% | Troyano: 30%<br>Gusano: 15% | Minero: 50%
-          </div>
-          <div style="background:#162032;padding:8px;border-radius:4px;border:1px solid #ff3366;">
-            <div style="color:#ff3366;font-weight:bold;margin-bottom:4px;">Oleadas 15+</div>
-            Estándar: 50% | Portador: 30%<br>Ransomware: 50% | Troyano: 50%<br>Gusano: 25% | Minero: 60%
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="patch-footer">
-      Defensa Cibernética v2.5.0 — Digitalización Total<br>
-      "Cada brecha superada nos hace más fuertes. El protocolo evoluciona."
-    </div>
-
-    <button id="btn-close-patch">[ ENTENDIDO — INICIAR SISTEMA ]</button>
-
-  </div>
-</div>
 
 <!-- ═══════════════════ CODEX MODAL ═══════════════════ -->
 <div id="codex-modal" class="modal-overlay hidden">
   <div class="modal-content">
-    <h2 class="modal-title">⬡ CODEX TÁCTICO v2.5.0 ⬡</h2>
+    <h2 class="modal-title" data-i18n="codex_title">⬡ CODEX TÁCTICO ⬡</h2>
 
     <!-- TORRES -->
-    <div class="codex-section-title">🔫 ARSENAL — TORRES DE DEFENSA</div>
+    <div class="codex-section-title" data-i18n="codex_arsenal">🔫 ARSENAL — TORRES DE DEFENSA</div>
     <div class="codex-grid">
 
       <div class="codex-card">
@@ -574,7 +393,7 @@
     </div>
 
     <!-- ENEMIGOS -->
-    <div class="codex-section-title">🦠 AMENAZAS IDENTIFICADAS</div>
+    <div class="codex-section-title" data-i18n="codex_threats">🦠 AMENAZAS IDENTIFICADAS</div>
     <div class="codex-grid">
 
       <div class="codex-card">
@@ -632,11 +451,10 @@
     </div>
 
     <!-- MODOS -->
-    <div class="codex-section-title">🎮 MODOS DE JUEGO</div>
+    <div class="codex-section-title" data-i18n="codex_modes">🎮 MODOS DE JUEGO</div>
     <div class="codex-grid">
       <div class="codex-card">
-        <h3 class="color-cyan">Modo Estándar</h3>
-        <div class="codex-note">"El protocolo base. Oleadas infinitas escalando en dificultad. Máxima ola guardada como récord."</div>
+        <h3 class="color-cyan" data-i18n="mode_standard">Modo Estándar</h3>
       </div>
       <div class="codex-card">
         <h3 class="color-roja">Infiltración (Difícil)</h3>
@@ -653,8 +471,8 @@
     </div>
 
 
-    <!-- NUEVAS TORRES v2.5 -->
-    <div class="codex-section-title">🔧 NUEVAS DEFENSAS v2.5</div>
+    <!-- TORRES AVANZADAS -->
+    <div class="codex-section-title" data-i18n="codex_new_defenses">🔧 ARSENAL AVANZADO</div>
     <div class="codex-grid">
       <div class="codex-card">
         <h3 style="color:#ff9966;">Nodo de Interferencia</h3>
@@ -717,7 +535,7 @@
     </div>
 
     <!-- NUEVO ENEMIGO: REFLECTOR -->
-    <div class="codex-section-title">⚡ NUEVA AMENAZA v2.5</div>
+    <div class="codex-section-title" data-i18n="codex_new_threat">⚡ AMENAZAS ESPECIALES</div>
     <div class="codex-grid">
       <div class="codex-card" style="border-color:#ff66ff;">
         <h3 style="color:#ff66ff;">Reflector</h3>
@@ -729,7 +547,7 @@
         <div class="codex-weakness">⚠ Usa Descompilador para anular el escudo antes de atacar</div>
       </div>
       <div class="codex-card" style="border-color:#33aaff;">
-        <h3 style="color:#33aaff;">Notas de Combate v2.5</h3>
+        <h3 style="color:#33aaff;" data-i18n="codex_combat_notes">Notas de Combate</h3>
         <div class="codex-note" style="margin-top:0;">
           <strong style="color:#fff;">Integridad de Hardware:</strong> las torres tienen HP. Pierden salud principalmente cuando el Reflector devuelve daño. Si el HP llega a 0, la torre es destruida permanentemente en esa partida.<br><br>
           <strong style="color:#fff;">Conexión Inestable:</strong> 10 oleadas. −1 HP/seg a todas las torres. Solo 6 torres permitidas. El Soporte Vital es crucial para mantenerte.<br><br>
@@ -739,10 +557,10 @@
     </div>
 
     <!-- MODOS ACTUALIZADOS -->
-    <div class="codex-section-title">🎮 MODOS DE JUEGO</div>
+    <div class="codex-section-title" data-i18n="codex_modes">🎮 MODOS DE JUEGO</div>
     <div class="codex-grid">
       <div class="codex-card">
-        <h3 class="color-cyan">Modo Estándar</h3>
+        <h3 class="color-cyan" data-i18n="mode_standard">Modo Estándar</h3>
         <div class="codex-note">"El protocolo base. Oleadas infinitas. Antes de entrar eliges un MAZO (máx 7 torres) y en partida solo verás esas torres. Cada torre se desbloquea en la oleada (1–15) que configures en tu mazo."</div>
       </div>
       <div class="codex-card">
@@ -763,37 +581,36 @@
       </div>
     </div>
 
-    <button id="btn-close-codex" class="btn-main" style="width:100%;margin-top:15px;">CERRAR CODEX</button>
+    <button id="btn-close-codex" class="btn-main" style="width:100%;margin-top:15px;" data-i18n="codex_close">CERRAR CODEX</button>
   </div>
 </div>
 
 <!-- ═══════════════════ PANTALLA INICIO ═══════════════════ -->
 <div id="start-screen" class="screen">
     <h1 class="title-glitch">DEFENSA CIBERNÉTICA</h1>
-    <div class="subtitle">v2.6.0 // DIGITALIZACIÓN TOTAL</div>
+    <div class="subtitle">SISTEMA DE DEFENSA CIBERNÉTICA</div>
 
     <div class="login-box">
         <div class="input-group">
-            <label for="username">IDENTIFICACIÓN DE OPERADOR:</label>
-            <input type="text" id="username" placeholder="Ingresa tu Alias" maxlength="15">
+            <label for="username" data-i18n="menu_id_label">IDENTIFICACIÓN DE OPERADOR:</label>
+            <input type="text" id="username" placeholder="Ingresa tu Alias" maxlength="15" data-i18n-placeholder="menu_placeholder">
         </div>
-        <div class="record-display">Mayor Oleada Alcanzada:<br><span id="record-val">0</span></div>
+        <div class="record-display"><span data-i18n="menu_record_label">Mayor Oleada Alcanzada:</span><br><span id="record-val">0</span></div>
 
         <div class="menu-buttons">
-            <div class="menu-section-title">— MODOS PRINCIPALES —</div>
-            <button id="btn-mode-normal" class="btn-main">▶ MODO ESTÁNDAR</button>
-            <button id="btn-mode-event" class="btn-main btn-event">⚠ INFILTRACIÓN (DIFÍCIL)</button>
+            <div class="menu-section-title" data-i18n="menu_modes_title">— MODOS PRINCIPALES —</div>
+            <button id="btn-mode-normal" class="btn-main" data-i18n="btn_mode_normal">▶ MODO ESTÁNDAR</button>
+            <button id="btn-mode-event" class="btn-main btn-event" data-i18n="btn_mode_inf">⚠ INFILTRACIÓN (DIFÍCIL)</button>
 
-            <div class="menu-section-title">— EVENTOS ESPECIALES —</div>
-            <button id="btn-mode-escasez" class="btn-main btn-escasez">💾 ESCASEZ DE RAM</button>
-            <button id="btn-mode-ddos" class="btn-main btn-ddos">💥 EVENTO DDoS</button>
+            <div class="menu-section-title" data-i18n="menu_events_title">— EVENTOS ESPECIALES —</div>
+            <button id="btn-mode-escasez" class="btn-main btn-escasez" data-i18n="btn_mode_ram">💾 ESCASEZ DE RAM</button>
+            <button id="btn-mode-ddos" class="btn-main btn-ddos" data-i18n="btn_mode_ddos">💥 EVENTO DDoS</button>
 
-            <div class="menu-section-title">— SISTEMA —</div>
-            <button id="btn-open-codex-menu" class="btn-main btn-info">📖 CODEX TÁCTICO</button>
-                <button id="btn-mode-inestable" class="btn-main btn-inestable">🌩 CONEXIÓN INESTABLE</button>
-            <button id="btn-patch-notes-open" class="btn-main" style="font-size:0.72rem;padding:7px;border-color:#1e3a5f;color:#475569;">📋 VER NOTAS DE PARCHE v2.5</button>
-            <button id="btn-reset-data" class="btn-main" style="font-size:0.75rem;padding:8px;border-color:#475569;color:#94a3b8;">BORRAR REGISTROS</button>
-            <button id="btn-open-deck" class="btn-main btn-info">🃏 GESTIONAR MAZOS</button>
+            <div class="menu-section-title" data-i18n="menu_system_title">— SISTEMA —</div>
+            <button id="btn-open-codex-menu" class="btn-main btn-info" data-i18n="btn_codex">📖 CODEX TÁCTICO</button>
+                <button id="btn-mode-inestable" class="btn-main btn-inestable" data-i18n="btn_mode_uns">🌩 CONEXIÓN INESTABLE</button>
+            <button id="btn-reset-data" class="btn-main" style="font-size:0.75rem;padding:8px;border-color:#475569;color:#94a3b8;" data-i18n="btn_clear">BORRAR REGISTROS</button>
+            <button id="btn-open-deck" class="btn-main btn-info" data-i18n="btn_decks">🃏 GESTIONAR MAZOS</button>
         </div>
     </div>
 </div>
@@ -807,32 +624,32 @@
 
     <div id="ui-panel">
         <div class="panel-header">
-            <div class="operator-info">Op: <span class="operator-name" id="ui-op-name">Invitado</span></div>
+            <div class="operator-info"><span data-i18n="hud_info_label">Op:</span> <span class="operator-name" id="ui-op-name">Invitado</span></div>
             <div>
-                <button id="btn-open-codex-game" class="btn-small btn-codex-ingame">INFO</button>
-                <button id="btn-abort" class="btn-small btn-abort">ABORTAR</button>
+                <button id="btn-open-codex-game" class="btn-small btn-codex-ingame" data-i18n="codex_info">INFO</button>
+                <button id="btn-abort" class="btn-small btn-abort" data-i18n="hud_abort">ABORTAR</button>
             </div>
         </div>
 
         <div class="stats-container">
-            <div class="stat-box"><div class="stat-title">INTEGRIDAD</div><div class="stat-value" id="health-val">20</div></div>
-            <div class="stat-box"><div class="stat-title">DATOS</div><div class="stat-value" id="money-val">120</div></div>
+            <div class="stat-box"><div class="stat-title" data-i18n="hud_hp">INTEGRIDAD</div><div class="stat-value" id="health-val">20</div></div>
+            <div class="stat-box"><div class="stat-title" data-i18n="hud_data">DATOS</div><div class="stat-value" id="money-val">120</div></div>
         </div>
 
         <div class="wave-box">
             <div class="stat-title" id="mode-title-ui">MODO ESTÁNDAR</div>
-            <div id="wave-status">Esperando conexión...</div>
+            <div id="wave-status" data-i18n="hud_status_waiting">Esperando conexión...</div>
         </div>
 
         <div id="enemy-counter" style="background:#162032;padding:6px;text-align:center;border-radius:4px;margin-bottom:8px;border:1px solid #334155;font-size:12px;color:#94a3b8;display:none;">
             <span id="enemy-count-text">Enemigos restantes: 0</span>
         </div>
 
-        <button id="btn-start-wave" class="btn-action">INICIAR OLEADA</button>
-        <button id="btn-toggle-sell" class="btn-action btn-sell">MODO VENTA: OFF</button>
+        <button id="btn-start-wave" class="btn-action" data-i18n="hud_start_wave">INICIAR OLEADA</button>
+        <button id="btn-toggle-sell" class="btn-action btn-sell" data-i18n="hud_sell_off">MODO VENTA: OFF</button>
 
-        <div class="info-tip">Hover → rango. Clic torre colocada: cambiar sector. Láser: dual.<br>Modo Estándar: solo torres del mazo activo. Desbloqueo por oleada definido en mazo (1–15). HP visible en torres. Reflector devuelve daño.</div>
-        <div id="hw-integrity-bar">⚠ MODO INESTABLE — Las torres pierden 1 HP/seg</div>
+        <div class="info-tip" data-i18n="hud_info_tip">Hover → rango. Clic torre colocada: cambiar sector. Láser: dual.<br>Modo Estándar: solo torres del mazo activo. Desbloqueo por oleada definido en mazo (1–15). HP visible en torres. Reflector devuelve daño.</div>
+        <div id="hw-integrity-bar" data-i18n="hud_hw_warning">⚠ MODO INESTABLE — Las torres pierden 1 HP/seg</div>
 
         <div class="tower-list" id="tower-list">
             <div class="tower-card selected" data-type="0">
@@ -844,26 +661,26 @@
                 <div class="tower-desc">Daño acumulativo (8→+125%). Anti-Tanques.</div>
             </div>
             <div class="tower-card" data-type="2">
-                <span class="wave-badge" id="wb-2">🔒 OLA 5</span>
                 <div class="tower-header"><span class="tower-name color-roja">Láser de Precisión</span><span class="tower-cost">100D</span></div>
                 <div class="tower-desc">Daño masivo (200). Dual. Prioriza HP alto.</div>
+                <span class="wave-badge" id="wb-2">🔒 OLA 5</span>
             </div>
             <div class="tower-card" data-type="3" id="tower-adaptive-card">
-                <span class="lock-badge" id="adaptive-locked">🔒 BLOQUEADO</span>
                 <div class="tower-header"><span class="tower-name color-verde">Emisor Adaptativo</span><span class="tower-cost">110D</span></div>
                 <div class="tower-desc">Lentitud −50% / 3s. Sniper (250px).</div>
+                <span class="lock-badge" id="adaptive-locked">🔒 BLOQUEADO</span>
             </div>
             <div class="tower-card" data-type="4">
-                <span class="wave-badge" id="wb-4">🔒 OLA 5</span>
                 <div class="tower-header"><span class="tower-name color-naranja">Inyector SQL</span><span class="tower-cost">80D</span></div>
                 <div class="tower-desc">DOT: 3 daño/seg × 5s. Veneno persiste.</div>
+                <span class="wave-badge" id="wb-4">🔒 OLA 5</span>
             </div>
             <div class="tower-card" data-type="5">
-                <span class="wave-badge" id="wb-5">🔒 OLA 15</span>
                 <div class="tower-header"><span class="tower-name color-blanco">Pulso EMP</span><span class="tower-cost">140D</span></div>
                 <div class="tower-desc">AoE 60dmg radio 80px. Sector único.</div>
+                <span class="wave-badge" id="wb-5">🔒 OLA 15</span>
             </div>
-            <!-- NEW TOWERS v2.5 -->
+            <!-- ADVANCED TOWERS -->
             <div class="tower-card" data-type="6">
                 <div class="tower-header"><span class="tower-name" style="color:#ff9966;">Nodo Interferencia</span><span class="tower-cost">95D</span></div>
                 <div class="tower-desc">Reduce armadura −30% AoE. HP:60</div>
@@ -889,29 +706,29 @@
                 <div class="tower-desc">Anula escudo Reflector 5s. Daño 25. HP:50</div>
             </div>
             <div class="tower-card soporte-locked" data-type="12" id="soporte-vital-card">
-                <span class="lock-badge" id="soporte-locked-badge">🔒 BLOQUEADO</span>
                 <div class="tower-header"><span class="tower-name color-verde">Soporte Vital</span><span class="tower-cost">150D</span></div>
                 <div class="tower-desc">Repara +5HP/s torres AoE. Especial.</div>
+                <span class="lock-badge" id="soporte-locked-badge">🔒 BLOQUEADO</span>
             </div>
         </div>
     </div>
 </div>
 
 
-<!-- ═══════════════════ DECK MANAGER MODAL v2.5.1 ═══════════════════ -->
+<!-- ═══════════════════ DECK MANAGER MODAL ═══════════════════ -->
 <div id="deck-modal" class="modal-overlay hidden">
   <div class="modal-content" style="max-width:860px;">
-    <h2 class="modal-title">🃏 GESTOR DE MAZOS — v2.5.8</h2>
+    <h2 class="modal-title" data-i18n="deck_manager_title">🃏 GESTOR DE MAZOS</h2>
 
     <div style="display:flex;gap:8px;justify-content:center;margin:10px 0 14px;flex-wrap:wrap;">
-      <button class="deck-tab active-deck" data-deck="0" id="deck-tab-0">MAZO 1</button>
-      <button class="deck-tab" data-deck="1" id="deck-tab-1">MAZO 2</button>
-      <button class="deck-tab" data-deck="2" id="deck-tab-2">MAZO 3</button>
+      <button class="deck-tab active-deck" data-deck="0" id="deck-tab-0" data-i18n="deck_1">MAZO 1</button>
+      <button class="deck-tab" data-deck="1" id="deck-tab-1" data-i18n="deck_2">MAZO 2</button>
+      <button class="deck-tab" data-deck="2" id="deck-tab-2" data-i18n="deck_3">MAZO 3</button>
     </div>
 
     <div style="display:flex;gap:14px;flex-wrap:wrap;">
       <div style="flex:1;min-width:280px;">
-        <div class="codex-section-title" style="margin-top:0;">✅ Tu mazo activo (máx 7)</div>
+        <div class="codex-section-title" style="margin-top:0;" data-i18n="deck_active_note">✅ Tu mazo activo (máx 7)</div>
         <div id="deck-slots-display" class="deck-slots"></div>
         <div style="font-size:11px;color:#94a3b8;line-height:1.6;margin-top:8px;">
           Reglas del modo Estándar:<br>
@@ -922,22 +739,1103 @@
       </div>
 
       <div style="flex:1.2;min-width:320px;">
-        <div class="codex-section-title" style="margin-top:0;">📦 Arsenal (clic para añadir al slot seleccionado)</div>
+        <div class="codex-section-title" style="margin-top:0;" data-i18n="deck_arsenal_title">📦 Arsenal (clic para añadir al slot seleccionado)</div>
         <div id="deck-arsenal" style="display:grid;grid-template-columns:1fr 1fr;gap:8px;"></div>
-        <div style="font-size:11px;color:#475569;margin-top:8px;">Las oleadas de desbloqueo se asignan automáticamente según el precio de cada torre.</div>
+        <div style="font-size:11px;color:#475569;margin-top:8px;" data-i18n="deck_auto_unlock_note">Las oleadas de desbloqueo se asignan automáticamente según el precio de cada torre.</div>
       </div>
     </div>
 
-    <button id="btn-close-deck" class="btn-main" style="width:100%;margin-top:15px;border-color:#b266ff;color:#b266ff;">CERRAR GESTOR DE MAZOS</button>
+    <button id="btn-close-deck" class="btn-main" style="width:100%;margin-top:15px;border-color:#b266ff;color:#b266ff;" data-i18n="deck_close">CERRAR GESTOR DE MAZOS</button>
   </div>
 </div>
 
 <script>
+// ── GLOBAL ERROR HANDLER (ayuda a diagnosticar problemas) ──
+window.onerror = function(msg, url, line, col, err) {
+    console.error('ERROR GLOBAL:', msg, 'Línea:', line, 'Col:', col, err);
+    var dbg = document.getElementById('_debug-panel');
+    if (!dbg) {
+        dbg = document.createElement('div');
+        dbg.id = '_debug-panel';
+        dbg.style.cssText = 'position:fixed;bottom:0;left:0;right:0;background:rgba(255,0,50,0.95);color:#fff;font-size:12px;font-family:monospace;padding:8px;z-index:999999;max-height:40vh;overflow:auto;word-break:break-all;';
+        document.body.appendChild(dbg);
+    }
+    dbg.innerHTML += '<b>ERROR L' + line + ':</b> ' + msg + '<br>';
+    return false;
+};
+
 // ═══════════════════════════════════════════════════════════════
-//  DEFENSA CIBERNÉTICA v2.5.0 — DIGITALIZACIÓN TOTAL
+//  DEFENSA CIBERNÉTICA — MOTOR PRINCIPAL
 // ═══════════════════════════════════════════════════════════════
 
-const STORAGE_KEY = 'cyberDefense_v260';
+// ══════════════════════════════════════════════════════════════
+//  I18N — INTERNATIONALIZATION SYSTEM (ES / EN / IT / PT)
+// ══════════════════════════════════════════════════════════════
+const I18N = {
+    currentLang: 'es',
+    translations: {
+        es: {
+            // ── Page ──
+            page_title: 'Defensa Cibernética',
+            // (patch notes removed)
+
+            // ── Start Screen / Menu ──
+            menu_id_label: 'IDENTIFICACIÓN DE OPERADOR:',
+            menu_placeholder: 'Ingresa tu Alias',
+            menu_record_label: 'Mayor Oleada Alcanzada:',
+            menu_modes_title: '— MODOS PRINCIPALES —',
+            btn_mode_normal: '▶ MODO ESTÁNDAR',
+            btn_mode_inf: '⚠ INFILTRACIÓN (DIFÍCIL)',
+            menu_events_title: '— EVENTOS ESPECIALES —',
+            btn_mode_ram: '💾 ESCASEZ DE RAM',
+            btn_mode_ddos: '💥 EVENTO DDoS',
+            menu_system_title: '— SISTEMA —',
+            btn_codex: '📖 CODEX TÁCTICO',
+            btn_mode_uns: '🌩 CONEXIÓN INESTABLE',
+            // btn_patch removed
+            btn_clear: 'BORRAR REGISTROS',
+            btn_decks: '🃏 GESTIONAR MAZOS',
+
+            // ── Game HUD ──
+            hud_info_label: 'Op:',
+            hud_abort: 'ABORTAR',
+            hud_hp: 'INTEGRIDAD',
+            hud_data: 'DATOS',
+            hud_status_waiting: 'Esperando conexión...',
+            hud_start_wave: 'INICIAR OLEADA',
+            hud_sell_on: 'MODO VENTA: ON',
+            hud_sell_off: 'MODO VENTA: OFF',
+            hud_wave_active: '⚡ OLEADA {n} EN CURSO',
+            hud_wave_waiting: '✅ ESPERANDO OLEADA {n}',
+            hud_combat: 'SISTEMA EN COMBATE',
+            hud_extraction_ready: 'EXTRACCIÓN LISTA',
+            hud_enemies_remaining: 'Enemigos restantes:',
+            hud_miner_warning: '⚠ MINERO ACTIVO: Recompensas reducidas al 50%',
+            hud_info_tip: 'Hover → rango. Clic torre colocada: cambiar sector. Láser: dual.<br>Modo Estándar: solo torres del mazo activo. Desbloqueo por oleada definido en mazo (1–15). HP visible en torres. Reflector devuelve daño.',
+            hud_hw_warning: '⚠ MODO INESTABLE — Las torres pierden 1 HP/seg',
+
+            // ── Game Messages (JS strings) ──
+            msg_no_deck: 'Primero crea un MAZO (máx 5 torres) antes de entrar a Modo Estándar.',
+            msg_confirm_purge: '¿Purgar base de datos?',
+            msg_confirm_abort: '¿Abortar misión?',
+            msg_no_tower_deck: 'NO ESTÁ EN TU MAZO',
+            msg_unlock_wave: 'DISPONIBLE EN OLEADA {n}',
+            msg_requires_infiltration: 'REQUIERE INFILTRACIÓN',
+            msg_requires_inestable: 'REQUIERE GANAR INESTABLE ×12',
+            msg_max_defenses: 'MÁXIMO 6 DEFENSAS',
+            msg_insufficient: 'DATOS INSUFICIENTES',
+            msg_protocol: 'PROTOCOLO {n}/10',
+            msg_ddos_wave: 'OLEADA DDoS {n}',
+            msg_unstable_wave: 'INESTABLE — OLEADA {n}',
+            msg_unlocked: 'DESBLOQUEADO:',
+            msg_deck_complete: 'OLEADA 15: MAZO COMPLETO DESBLOQUEADO',
+            msg_new_record: '¡NUEVO RÉCORD: OLEADA {n}!',
+            msg_extraction_success: '¡EXTRACCIÓN EXITOSA!\nDesbloqueado: [Emisor Adaptativo]',
+            msg_mission_complete: '¡Misión superada! 10 oleadas completadas.',
+            msg_ddos_repelled: '¡ATAQUE DDoS REPELIDO! Sistema defendido.',
+            msg_vital_unlocked: '¡PROTOCOLO VITAL DESBLOQUEADO!\n[Soporte Vital] disponible en todos los modos.\nInestable completado: {n}×',
+            msg_unstable_progress: 'Conexión Inestable superada. Progreso: {n}/12 para desbloquear Soporte Vital.',
+            msg_system_compromised: 'SISTEMA COMPROMETIDO. Conexión cortada.',
+            msg_boss_detected: '¡JEFE DETECTADO!',
+
+            // ── Tower Names ──
+            tower_name_0: 'Cañón de Iones',
+            tower_name_1: 'Trituradora Cuántica',
+            tower_name_2: 'Láser de Precisión',
+            tower_name_3: 'Emisor Adaptativo',
+            tower_name_4: 'Inyector SQL',
+            tower_name_5: 'Pulso EMP',
+            tower_name_6: 'Nodo Interferencia',
+            tower_name_7: 'Trampa Latencia',
+            tower_name_8: 'Cód. Corrupto',
+            tower_name_9: 'Muralla de Datos',
+            tower_name_10: 'Satélite Relevo',
+            tower_name_11: 'Descompilador',
+            tower_name_12: 'Soporte Vital',
+            tower_short_0: 'Ion', tower_short_1: 'Qnt', tower_short_2: 'Lsr', tower_short_3: 'Adp',
+            tower_short_4: 'SQL', tower_short_5: 'EMP', tower_short_6: 'Nodo', tower_short_7: 'Lat',
+            tower_short_8: 'Corr', tower_short_9: 'Mur', tower_short_10: 'Sat', tower_short_11: 'Desc',
+            tower_short_12: 'SV',
+            tower_unlock_label_0: 'ION', tower_unlock_label_1: 'TRITURADORA', tower_unlock_label_2: 'LÁSER',
+            tower_unlock_label_3: 'ADAPTATIVO', tower_unlock_label_4: 'SQL', tower_unlock_label_5: 'EMP',
+            tower_unlock_label_6: 'NODO', tower_unlock_label_7: 'LATENCIA', tower_unlock_label_8: 'CORRUPTO',
+            tower_unlock_label_9: 'MURALLA', tower_unlock_label_10: 'SATÉLITE', tower_unlock_label_11: 'DESCOMP',
+            tower_unlock_label_12: 'SOPORTE',
+
+            // ── FloatingText (combat visual feedback) ──
+            ft_emp: 'EMP!',
+            ft_division: '¡DIVISIÓN!',
+            ft_fase: 'FASE!',
+            ft_armor: 'ARMADURA−30%',
+            ft_freeze: 'LATENCIA 3s',
+            ft_decompile: 'ESCUDO OFF',
+            ft_dual: 'AUTO: DUAL',
+            ft_plane_sub: 'PLANO: SUB',
+            ft_plane_sup: 'PLANO: SUP',
+            ft_tower_destroyed: 'TORRE DESTRUIDA',
+            ft_data_stolen: '-{n} DATOS ROBADOS',
+            ft_bounce: '-{n} REBOTE',
+            ft_repair: '+5 HP',
+
+            // ── Mode titles ──
+            mode_standard: 'MODO ESTÁNDAR',
+            mode_infiltracion: 'INFILTRACIÓN',
+            mode_escasez: 'ESCASEZ DE RAM',
+            mode_ddos: 'EVENTO DDoS',
+            mode_inestable: 'CONEXIÓN INESTABLE',
+
+            // ── Wave badge ──
+            badge_lock_wave: '🔒 OLA {n}',
+            badge_locked: '🔒 BLOQUEADO',
+
+            // ── Codex Modal ──
+            codex_title: '⬡ CODEX TÁCTICO ⬡',
+            codex_close: 'CERRAR CODEX',
+            codex_arsenal: '🔫 ARSENAL — TORRES DE DEFENSA',
+            codex_threats: '🦠 AMENAZAS IDENTIFICADAS',
+            codex_modes: '🎮 MODOS DE JUEGO',
+            codex_new_defenses: '🔧 ARSENAL AVANZADO',
+            codex_new_threat: '⚡ AMENAZAS ESPECIALES',
+            codex_support: '💚 UNIDAD DE SOPORTE',
+            codex_combat_notes: 'Notas de Combate',
+
+            // ── Deck Manager ──
+            deck_manager_title: '🃏 GESTOR DE MAZOS',
+            deck_1: 'MAZO 1', deck_2: 'MAZO 2', deck_3: 'MAZO 3',
+            deck_active_note: '✅ Tu mazo activo (máx 7)',
+            deck_rules_title: 'Reglas del modo Estándar:',
+            deck_rule1: '• Solo verás en partida las torres de este mazo.',
+            deck_rule2: '• Cada torre se desbloquea en una <strong style="color:#fff;">oleada automática</strong> según su precio (más cara = más tarde).',
+            deck_rule3: '• Las torres más caras se desbloquean al final del mazo.',
+            deck_arsenal_title: '📦 Arsenal (clic para añadir al slot seleccionado)',
+            deck_close: 'CERRAR GESTOR DE MAZOS',
+            deck_duplicate: 'Esa torre ya está en el mazo.',
+            deck_full: 'Mazo lleno (máx 7).',
+            deck_slot_tooltip: 'Slot {n} — {name} — Desbloqueo: oleada {wave}\nClic: seleccionar slot\nDoble clic: quitar',
+            deck_slot_empty: 'Slot vacío — clic para seleccionar',
+            deck_auto_unlock_note: 'Las oleadas de desbloqueo se asignan automáticamente según el precio de cada torre.',
+
+            msg_need_name: '⚠ Ingresa tu nombre de operador antes de jugar.',
+            // ── Tutorial ──
+            // Fase 1: Pre-juego (menú principal)
+            tut_welcome: '🛡️ ¡Bienvenido, Operador! Tu misión: <strong>proteger el Núcleo</strong> de los ciberataques. Coloca torres de defensa a lo largo de los caminos para eliminar amenazas antes de que lleguen a tu base.',
+            tut_name: '🏷️ Primero, necesitamos tu <strong>nombre de operador</strong>. Escríbelo en el campo de arriba y presiona el botón para continuar.',
+            tut_modes: '🎮 El juego tiene <strong>5 modos</strong>:<br>• <strong style="color:#00f0ff;">Estándar</strong> — Progresión con mazo personalizable<br>• <strong style="color:#ff3366;">Infiltración</strong> — Modo difícil, 10 oleadas<br>• <strong style="color:#ffcc00;">Escasez de RAM</strong> — Recursos limitados<br>• <strong style="color:#ff7700;">Evento DDoS</strong> — Oleadas masivas<br>• <strong style="color:#ff6600;">Conexión Inestable</strong> — Tus torres se degradan',
+            tut_go_standard: '👆 Para el tutorial, haremos clic en <strong>MODO ESTÁNDAR</strong>. ¡Allí aprenderás a jugar paso a paso!',
+            // Fase 2: In-game
+            tut_paths: '🗺️ El mapa tiene <strong>dos caminos</strong>:<br>• <strong style="color:#00f0ff;">Superficie</strong> (línea cyan) — los enemigos avanzan por aquí<br>• <strong style="color:#b266ff;">Subsuelo</strong> (línea púrpura) — ruta alternativa<br>¡Cubre ambos caminos con torres!',
+            tut_orient: '🔄 <strong>¡Importante!</strong> Al hacer clic en una torre <strong>ya colocada</strong>, cambias su orientación entre Superficie y Subsuelo. ¡Usa esto estratégicamente para cubrir ambos caminos!',
+            tut_unlocks: '🔓 <strong>Desbloqueo de armas:</strong> No todas las torres están disponibles al inicio. Cada una se desbloquea al llegar a una <strong style="color:#00f0ff;">oleada específica</strong> (lo ves abajo del nombre). Ahora mismo solo puedes usar el <strong>Cañón de Iones</strong>. ¡Las demás se irán liberando conforme avances!',
+            tut_select: '👆 Este es tu <strong>Cañón de Iones</strong> — ya está seleccionado. Es tu primera torre de defensa. Puedes cambiar de torre haciendo clic en las tarjetas de abajo.',
+            tut_place: '📍 Haz clic en una <strong>celda libre</strong> del mapa (fuera de los caminos) para colocar la torre. ¡Coloca varias cubriendo ambos caminos!',
+            tut_start: '▶️ ¡Torres listas! Ahora presiona <strong>INICIAR OLEADA 1</strong> para enviar la primera oleada de enemigos.',
+            tut_combat: '👀 Observa cómo tus torres atacan automáticamente. Si los enemigos llegan al final del camino, pierdes integridad. ¡Sobrevive todas las oleadas!',
+            tut_complete: '✅ ¡Tutorial completado! Ya dominas lo básico. Explora los otros modos, gestiona tus mazos y defiende el Núcleo.',
+            tut_next: 'SIGUIENTE',
+            tut_skip: 'OMITIR',
+            tut_replay: '🔄 REPETIR TUTORIAL',
+            tut_continue: 'CONTINUAR',
+            tut_step_of: 'PASO {n}/{m}',
+
+            // ── Misc ──
+            guest: 'Invitado',
+            codex_info: 'INFO'
+        },
+        en: {
+            page_title: 'Cyber Defense',
+            // (patch notes removed)
+
+            menu_id_label: 'OPERATOR IDENTIFICATION:',
+            menu_placeholder: 'Enter your Alias',
+            menu_record_label: 'Highest Wave Reached:',
+            menu_modes_title: '— MAIN MODES —',
+            btn_mode_normal: '▶ STANDARD MODE',
+            btn_mode_inf: '⚠ INFILTRATION (HARD)',
+            menu_events_title: '— SPECIAL EVENTS —',
+            btn_mode_ram: '💾 RAM SHORTAGE',
+            btn_mode_ddos: '💥 DDoS EVENT',
+            menu_system_title: '— SYSTEM —',
+            btn_codex: '📖 TACTICAL CODEX',
+            btn_mode_uns: '🌩 UNSTABLE CONNECTION',
+            // btn_patch removed
+            btn_clear: 'CLEAR RECORDS',
+            btn_decks: '🃏 MANAGE DECKS',
+
+            hud_info_label: 'Op:',
+            hud_abort: 'ABORT',
+            hud_hp: 'INTEGRITY',
+            hud_data: 'DATA',
+            hud_status_waiting: 'Waiting for connection...',
+            hud_start_wave: 'START WAVE',
+            hud_sell_on: 'SELL MODE: ON',
+            hud_sell_off: 'SELL MODE: OFF',
+            hud_wave_active: '⚡ WAVE {n} IN PROGRESS',
+            hud_wave_waiting: '✅ WAITING FOR WAVE {n}',
+            hud_combat: 'SYSTEM IN COMBAT',
+            hud_extraction_ready: 'EXTRACTION READY',
+            hud_enemies_remaining: 'Enemies remaining:',
+            hud_miner_warning: '⚠ MINER ACTIVE: Rewards reduced by 50%',
+            hud_info_tip: 'Hover → range. Click placed tower: switch sector. Laser: dual.<br>Standard Mode: only towers from active deck. Unlock wave defined in deck (1–15). HP visible on towers. Reflector returns damage.',
+            hud_hw_warning: '⚠ UNSTABLE MODE — Towers lose 1 HP/sec',
+
+            msg_no_deck: 'Create a DECK (max 5 towers) first before entering Standard Mode.',
+            msg_confirm_purge: 'Purge database?',
+            msg_confirm_abort: 'Abort mission?',
+            msg_no_tower_deck: 'NOT IN YOUR DECK',
+            msg_unlock_wave: 'AVAILABLE AT WAVE {n}',
+            msg_requires_infiltration: 'REQUIRES INFILTRATION',
+            msg_requires_inestable: 'REQUIRES BEATING UNSTABLE ×12',
+            msg_max_defenses: 'MAXIMUM 6 DEFENSES',
+            msg_insufficient: 'INSUFFICIENT DATA',
+            msg_protocol: 'PROTOCOL {n}/10',
+            msg_ddos_wave: 'DDoS WAVE {n}',
+            msg_unstable_wave: 'UNSTABLE — WAVE {n}',
+            msg_unlocked: 'UNLOCKED:',
+            msg_deck_complete: 'WAVE 15: FULL DECK UNLOCKED',
+            msg_new_record: 'NEW RECORD: WAVE {n}!',
+            msg_extraction_success: 'EXTRACTION SUCCESSFUL!\nUnlocked: [Adaptive Emitter]',
+            msg_mission_complete: 'Mission accomplished! 10 waves completed.',
+            msg_ddos_repelled: 'DDoS ATTACK REPELLED! System defended.',
+            msg_vital_unlocked: 'VITAL PROTOCOL UNLOCKED!\n[Vital Support] available in all modes.\nUnstable completed: {n}×',
+            msg_unstable_progress: 'Unstable Connection beaten. Progress: {n}/12 to unlock Vital Support.',
+            msg_system_compromised: 'SYSTEM COMPROMISED. Connection cut.',
+            msg_boss_detected: 'BOSS DETECTED!',
+
+            tower_name_0: 'Ion Cannon', tower_name_1: 'Quantum Crusher', tower_name_2: 'Precision Laser',
+            tower_name_3: 'Adaptive Emitter', tower_name_4: 'SQL Injector', tower_name_5: 'EMP Pulse',
+            tower_name_6: 'Interference Node', tower_name_7: 'Latency Trap', tower_name_8: 'Corrupt Code',
+            tower_name_9: 'Data Wall', tower_name_10: 'Relay Satellite', tower_name_11: 'Decompiler',
+            tower_name_12: 'Vital Support',
+            tower_short_0: 'Ion', tower_short_1: 'Qnt', tower_short_2: 'Lsr', tower_short_3: 'Adp',
+            tower_short_4: 'SQL', tower_short_5: 'EMP', tower_short_6: 'Nod', tower_short_7: 'Lat',
+            tower_short_8: 'Cor', tower_short_9: 'Wll', tower_short_10: 'Sat', tower_short_11: 'Dec',
+            tower_short_12: 'VS',
+            tower_unlock_label_0: 'ION', tower_unlock_label_1: 'CRUSHER', tower_unlock_label_2: 'LASER',
+            tower_unlock_label_3: 'ADAPTIVE', tower_unlock_label_4: 'SQL', tower_unlock_label_5: 'EMP',
+            tower_unlock_label_6: 'NODE', tower_unlock_label_7: 'LATENCY', tower_unlock_label_8: 'CORRUPT',
+            tower_unlock_label_9: 'WALL', tower_unlock_label_10: 'SATELLITE', tower_unlock_label_11: 'DECOMPILE',
+            tower_unlock_label_12: 'SUPPORT',
+
+            ft_emp: 'EMP!', ft_division: 'SPLIT!', ft_fase: 'PHASE!', ft_armor: 'ARMOR−30%',
+            ft_freeze: 'LATENCY 3s', ft_decompile: 'SHIELD OFF', ft_dual: 'AUTO: DUAL',
+            ft_plane_sub: 'LAYER: SUB', ft_plane_sup: 'LAYER: SUP', ft_tower_destroyed: 'TOWER DESTROYED',
+            ft_data_stolen: '-{n} DATA STOLEN', ft_bounce: '-{n} BOUNCE', ft_repair: '+5 HP',
+
+            mode_standard: 'STANDARD MODE', mode_infiltracion: 'INFILTRATION', mode_escasez: 'RAM SHORTAGE',
+            mode_ddos: 'DDoS EVENT', mode_inestable: 'UNSTABLE CONNECTION',
+
+            badge_lock_wave: '🔒 WAVE {n}', badge_locked: '🔒 LOCKED',
+
+            codex_title: '⬡ TACTICAL CODEX ⬡', codex_close: 'CLOSE CODEX',
+            codex_arsenal: '🔫 ARSENAL — DEFENSE TOWERS', codex_threats: '🦠 IDENTIFIED THREATS',
+            codex_modes: '🎮 GAME MODES', codex_new_defenses: '🔧 ADVANCED ARSENAL',
+            codex_new_threat: '⚡ SPECIAL THREATS', codex_support: '💚 SUPPORT UNIT',
+            codex_combat_notes: 'Combat Notes',
+
+            deck_manager_title: '🃏 DECK MANAGER',
+            deck_1: 'DECK 1', deck_2: 'DECK 2', deck_3: 'DECK 3',
+            deck_active_note: '✅ Your active deck (max 7)',
+            deck_rules_title: 'Standard Mode Rules:',
+            deck_rule1: '• You will only see towers from this deck in-game.',
+            deck_rule2: '• Each tower unlocks at an <strong style="color:#fff;">automatic wave</strong> based on its price (more expensive = later).',
+            deck_rule3: '• The most expensive towers unlock at the end of the deck.',
+            deck_arsenal_title: '📦 Arsenal (click to add to selected slot)',
+            deck_close: 'CLOSE DECK MANAGER',
+            deck_duplicate: 'That tower is already in the deck.',
+            deck_full: 'Deck full (max 7).',
+            deck_slot_tooltip: 'Slot {n} — {name} — Unlock: wave {wave}\nClick: select slot\nDouble click: remove',
+            deck_slot_empty: 'Empty slot — click to select',
+            deck_auto_unlock_note: 'Unlock waves are automatically assigned based on each tower\'s price.',
+
+            msg_need_name: '⚠ Enter your operator name before playing.',
+            // ── Tutorial ──
+            tut_welcome: '🛡️ Welcome, Operator! Your mission: <strong>protect the Core</strong> from cyber attacks. Place defense towers along the paths to eliminate threats before they reach your base.',
+            tut_name: '🏷️ First, we need your <strong>operator name</strong>. Type it in the field above and press the button to continue.',
+            tut_modes: '🎮 The game has <strong>5 modes</strong>:<br>• <strong style="color:#00f0ff;">Standard</strong> — Progression with customizable deck<br>• <strong style="color:#ff3366;">Infiltration</strong> — Hard mode, 10 waves<br>• <strong style="color:#ffcc00;">RAM Scarcity</strong> — Limited resources<br>• <strong style="color:#ff7700;">DDoS Event</strong> — Massive waves<br>• <strong style="color:#ff6600;">Unstable Connection</strong> — Your towers degrade',
+            tut_go_standard: '👆 For the tutorial, click <strong>STANDARD MODE</strong>. You\'ll learn how to play step by step there!',
+            tut_paths: '🗺️ The map has <strong>two paths</strong>:<br>• <strong style="color:#00f0ff;">Surface</strong> (cyan line) — enemies advance here<br>• <strong style="color:#b266ff;">Underground</strong> (purple line) — alternative route<br>Cover both paths with towers!',
+            tut_orient: '🔄 <strong>Important!</strong> Click on a <strong>placed tower</strong> to toggle its orientation between Surface and Underground. Use this strategically to cover both paths!',
+            tut_unlocks: '🔓 <strong>Weapon unlocking:</strong> Not all towers are available at the start. Each one unlocks when you reach a <strong style="color:#00f0ff;">specific wave</strong> (shown below the name). Right now you can only use the <strong>Ion Cannon</strong>. The rest will unlock as you progress!',
+            tut_select: '👆 This is your <strong>Ion Cannon</strong> — already selected. It\'s your first defense tower. Click other cards below to switch towers.',
+            tut_place: '📍 Click on an <strong>empty cell</strong> on the map (off the paths) to place the tower. Place several covering both paths!',
+            tut_start: '▶️ Towers ready! Now press <strong>START WAVE 1</strong> to send the first enemy wave.',
+            tut_combat: '👀 Watch your towers attack automatically. If enemies reach the end of the path, you lose integrity. Survive all waves!',
+            tut_complete: '✅ Tutorial complete! You now master the basics. Explore other modes, manage your decks, and defend the Core.',
+            tut_next: 'NEXT',
+            tut_skip: 'SKIP',
+            tut_replay: '🔄 REPLAY TUTORIAL',
+            tut_continue: 'CONTINUE',
+            tut_step_of: 'STEP {n}/{m}',
+
+            guest: 'Guest', codex_info: 'INFO'
+        },
+        it: {
+            page_title: 'Difesa Cibernetica',
+            // (patch notes removed)
+
+            menu_id_label: 'IDENTIFICAZIONE OPERATORE:',
+            menu_placeholder: 'Inserisci il tuo Alias',
+            menu_record_label: 'Ondata Massima Raggiunta:',
+            menu_modes_title: '— MODALITÀ PRINCIPALI —',
+            btn_mode_normal: '▶ MODALITÀ STANDARD',
+            btn_mode_inf: '⚠ INFILTRAZIONE (DIFFICILE)',
+            menu_events_title: '— EVENTI SPECIALI —',
+            btn_mode_ram: '💾 SCARSITÀ DI RAM',
+            btn_mode_ddos: '💥 EVENTO DDoS',
+            menu_system_title: '— SISTEMA —',
+            btn_codex: '📖 CODEX TATTICO',
+            btn_mode_uns: '🌩 CONNESSIONE INSTABILE',
+            // btn_patch removed
+            btn_clear: 'CANCELLA RECORD',
+            btn_decks: '🃏 GESTISCI MAZZI',
+
+            hud_info_label: 'Op:',
+            hud_abort: 'ANNULLA',
+            hud_hp: 'INTEGRITÀ',
+            hud_data: 'DATI',
+            hud_status_waiting: 'In attesa di connessione...',
+            hud_start_wave: 'AVVIA ONDATA',
+            hud_sell_on: 'MODALITÀ VENDITA: ON',
+            hud_sell_off: 'MODALITÀ VENDITA: OFF',
+            hud_wave_active: '⚡ ONDATA {n} IN CORSO',
+            hud_wave_waiting: '✅ IN ATTESA ONDATA {n}',
+            hud_combat: 'SISTEMA IN COMBATTIMENTO',
+            hud_extraction_ready: 'ESTRAZIONE PRONTA',
+            hud_enemies_remaining: 'Nemici rimanenti:',
+            hud_miner_warning: '⚠ MINATORE ATTIVO: Ricompense ridotte del 50%',
+            hud_info_tip: 'Hover → raggio. Clic torre piazzata: cambia settore. Laser: duale.<br>Modalità Standard: solo torre del mazzo attivo. Sblocco per ondata nel mazzo (1–15). HP visibile sulle torri.',
+            hud_hw_warning: '⚠ MODALITÀ INSTABILE — Le torri perdono 1 HP/sec',
+
+            msg_no_deck: 'Crea un MAZZO (max 5 torri) prima di entrare in Modalità Standard.',
+            msg_confirm_purge: 'Eliminare il database?',
+            msg_confirm_abort: 'Annullare la missione?',
+            msg_no_tower_deck: 'NON È NEL TUO MAZZO',
+            msg_unlock_wave: 'DISPONIBILE ALL\'ONDATA {n}',
+            msg_requires_infiltration: 'RICHIEDE INFILTRAZIONE',
+            msg_requires_inestable: 'RICHIEDE COMPLETARE INSTABILE ×12',
+            msg_max_defenses: 'MASSIMO 6 DIFESI',
+            msg_insufficient: 'DATI INSUFFICIENTI',
+            msg_protocol: 'PROTOCOLLO {n}/10',
+            msg_ddos_wave: 'ONDATA DDoS {n}',
+            msg_unstable_wave: 'INSTABILE — ONDATA {n}',
+            msg_unlocked: 'SBLOCCATO:',
+            msg_deck_complete: 'ONDATA 15: MAZZO COMPLETO SBLOCCATO',
+            msg_new_record: 'NUOVO RECORD: ONDATA {n}!',
+            msg_extraction_success: 'ESTRAZIONE RIUSCITA!\nSbloccato: [Emettitore Adattivo]',
+            msg_mission_complete: 'Missione superata! 10 ondate completate.',
+            msg_ddos_repelled: 'ATTACCO DDoS REPELLO! Sistema difeso.',
+            msg_vital_unlocked: 'PROTOCOLLO VITALE SBLOCCATO!\n[Supporto Vitale] disponibile in tutte le modalità.\nInstabile completato: {n}×',
+            msg_unstable_progress: 'Connessione Instabile superata. Progresso: {n}/12 per sbloccare Supporto Vitale.',
+            msg_system_compromised: 'SISTEMA COMPROMESSO. Connessione interrotta.',
+            msg_boss_detected: 'BOSS RILEVATO!',
+
+            tower_name_0: 'Cannone Ionico', tower_name_1: 'Trituratore Quantico', tower_name_2: 'Laser di Precisione',
+            tower_name_3: 'Emettitore Adattivo', tower_name_4: 'Iniettore SQL', tower_name_5: 'Impulso EMP',
+            tower_name_6: 'Nodo Interferenza', tower_name_7: 'Trappola Latenza', tower_name_8: 'Codice Corrotto',
+            tower_name_9: 'Muro Dati', tower_name_10: 'Satellite Relè', tower_name_11: 'Decompilatore',
+            tower_name_12: 'Supporto Vitale',
+            tower_short_0: 'Ion', tower_short_1: 'Qnt', tower_short_2: 'Lsr', tower_short_3: 'Adp',
+            tower_short_4: 'SQL', tower_short_5: 'EMP', tower_short_6: 'Nod', tower_short_7: 'Lat',
+            tower_short_8: 'Cor', tower_short_9: 'Mur', tower_short_10: 'Sat', tower_short_11: 'Dec',
+            tower_short_12: 'SV',
+            tower_unlock_label_0: 'IONICO', tower_unlock_label_1: 'TRITURATORE', tower_unlock_label_2: 'LASER',
+            tower_unlock_label_3: 'ADATTIVO', tower_unlock_label_4: 'SQL', tower_unlock_label_5: 'EMP',
+            tower_unlock_label_6: 'NODO', tower_unlock_label_7: 'LATENZA', tower_unlock_label_8: 'CORROTTO',
+            tower_unlock_label_9: 'MURO', tower_unlock_label_10: 'SATELLITE', tower_unlock_label_11: 'DECOMP',
+            tower_unlock_label_12: 'SUPPORTO',
+
+            ft_emp: 'EMP!', ft_division: 'DIVISIONE!', ft_fase: 'FASE!', ft_armor: 'ARMATURA−30%',
+            ft_freeze: 'LATENZA 3s', ft_decompile: 'SCUDO OFF', ft_dual: 'AUTO: DUALE',
+            ft_plane_sub: 'PIANO: SUB', ft_plane_sup: 'PIANO: SUP', ft_tower_destroyed: 'TORRE DISTRUTTA',
+            ft_data_stolen: '-{n} DATI RUBATI', ft_bounce: '-{n} RIMBALZO', ft_repair: '+5 HP',
+
+            mode_standard: 'MODALITÀ STANDARD', mode_infiltracion: 'INFILTRAZIONE', mode_escasez: 'SCARSITÀ DI RAM',
+            mode_ddos: 'EVENTO DDoS', mode_inestable: 'CONNESSIONE INSTABILE',
+
+            badge_lock_wave: '🔒 ONDATA {n}', badge_locked: '🔒 BLOCCATO',
+
+            codex_title: '⬡ CODEX TATTICO ⬡', codex_close: 'CHIUDI CODEX',
+            codex_arsenal: '🔫 ARSENALE — TORRI DI DIFESA', codex_threats: '🦠 MINACCE IDENTIFICATE',
+            codex_modes: '🎮 MODALITÀ DI GIOCO', codex_new_defenses: '🔧 ARSENALE AVANZATO',
+            codex_new_threat: '⚡ MINACCE SPECIALI', codex_support: '💚 UNITÀ DI SUPPORTO',
+            codex_combat_notes: 'Note di Combattimento',
+
+            deck_manager_title: '🃏 GESTORE MAZZI',
+            deck_1: 'MAZZO 1', deck_2: 'MAZZO 2', deck_3: 'MAZZO 3',
+            deck_active_note: '✅ Il tuo mazzo attivo (max 7)',
+            deck_rules_title: 'Regole della modalità Standard:',
+            deck_rule1: '• Vedrai solo le torri di questo mazzo in partita.',
+            deck_rule2: '• Ogni torre si sblocca in un\'<strong style="color:#fff;">ondata automatica</strong> in base al prezzo.',
+            deck_rule3: '• Le torri più costose si sbloccano alla fine del mazzo.',
+            deck_arsenal_title: '📦 Arsenale (clic per aggiungere allo slot selezionato)',
+            deck_close: 'CHIUDI GESTORE MAZZI',
+            deck_duplicate: 'Quella torre è già nel mazzo.',
+            deck_full: 'Mazzo pieno (max 7).',
+            deck_slot_tooltip: 'Slot {n} — {name} — Sblocco: ondata {wave}\nClic: seleziona slot\nDoppio clic: rimuovi',
+            deck_slot_empty: 'Slot vuoto — clic per selezionare',
+            deck_auto_unlock_note: 'Le ondate di sblocco vengono assegnate automaticamente in base al prezzo di ogni torre.',
+
+            msg_need_name: '⚠ Inserisci il tuo nome operatore prima di giocare.',
+            // ── Tutorial ──
+            tut_welcome: '🛡️ Benvenuto, Operatore! La tua missione: <strong>proteggere il Nucleo</strong> dagli attacchi informatici. Posiziona torri di difesa lungo i percorsi per eliminare le minacce prima che raggiungano la tua base.',
+            tut_name: '🏷️ Prima di tutto, abbiamo bisogno del tuo <strong>nome operatore</strong>. Scrivilo nel campo sopra e premi il pulsante per continuare.',
+            tut_modes: '🎮 Il gioco ha <strong>5 modalità</strong>:<br>• <strong style="color:#00f0ff;">Standard</strong> — Progressione con mazzo personalizzabile<br>• <strong style="color:#ff3366;">Infiltrazione</strong> — Modalità difficile, 10 ondate<br>• <strong style="color:#ffcc00;">Scarsità di RAM</strong> — Risorse limitate<br>• <strong style="color:#ff7700;">Evento DDoS</strong> — Ondate massive<br>• <strong style="color:#ff6600;">Connessione Instabile</strong> — Le tue torre si degradano',
+            tut_go_standard: '👆 Per il tutorial, fai clic su <strong>MODALITÀ STANDARD</strong>. Lì imparerai a giocare passo dopo passo!',
+            tut_paths: '🗺️ La mappa ha <strong>due percorsi</strong>:<br>• <strong style="color:#00f0ff;">Superficie</strong> (linea ciano) — i nemici avanzano qui<br>• <strong style="color:#b266ff;">Sottosuolo</strong> (linea viola) — percorso alternativo<br>Copri entrambi i percorsi con le torri!',
+            tut_orient: '🔄 <strong>Importante!</strong> Facendo clic su una torre <strong>già posizionata</strong>, cambi la sua orientazione tra Superficie e Sottosuolo. Usa questo strategicamente per coprire entrambi i percorsi!',
+            tut_unlocks: '🔓 <strong>Sblocco armi:</strong> Non tutte le torri sono disponibili all\'inizio. Ognuna si sblocca raggiungendo una <strong style="color:#00f0ff;">ondata specifica</strong> (mostrata sotto il nome). Ora puoi usare solo il <strong>Cannone a Ioni</strong>. Le altre si sbloccheranno man mano che avanzi!',
+            tut_select: '👆 Questo è il tuo <strong>Cannone a Ioni</strong> — già selezionato. È la tua prima torre di difesa. Fai clic sulle altre schede per cambiare torre.',
+            tut_place: '📍 Fai clic su una <strong>cella vuota</strong> della mappa (fuori dai percorsi) per posizionare la torre. Posiziona diverse torri coprendo entrambi i percorsi!',
+            tut_start: '▶️ Torri pronte! Ora premi <strong>AVVIA ONDATA 1</strong> per inviare la prima ondata di nemici.',
+            tut_combat: '👀 Osserva come le tue torri attaccano automaticamente. Se i nemici raggiungono la fine del percorso, perdi integrità. Sopravvivi a tutte le ondate!',
+            tut_complete: '✅ Tutorial completato! Ora padroneggi le basi. Esplora le altre modalità, gestisci i tuoi mazzi e difendi il Nucleo.',
+            tut_next: 'AVANTI',
+            tut_skip: 'SALTA',
+            tut_replay: '🔄 RIPETI TUTORIAL',
+            tut_continue: 'CONTINUA',
+            tut_step_of: 'PASSO {n}/{m}',
+
+            guest: 'Ospite', codex_info: 'INFO'
+        },
+        pt: {
+            page_title: 'Defesa Cibernética',
+            // (patch notes removed)
+
+            menu_id_label: 'IDENTIFICAÇÃO DO OPERADOR:',
+            menu_placeholder: 'Digite seu Alias',
+            menu_record_label: 'Onda Máxima Alcançada:',
+            menu_modes_title: '— MODOS PRINCIPAIS —',
+            btn_mode_normal: '▶ MODO PADRÃO',
+            btn_mode_inf: '⚠ INFILTRAÇÃO (DIFÍCIL)',
+            menu_events_title: '— EVENTOS ESPECIAIS —',
+            btn_mode_ram: '💾 ESCASSEZ DE RAM',
+            btn_mode_ddos: '💥 EVENTO DDoS',
+            menu_system_title: '— SISTEMA —',
+            btn_codex: '📖 CODEX TÁTICO',
+            btn_mode_uns: '🌩 CONEXÃO INSTÁVEL',
+            // btn_patch removed
+            btn_clear: 'LIMPAR REGISTROS',
+            btn_decks: '🃏 GERENCIAR BARALHOS',
+
+            hud_info_label: 'Op:',
+            hud_abort: 'ABORTAR',
+            hud_hp: 'INTEGRIDADE',
+            hud_data: 'DADOS',
+            hud_status_waiting: 'Aguardando conexão...',
+            hud_start_wave: 'INICIAR ONDA',
+            hud_sell_on: 'MODO VENDA: ON',
+            hud_sell_off: 'MODO VENDA: OFF',
+            hud_wave_active: '⚡ ONDA {n} EM CURSO',
+            hud_wave_waiting: '✅ AGUARDANDO ONDA {n}',
+            hud_combat: 'SISTEMA EM COMBATE',
+            hud_extraction_ready: 'EXTRAÇÃO PRONTA',
+            hud_enemies_remaining: 'Inimigos restantes:',
+            hud_miner_warning: '⚠ MINERADOR ATIVO: Recompensas reduzidas em 50%',
+            hud_info_tip: 'Hover → alcance. Clic torre colocada: trocar setor. Laser: dual.<br>Modo Padrão: apenas torres do baralho ativo. Desbloqueio por onda definido no baralho (1–15). HP visível nas torres.',
+            hud_hw_warning: '⚠ MODO INSTÁVEL — As torres perdem 1 HP/seg',
+
+            msg_no_deck: 'Crie um BARALHO (max 5 torres) antes de entrar no Modo Padrão.',
+            msg_confirm_purge: 'Eliminar banco de dados?',
+            msg_confirm_abort: 'Abortar missão?',
+            msg_no_tower_deck: 'NÃO ESTÁ NO SEU BARALHO',
+            msg_unlock_wave: 'DISPONÍVEL NA ONDA {n}',
+            msg_requires_infiltration: 'REQUER INFILTRAÇÃO',
+            msg_requires_inestable: 'REQUER VENCER INSTÁVEL ×12',
+            msg_max_defenses: 'MÁXIMO 6 DEFESAS',
+            msg_insufficient: 'DADOS INSUFICIENTES',
+            msg_protocol: 'PROTOCOLO {n}/10',
+            msg_ddos_wave: 'ONDA DDoS {n}',
+            msg_unstable_wave: 'INSTÁVEL — ONDA {n}',
+            msg_unlocked: 'DESBLOQUEADO:',
+            msg_deck_complete: 'ONDA 15: BARALHO COMPLETO DESBLOQUEADO',
+            msg_new_record: 'NOVO RECORDE: ONDA {n}!',
+            msg_extraction_success: 'EXTRAÇÃO BEM-SUCEDIDA!\nDesbloqueado: [Emissor Adaptativo]',
+            msg_mission_complete: 'Missão superada! 10 ondas completadas.',
+            msg_ddos_repelled: 'ATAQUE DDoS REPELIDO! Sistema defendido.',
+            msg_vital_unlocked: 'PROTOCOLO VITAL DESBLOQUEADO!\n[Suporte Vital] disponível em todos os modos.\nInstável completado: {n}×',
+            msg_unstable_progress: 'Conexão Instável superada. Progresso: {n}/12 para desbloquear Suporte Vital.',
+            msg_system_compromised: 'SISTEMA COMPROMETIDO. Conexão cortada.',
+            msg_boss_detected: 'CHEFE DETECTADO!',
+
+            tower_name_0: 'Canhão de Íons', tower_name_1: 'Triturador Quântico', tower_name_2: 'Laser de Precisão',
+            tower_name_3: 'Emissor Adaptativo', tower_name_4: 'Injetor SQL', tower_name_5: 'Pulso EMP',
+            tower_name_6: 'Nó de Interferência', tower_name_7: 'Armadilha de Latência', tower_name_8: 'Código Corrompido',
+            tower_name_9: 'Muralha de Dados', tower_name_10: 'Satélite Relay', tower_name_11: 'Descompilador',
+            tower_name_12: 'Suporte Vital',
+            tower_short_0: 'Ion', tower_short_1: 'Qnt', tower_short_2: 'Lsr', tower_short_3: 'Adp',
+            tower_short_4: 'SQL', tower_short_5: 'EMP', tower_short_6: 'Nó', tower_short_7: 'Lat',
+            tower_short_8: 'Cor', tower_short_9: 'Mur', tower_short_10: 'Sat', tower_short_11: 'Dec',
+            tower_short_12: 'SV',
+            tower_unlock_label_0: 'ÍON', tower_unlock_label_1: 'TRITURADOR', tower_unlock_label_2: 'LASER',
+            tower_unlock_label_3: 'ADAPTATIVO', tower_unlock_label_4: 'SQL', tower_unlock_label_5: 'EMP',
+            tower_unlock_label_6: 'NÓ', tower_unlock_label_7: 'LATÊNCIA', tower_unlock_label_8: 'CORROMPIDO',
+            tower_unlock_label_9: 'MURALHA', tower_unlock_label_10: 'SATÉLITE', tower_unlock_label_11: 'DESCOMP',
+            tower_unlock_label_12: 'SUPORTE',
+
+            ft_emp: 'EMP!', ft_division: 'DIVISÃO!', ft_fase: 'FASE!', ft_armor: 'ARMADURA−30%',
+            ft_freeze: 'LATÊNCIA 3s', ft_decompile: 'ESCUDO OFF', ft_dual: 'AUTO: DUAL',
+            ft_plane_sub: 'PLANO: SUB', ft_plane_sup: 'PLANO: SUP', ft_tower_destroyed: 'TORRE DESTRUÍDA',
+            ft_data_stolen: '-{n} DADOS ROUBADOS', ft_bounce: '-{n} REBOTE', ft_repair: '+5 HP',
+
+            mode_standard: 'MODO PADRÃO', mode_infiltracion: 'INFILTRAÇÃO', mode_escasez: 'ESCASSEZ DE RAM',
+            mode_ddos: 'EVENTO DDoS', mode_inestable: 'CONEXÃO INSTÁVEL',
+
+            badge_lock_wave: '🔒 ONDA {n}', badge_locked: '🔒 BLOQUEADO',
+
+            codex_title: '⬡ CODEX TÁTICO ⬡', codex_close: 'FECHAR CODEX',
+            codex_arsenal: '🔫 ARSENAL — TORRES DE DEFESA', codex_threats: '🦠 AMEAÇAS IDENTIFICADAS',
+            codex_modes: '🎮 MODOS DE JOGO', codex_new_defenses: '🔧 ARSENAL AVANÇADO',
+            codex_new_threat: '⚡ AMEAÇAS ESPECIAIS', codex_support: '💚 UNIDADE DE SUPORTE',
+            codex_combat_notes: 'Notas de Combate',
+
+            deck_manager_title: '🃏 GERENCIADOR DE BARALHOS',
+            deck_1: 'BARALHO 1', deck_2: 'BARALHO 2', deck_3: 'BARALHO 3',
+            deck_active_note: '✅ Seu baralho ativo (max 7)',
+            deck_rules_title: 'Regras do modo Padrão:',
+            deck_rule1: '• Você verá apenas as torres deste baralho na partida.',
+            deck_rule2: '• Cada torre desbloqueia em uma <strong style="color:#fff;">onda automática</strong> baseada no preço.',
+            deck_rule3: '• As torres mais caras desbloqueiam no final do baralho.',
+            deck_arsenal_title: '📦 Arsenal (clique para adicionar ao slot selecionado)',
+            deck_close: 'FECHAR GERENCIADOR DE BARALHOS',
+            deck_duplicate: 'Essa torre já está no baralho.',
+            deck_full: 'Baralho cheio (max 7).',
+            deck_slot_tooltip: 'Slot {n} — {name} — Desbloqueio: onda {wave}\nClique: selecionar slot\nDuplo clique: remover',
+            deck_slot_empty: 'Slot vazio — clique para selecionar',
+            deck_auto_unlock_note: 'As ondas de desbloqueio são atribuídas automaticamente com base no preço de cada torre.',
+
+            msg_need_name: '⚠ Digite seu nome de operador antes de jogar.',
+            // ── Tutorial ──
+            tut_welcome: '🛡️ Bem-vindo, Operador! Sua missão: <strong>proteger o Núcleo</strong> dos ciberataques. Coloque torres de defesa ao longo dos caminhos para eliminar ameaças antes que cheguem à sua base.',
+            tut_name: '🏷️ Primeiro, precisamos do seu <strong>nome de operador</strong>. Digite no campo acima e pressione o botão para continuar.',
+            tut_modes: '🎮 O jogo tem <strong>5 modos</strong>:<br>• <strong style="color:#00f0ff;">Padrão</strong> — Progressão com baralho personalizável<br>• <strong style="color:#ff3366;">Infiltração</strong> — Modo difícil, 10 ondas<br>• <strong style="color:#ffcc00;">Escassez de RAM</strong> — Recursos limitados<br>• <strong style="color:#ff7700;">Evento DDoS</strong> — Ondas massivas<br>• <strong style="color:#ff6600;">Conexão Instável</strong> — Suas torres se degradam',
+            tut_go_standard: '👆 Para o tutorial, clique em <strong>MODO PADRÃO</strong>. Lá você aprenderá a jogar passo a passo!',
+            tut_paths: '🗺️ O mapa tem <strong>dois caminhos</strong>:<br>• <strong style="color:#00f0ff;">Superfície</strong> (linha ciano) — os inimigos avançam aqui<br>• <strong style="color:#b266ff;">Subsolo</strong> (linha roxa) — rota alternativa<br>Cubra ambos os caminhos com torres!',
+            tut_orient: '🔄 <strong>Importante!</strong> Ao clicar em uma torre <strong>já colocada</strong>, você muda sua orientação entre Superfície e Subsolo. Use isso estrategicamente para cobrir ambos os caminhos!',
+            tut_unlocks: '🔓 <strong>Desbloqueio de armas:</strong> Nem todas as torres estão disponíveis no início. Cada uma desbloqueia ao chegar numa <strong style="color:#00f0ff;">onda específica</strong> (mostrado abaixo do nome). Agora só pode usar o <strong>Canhão de Íons</strong>. As demais serão liberadas conforme avançar!',
+            tut_select: '👆 Este é o seu <strong>Canhão de Íons</strong> — já selecionado. É sua primeira torre de defesa. Clique em outros cards abaixo para trocar de torre.',
+            tut_place: '📍 Clique em uma <strong>célula vazia</strong> do mapa (fora dos caminhos) para posicionar a torre. Coloque várias cobrindo ambos os caminhos!',
+            tut_start: '▶️ Torres prontas! Agora pressione <strong>INICIAR ONDA 1</strong> para enviar a primeira onda de inimigos.',
+            tut_combat: '👀 Observe como suas torres atacam automaticamente. Se os inimigos chegarem ao final do caminho, você perde integridade. Sobreviva a todas as ondas!',
+            tut_complete: '✅ Tutorial completo! Agora você domina o básico. Explore os outros modos, gerencie seus baralhos e defenda o Núcleo.',
+            tut_next: 'PRÓXIMO',
+            tut_skip: 'PULAR',
+            tut_replay: '🔄 REPETIR TUTORIAL',
+            tut_continue: 'CONTINUAR',
+            tut_step_of: 'PASSO {n}/{m}',
+
+            guest: 'Convidado', codex_info: 'INFO'
+        }
+    },
+
+    t: function(key) {
+        var langData = this.translations[this.currentLang];
+        if (langData && langData[key]) return langData[key];
+        var esData = this.translations['es'];
+        if (esData && esData[key]) return esData[key];
+        return key;
+    },
+
+    setLang: function(lang) {
+        this.currentLang = lang;
+        try { _storageSet('dc_lang', lang); } catch(e) {}
+        this.updateAllUI();
+        if (typeof updateGameUI === 'function') updateGameUI();
+        // Refresh active tutorial tooltip text
+        if (typeof TUTORIAL !== 'undefined' && TUTORIAL.active) {
+            TUTORIAL.refreshCurrentStep();
+        }
+    },
+
+    updateAllUI: function() {
+        var self = this;
+        var els = document.querySelectorAll('[data-i18n]');
+        for (var i = 0; i < els.length; i++) {
+            var el = els[i];
+            var key = el.getAttribute('data-i18n');
+            if (key) {
+                var val = self.t(key);
+                el.innerHTML = val.replace(/\n/g, '<br>');
+            }
+        }
+        var placeholders = document.querySelectorAll('[data-i18n-placeholder]');
+        for (var j = 0; j < placeholders.length; j++) {
+            var pEl = placeholders[j];
+            var pKey = pEl.getAttribute('data-i18n-placeholder');
+            if (pKey) {
+                pEl.setAttribute('placeholder', self.t(pKey));
+            }
+        }
+        var titleEl = document.querySelector('title[data-i18n]');
+        if (titleEl) {
+            var tKey = titleEl.getAttribute('data-i18n');
+            document.title = self.t(tKey);
+        }
+        // Update dynamic content that depends on language
+        if (typeof updateRecordDisplay === 'function') updateRecordDisplay();
+        // Re-render deck modal if open
+        var deckModal = document.getElementById('deck-modal');
+        if (deckModal && !deckModal.classList.contains('hidden')) {
+            if (typeof renderDeckModal === 'function') renderDeckModal();
+        }
+        // Re-render tower locks
+        if (typeof refreshTowerLocks === 'function') refreshTowerLocks();
+    },
+
+    setupLanguageSelector: function() {
+        var existing = document.getElementById('lang-selector');
+        if (existing) existing.remove();
+
+        var container = document.createElement('div');
+        container.id = 'lang-selector';
+
+        var label = document.createElement('span');
+        label.className = 'lang-label';
+        label.textContent = '🌐';
+        container.appendChild(label);
+
+        var select = document.createElement('select');
+        var langs = [
+            { code: 'es', label: '🇪🇸 Español' },
+            { code: 'en', label: '🇬🇧 English' },
+            { code: 'it', label: '🇮🇹 Italiano' },
+            { code: 'pt', label: '🇧🇷 Português' }
+        ];
+        for (var i = 0; i < langs.length; i++) {
+            var opt = document.createElement('option');
+            opt.value = langs[i].code;
+            opt.textContent = langs[i].label;
+            if (langs[i].code === this.currentLang) opt.selected = true;
+            select.appendChild(opt);
+        }
+
+        var self = this;
+        select.addEventListener('change', function() {
+            self.setLang(this.value);
+        });
+
+        container.appendChild(select);
+        document.body.appendChild(container);
+    },
+
+    init: function() {
+        try {
+            var saved = _storageGet('dc_lang');
+            if (saved) this.currentLang = saved;
+        } catch(e) {}
+        this.setupLanguageSelector();
+        this.updateAllUI();
+    }
+};
+
+// Auto-init I18N when DOM is ready
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function() { I18N.init(); });
+} else {
+    I18N.init();
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  TUTORIAL — SISTEMA DE TUTORIAL INTERACTIVO v2
+//  Fase 1: Pre-juego en menú principal (bienvenida + modos)
+//  Fase 2: In-game en modo estándar (paths, torres, combate)
+//  Guarda progreso en localStorage (dc_tutorial_done).
+// ═══════════════════════════════════════════════════════════════
+var TUTORIAL = {
+    active: false,
+    step: 0,
+    phase: 1,           // 1 = menú principal, 2 = in-game
+    completed: false,
+    // Fase 1: pasos en el menú principal
+    menuSteps: ['tut_welcome', 'tut_name', 'tut_modes', 'tut_go_standard'],
+    // Fase 2: pasos in-game
+    gameSteps: ['tut_paths', 'tut_orient', 'tut_unlocks', 'tut_select', 'tut_place', 'tut_start', 'tut_combat', 'tut_complete'],
+    steps: [],
+    tooltip: null,
+    highlightEl: null,
+    overlayEl: null,
+    towerPlaced: false,
+    waveStarted: false,
+    _resizeHandler: null,
+    _autoAdvanceTimer: null,
+    _nameCheckInterval: null,
+
+    initMenuPhase: function() {
+        try { this.completed = (_storageGet('dc_tutorial_done') === 'true'); } catch(e) { this.completed = false; }
+        if (this.completed) return;
+        this.phase = 1;
+        this.steps = this.menuSteps.slice();
+        this.active = true;
+        this.step = 0;
+        this.towerPlaced = false;
+        this.waveStarted = false;
+        this.createUI();
+        this.loadStep(0);
+    },
+
+    initGamePhase: function() {
+        this.phase = 2;
+        this.steps = this.gameSteps.slice();
+        this.active = true;
+        this.step = 0;
+        this.towerPlaced = false;
+        this.waveStarted = false;
+        if (!this.tooltip) this.createUI();
+        // Esperar a que la UI del juego esté lista
+        var self = this;
+        setTimeout(function() { self.loadStep(0); }, 600);
+    },
+
+    init: function() {
+        // Compatibilidad: llamado desde initGame en modo normal
+        this.initGamePhase();
+    },
+
+    createUI: function() {
+        if (!document.getElementById('tutorial-tooltip')) {
+            this.tooltip = document.createElement('div');
+            this.tooltip.id = 'tutorial-tooltip';
+            this.tooltip.className = 'hidden';
+            document.body.appendChild(this.tooltip);
+        }
+        if (!document.getElementById('tut-highlight')) {
+            this.highlightEl = document.createElement('div');
+            this.highlightEl.id = 'tut-highlight';
+            this.highlightEl.className = 'tut-highlight hidden';
+            document.body.appendChild(this.highlightEl);
+        }
+        this._resizeHandler = (function(self) {
+            return function() {
+                if (self.active) {
+                    self.positionTooltip();
+                    self.highlightTarget();
+                }
+            };
+        })(this);
+        window.addEventListener('resize', this._resizeHandler);
+    },
+
+    loadStep: function(index) {
+        this._clearAutoAdvance();
+        if (index >= this.steps.length) { this.complete(); return; }
+        this.step = index;
+        var key = this.steps[index];
+        var text = I18N.t(key);
+        var totalSteps = this.steps.length;
+        var counterText = I18N.t('tut_step_of').replace('{n}', (index + 1)).replace('{m}', totalSteps);
+
+        // Fase de etiqueta
+        var phaseLabel = (this.phase === 1)
+            ? '<div class="tut-phase-label">📋 PRE-JUEGO</div>'
+            : '<div class="tut-phase-label">🎮 EN PARTIDA</div>';
+
+        var buttonsHTML = '';
+        if (key === 'tut_name') {
+            // Paso especial: botón continuar deshabilitado hasta que escriba su nombre
+            var nameInput = document.getElementById('username');
+            var hasName = nameInput && nameInput.value.trim().length > 0;
+            buttonsHTML = '<div style="display:flex;justify-content:space-between;margin-top:12px;gap:8px;">'
+                + '<button class="tut-btn skip" id="tut-skip-btn">' + I18N.t('tut_skip') + '</button>'
+                + '<button class="tut-btn" id="tut-next-btn"' + (hasName ? '' : ' disabled style="opacity:0.4;cursor:not-allowed;"') + '>' + I18N.t('tut_next') + '</button>'
+                + '</div>';
+        } else if (index < this.steps.length - 1) {
+            buttonsHTML = '<div style="display:flex;justify-content:space-between;margin-top:12px;gap:8px;">'
+                + '<button class="tut-btn skip" id="tut-skip-btn">' + I18N.t('tut_skip') + '</button>'
+                + '<button class="tut-btn" id="tut-next-btn">' + I18N.t('tut_next') + '</button>'
+                + '</div>';
+        } else {
+            if (this.phase === 1) {
+                // Último paso del menú: ocultar y esperar clic en modo estándar
+                buttonsHTML = '<button class="tut-btn" id="tut-continue-btn" style="width:100%;margin-top:12px;">'
+                    + I18N.t('tut_continue') + '</button>';
+            } else {
+                buttonsHTML = '<button class="tut-btn" id="tut-continue-btn" style="width:100%;margin-top:12px;">'
+                    + I18N.t('tut_continue') + '</button>';
+            }
+        }
+
+        this.tooltip.innerHTML = phaseLabel + '<div class="tut-step-counter">' + counterText + '</div>'
+            + '<div>' + text + '</div>'
+            + buttonsHTML;
+        this.tooltip.classList.remove('hidden');
+
+        // Bind button events
+        var skipBtn = document.getElementById('tut-skip-btn');
+        var nextBtn = document.getElementById('tut-next-btn');
+        var contBtn = document.getElementById('tut-continue-btn');
+        var self = this;
+        if (skipBtn) skipBtn.onclick = function() { self.skip(); };
+        if (nextBtn) nextBtn.onclick = function() { self.nextStep(); };
+        if (contBtn) {
+            if (this.phase === 1 && index === this.steps.length - 1) {
+                // En menú: ocultar tutorial y esperar que el jugador clicke modo estándar
+                contBtn.onclick = function() {
+                    self.hide();
+                    // Resaltar botón modo estándar
+                    var btnStd = document.getElementById('btn-mode-normal');
+                    if (btnStd) {
+                        self.highlightEl.style.left = (btnStd.getBoundingClientRect().left - 5) + 'px';
+                        self.highlightEl.style.top = (btnStd.getBoundingClientRect().top - 5) + 'px';
+                        self.highlightEl.style.width = (btnStd.offsetWidth + 10) + 'px';
+                        self.highlightEl.style.height = (btnStd.offsetHeight + 10) + 'px';
+                        self.highlightEl.classList.remove('hidden');
+                    }
+                };
+            } else {
+                contBtn.onclick = function() { self.hide(); };
+            }
+        }
+
+        this.positionTooltip();
+        this.highlightTarget();
+
+        // Auto-avance: paso de selección de torre (fase 2, paso 2 → índice gameSteps[2] = tut_select)
+        // Detectar por el nombre del paso en vez de índice rígido
+        if (key === 'tut_select') {
+            this._autoAdvanceTimer = setTimeout(function() {
+                if (self.active && self.step === index) self.nextStep();
+            }, 2500);
+        }
+
+        // Paso tut_name: escuchar input del nombre para habilitar botón siguiente
+        if (key === 'tut_name') {
+            var nameField = document.getElementById('username');
+            var nextBtnEl = document.getElementById('tut-next-btn');
+            if (nameField && nextBtnEl) {
+                // Enfocar el campo automáticamente
+                nameField.focus();
+                // Polling cada 300ms para habilitar el botón cuando haya texto
+                this._nameCheckInterval = setInterval(function() {
+                    if (!self.active || self.steps[self.step] !== 'tut_name') {
+                        clearInterval(self._nameCheckInterval);
+                        self._nameCheckInterval = null;
+                        return;
+                    }
+                    var val = nameField.value.trim();
+                    if (val.length > 0) {
+                        nextBtnEl.disabled = false;
+                        nextBtnEl.style.opacity = '1';
+                        nextBtnEl.style.cursor = 'pointer';
+                    } else {
+                        nextBtnEl.disabled = true;
+                        nextBtnEl.style.opacity = '0.4';
+                        nextBtnEl.style.cursor = 'not-allowed';
+                    }
+                }, 300);
+            }
+        }
+    },
+
+    _clearAutoAdvance: function() {
+        if (this._autoAdvanceTimer) {
+            clearTimeout(this._autoAdvanceTimer);
+            this._autoAdvanceTimer = null;
+        }
+        if (this._nameCheckInterval) {
+            clearInterval(this._nameCheckInterval);
+            this._nameCheckInterval = null;
+        }
+    },
+
+    refreshCurrentStep: function() {
+        if (!this.active) return;
+        this.loadStep(this.step);
+    },
+
+    positionTooltip: function() {
+        var self = this;
+        requestAnimationFrame(function() {
+            if (!self.tooltip || !self.active) return;
+            var target = self.getCurrentTarget();
+            if (!target) {
+                self.tooltip.classList.remove('tut-positioned', 'tut-arrow', 'tut-arrow-up');
+                self.tooltip.style.left = '50%';
+                self.tooltip.style.top = '50%';
+                self.tooltip.style.transform = 'translate(-50%, -50%)';
+            } else {
+                var rect = self.tooltip.getBoundingClientRect();
+                var tRect = target.getBoundingClientRect();
+                var left = tRect.left + tRect.width / 2 - rect.width / 2;
+                var top = tRect.top - rect.height - 20;
+                var arrowClass = 'tut-arrow';
+                if (top < 10) {
+                    top = tRect.bottom + 20;
+                    arrowClass = 'tut-arrow-up';
+                }
+                left = Math.max(10, Math.min(window.innerWidth - rect.width - 10, left));
+                if (top + rect.height > window.innerHeight - 10) {
+                    top = window.innerHeight - rect.height - 10;
+                }
+                self.tooltip.className = 'tut-positioned ' + arrowClass;
+                self.tooltip.style.left = left + 'px';
+                self.tooltip.style.top = top + 'px';
+                self.tooltip.style.transform = 'none';
+            }
+        });
+    },
+
+    getCurrentTarget: function() {
+        var key = this.steps[this.step];
+        switch (key) {
+            case 'tut_name':
+                return document.getElementById('username');
+            case 'tut_go_standard':
+                return document.getElementById('btn-mode-normal');
+            case 'tut_paths':
+            case 'tut_orient':
+                return document.getElementById('gameCanvas') || document.getElementById('game-container');
+            case 'tut_unlocks':
+                return document.getElementById('tower-list');
+            case 'tut_select':
+                return document.querySelector('.tower-card:not([style*="display: none"])');
+            case 'tut_place':
+                return document.getElementById('gameCanvas') || document.getElementById('game-container');
+            case 'tut_start':
+                return document.getElementById('btn-start-wave');
+            default:
+                return null;
+        }
+    },
+
+    highlightTarget: function() {
+        this.clearHighlights();
+        var target = this.getCurrentTarget();
+        if (!target || !this.highlightEl) return;
+        var rect = target.getBoundingClientRect();
+        this.highlightEl.style.left = (rect.left - 5) + 'px';
+        this.highlightEl.style.top = (rect.top - 5) + 'px';
+        this.highlightEl.style.width = (rect.width + 10) + 'px';
+        this.highlightEl.style.height = (rect.height + 10) + 'px';
+        this.highlightEl.classList.remove('hidden');
+    },
+
+    clearHighlights: function() {
+        if (this.highlightEl) this.highlightEl.classList.add('hidden');
+    },
+
+    nextStep: function() {
+        this._clearAutoAdvance();
+        this.clearHighlights();
+        if (this.step + 1 < this.steps.length) {
+            this.loadStep(this.step + 1);
+        } else {
+            this.complete();
+        }
+    },
+
+    skip: function() {
+        this._clearAutoAdvance();
+        this.deactivate();
+    },
+
+    complete: function() {
+        this._clearAutoAdvance();
+        this.active = false;
+        this.completed = true;
+        try { _storageSet('dc_tutorial_done', 'true'); } catch (e) { }
+        this.loadStep(this.steps.length - 1);
+        this._cleanup();
+    },
+
+    hide: function() {
+        this._clearAutoAdvance();
+        if (this.tooltip) this.tooltip.classList.add('hidden');
+        this.clearHighlights();
+    },
+
+    deactivate: function() {
+        this._clearAutoAdvance();
+        this.active = false;
+        this.completed = true;
+        try { _storageSet('dc_tutorial_done', 'true'); } catch (e) { }
+        this.hide();
+        this._cleanup();
+    },
+
+    _cleanup: function() {
+        if (this._resizeHandler) {
+            window.removeEventListener('resize', this._resizeHandler);
+            this._resizeHandler = null;
+        }
+    },
+
+    // ── Callbacks del motor del juego (solo fase 2) ──
+    onTowerPlaced: function() {
+        if (!this.active || this.phase !== 2) return;
+        var key = this.steps[this.step];
+        if (key === 'tut_place') {
+            this.towerPlaced = true;
+            this.nextStep();
+        }
+    },
+
+    onWaveStarted: function() {
+        if (!this.active || this.phase !== 2) return;
+        var key = this.steps[this.step];
+        if (key === 'tut_start') {
+            this.waveStarted = true;
+            this.nextStep();
+        }
+    },
+
+    onWaveComplete: function() {
+        if (!this.active || this.phase !== 2) return;
+        var key = this.steps[this.step];
+        if (key === 'tut_combat' && this.waveStarted) {
+            this.nextStep();
+        }
+    },
+
+    // ── Reset para repetir tutorial ──
+    reset: function() {
+        try { _storageRemove('dc_tutorial_done'); } catch (e) { }
+        this.completed = false;
+        this.active = false;
+        this.phase = 1;
+        this.step = 0;
+        this.towerPlaced = false;
+        this.waveStarted = false;
+        this._clearAutoAdvance();
+        if (this.tooltip) this.tooltip.classList.add('hidden');
+        this.clearHighlights();
+        if (this._resizeHandler) {
+            window.removeEventListener('resize', this._resizeHandler);
+            this._resizeHandler = null;
+        }
+    }
+};
+
+// ── Botón REPETIR TUTORIAL en el menú principal ──
+(function() {
+    function addReplayButton() {
+        if (document.getElementById('btn-replay-tutorial')) return;
+        var replayBtn = document.createElement('button');
+        replayBtn.id = 'btn-replay-tutorial';
+        replayBtn.className = 'btn-main btn-tutorial-replay';
+        replayBtn.textContent = I18N.t('tut_replay');
+        replayBtn.addEventListener('click', function() {
+            TUTORIAL.reset();
+            // Iniciar fase 1 inmediatamente (pre-juego en menú)
+            setTimeout(function() { TUTORIAL.initMenuPhase(); }, 300);
+        });
+        var menuBtns = document.querySelector('.menu-buttons');
+        if (menuBtns) {
+            var resetBtn = document.getElementById('btn-reset-data');
+            if (resetBtn) {
+                menuBtns.insertBefore(replayBtn, resetBtn);
+            } else {
+                menuBtns.appendChild(replayBtn);
+            }
+        }
+    }
+    // Add when DOM is ready
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', addReplayButton);
+    } else {
+        addReplayButton();
+    }
+})();
+
+const STORAGE_KEY = 'cyberDefense_save';
 
 // ── STORAGE SAFE LAYER (no rompe si el navegador bloquea localStorage) ──
 function _storageGet(key) {
@@ -986,8 +1884,10 @@ function saveData() {
     updateRecordDisplay();
 }
 function updateRecordDisplay() {
-    document.getElementById('record-val').innerText = userData.highScore;
-    document.getElementById('ui-op-name').innerText = userData.name || 'Invitado';
+    var rv = document.getElementById('record-val');
+    if (rv) rv.innerText = userData.highScore;
+    var op = document.getElementById('ui-op-name');
+    if (op) op.innerText = userData.name || I18N.t('guest');
     const lockEl = document.getElementById('adaptive-locked');
     if (lockEl) lockEl.style.display = userData.unlockedAdaptive ? 'none' : 'inline';
     // Soporte Vital
@@ -1020,6 +1920,16 @@ const towerCards   = document.querySelectorAll('.tower-card');
 const msgOverlay   = document.getElementById('game-message-overlay');
 const modeTitleUI  = document.getElementById('mode-title-ui');
 
+// ── Validación obligatoria de nombre de operador ──
+function requireOperatorName() {
+    var u = document.getElementById('username');
+    if (u && u.value.trim().length > 0) return true;
+    alert(I18N.t('msg_need_name'));
+    var nameField = document.getElementById('username');
+    if (nameField) nameField.focus();
+    return false;
+}
+
 // ── BOTONES MENÚ ──────────────────────────────────────────────
 document.getElementById('btn-open-codex-menu').addEventListener('click', () => modalCodex.classList.remove('hidden'));
 document.getElementById('btn-open-codex-game').addEventListener('click', () => modalCodex.classList.remove('hidden'));
@@ -1027,31 +1937,57 @@ document.getElementById('btn-close-codex').addEventListener('click',     () => m
 
 document.getElementById('btn-mode-normal').addEventListener('click',  () => {
     try {
-    saveData();
-    _normalizeDeckData();
-    const deck = userData.decks[userData.activeDeck] || [];
-    if (deck.length===0) { alert('Primero crea un MAZO (máx 7 torres) antes de entrar a Modo Estándar.'); openDeckModal(); return; }
-    initGame('normal');
-    } catch(e) { console.error('Error al iniciar modo normal:', e); alert('Error al iniciar. Recarga la página.'); }
+        if (!requireOperatorName()) return;
+        saveData();
+        _normalizeDeckData();
+        const deck = userData.decks[userData.activeDeck] || [];
+        if (deck.length===0) {
+            if (typeof TUTORIAL !== 'undefined' && !TUTORIAL.completed) {
+                // Jugador nuevo: crear mazo por defecto automáticamente para no bloquear el tutorial
+                _createDefaultDeck();
+            } else {
+                alert(I18N.t('msg_no_deck'));
+                openDeckModal();
+                return;
+            }
+        }
+        initGame('normal');
+    } catch(e) { console.error('Error modo normal:', e); }
 });
-document.getElementById('btn-mode-event').addEventListener('click',   () => { try { saveData(); initGame('infiltracion'); } catch(e) { console.error('Error infiltracion:', e); alert('Error al iniciar. Recarga la página.'); } });
-document.getElementById('btn-mode-escasez').addEventListener('click', () => { try { saveData(); initGame('escasez'); } catch(e) { console.error('Error escasez:', e); alert('Error al iniciar. Recarga la página.'); } });
-document.getElementById('btn-mode-ddos').addEventListener('click',    () => { try { saveData(); initGame('ddos'); } catch(e) { console.error('Error ddos:', e); alert('Error al iniciar. Recarga la página.'); } });
-document.getElementById('btn-mode-inestable').addEventListener('click', () => { try { saveData(); initGame('inestable'); } catch(e) { console.error('Error inestable:', e); alert('Error al iniciar. Recarga la página.'); } });
+document.getElementById('btn-mode-event').addEventListener('click',   () => { try { if (!requireOperatorName()) return; saveData(); initGame('infiltracion'); } catch(e) { console.error('Error infiltracion:', e); } });
+document.getElementById('btn-mode-escasez').addEventListener('click', () => { try { if (!requireOperatorName()) return; saveData(); initGame('escasez'); } catch(e) { console.error('Error escasez:', e); } });
+document.getElementById('btn-mode-ddos').addEventListener('click',    () => { try { if (!requireOperatorName()) return; saveData(); initGame('ddos'); } catch(e) { console.error('Error ddos:', e); } });
+document.getElementById('btn-mode-inestable').addEventListener('click', () => { try { if (!requireOperatorName()) return; saveData(); initGame('inestable'); } catch(e) { console.error('Error inestable:', e); } });
 
 document.getElementById('btn-reset-data').addEventListener('click', () => {
-    if (confirm('¿Purgar base de datos?')) {
-        _storageRemove(STORAGE_KEY);
-        userData = { name:'', highScore:0, unlockedAdaptive:false, unlockedSoporteVital:false, inestableClearCount:0, decks:[[],[],[]], activeDeck:0 };
-        document.getElementById('username').value = '';
-        updateRecordDisplay();
-    }
+    try {
+        if (confirm(I18N.t('msg_confirm_purge'))) {
+            _storageRemove(STORAGE_KEY);
+            userData = { name:'', highScore:0, unlockedAdaptive:false, unlockedSoporteVital:false, inestableClearCount:0, decks:[[],[],[]], activeDeck:0 };
+            document.getElementById('username').value = '';
+            updateRecordDisplay();
+        }
+    } catch(e) { console.error('Error purge:', e); }
 });
 document.getElementById('btn-abort').addEventListener('click', () => {
-    if (confirm('¿Abortar misión?')) endGame(false);
+    try { if (confirm(I18N.t('msg_confirm_abort'))) endGame(false); } catch(e) { console.error('Error abort:', e); alert('Error al abortar. Recarga la página.'); }
 });
 
 try { loadData(); } catch(e) { /* ignore */ }
+
+// ── Tutorial: fase 1 (pre-juego) se inicia al cargar por primera vez ──
+(function() {
+    function startMenuTutorial() {
+        if (typeof TUTORIAL !== 'undefined' && !TUTORIAL.completed) {
+            TUTORIAL.initMenuPhase();
+        }
+    }
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', function() { setTimeout(startMenuTutorial, 500); });
+    } else {
+        setTimeout(startMenuTutorial, 500);
+    }
+})();
 
 // ── CONSTANTES ────────────────────────────────────────────────
 const TILE  = 40;
@@ -1112,15 +2048,27 @@ function _normalizeDeckData() {
     if (userData.activeDeck === undefined) userData.activeDeck = 0;
 }
 
+// ── Auto-crear mazo por defecto para jugadores nuevos (tutorial) ──
+function _createDefaultDeck() {
+    // Mazo equilibrado para principiantes: 5 torres progresivas
+    // Las oleadas de desbloqueo se calculan automáticamente según el precio
+    userData.decks[userData.activeDeck] = [
+        { type: 0, unlock: _defaultUnlockForType(0) },   // Cañón de Iones (30D) — barato, confiable
+        { type: 4, unlock: _defaultUnlockForType(4) },   // Inyector SQL (80D) — daño overtime
+        { type: 5, unlock: _defaultUnlockForType(5) },   // Pulso EMP (140D) — daño en área
+        { type: 1, unlock: _defaultUnlockForType(1) },   // Trituradora Cuántica (115D) — daño acumulativo
+        { type: 2, unlock: _defaultUnlockForType(2) },   // Láser de Precisión (100D) — anti-jefes
+    ];
+    saveData();
+}
+
 function _shortName(t) {
-    const names = ['Ion','Qnt','Lsr','Adp','SQL','EMP','Nodo','Lat','Corr','Mur','Sat','Desc','SV'];
-    return names[t] || ('T'+t);
+    return I18N.t('tower_short_' + t) || ('T' + t);
 }
 
 let deckSelectedSlot = 0;
 
 function renderDeckModal() {
-    try {
     _normalizeDeckData();
     const panel = document.getElementById('deck-slots-display');
     const arsenal = document.getElementById('deck-arsenal');
@@ -1141,11 +2089,13 @@ function renderDeckModal() {
         slot.style.outline = (i===deckSelectedSlot) ? '2px solid #00f0ff' : 'none';
 
         if (filled) {
-            slot.textContent = _shortName(deck[i].type);
-            slot.title = `Slot ${i+1} — ${_shortName(deck[i].type)} — Oleada ${deck[i].unlock}`;
+            slot.textContent = `${_shortName(deck[i].type)}
+O${deck[i].unlock}`;
+            slot.style.whiteSpace = 'pre';
+            slot.title = I18N.t('deck_slot_tooltip').replace('{n}', i+1).replace('{name}', _shortName(deck[i].type)).replace('{wave}', deck[i].unlock);
         } else {
             slot.textContent = '+';
-            slot.title = 'Slot vacío — clic para seleccionar';
+            slot.title = I18N.t('deck_slot_empty');
         }
 
         slot.addEventListener('click', () => { deckSelectedSlot = i; renderDeckModal(); });
@@ -1162,8 +2112,8 @@ function renderDeckModal() {
     let allTypes = [0,1,2,3,4,5,6,7,8,9,10,11];
     if (userData.unlockedSoporteVital) allTypes.push(12);
     const labels = {
-        0:'Cañón de Iones',1:'Trituradora Cuántica',2:'Láser de Precisión',3:'Emisor Adaptativo',4:'Inyector SQL',5:'Pulso EMP',
-        6:'Nodo Interferencia',7:'Trampa Latencia',8:'Código Corrupto',9:'Muralla de Datos',10:'Satélite Relevo',11:'Descompilador',12:'Soporte Vital'
+        0:I18N.t('tower_name_0'),1:I18N.t('tower_name_1'),2:I18N.t('tower_name_2'),3:I18N.t('tower_name_3'),4:I18N.t('tower_name_4'),5:I18N.t('tower_name_5'),
+        6:I18N.t('tower_name_6'),7:I18N.t('tower_name_7'),8:I18N.t('tower_name_8'),9:I18N.t('tower_name_9'),10:I18N.t('tower_name_10'),11:I18N.t('tower_name_11'),12:I18N.t('tower_name_12')
     };
 
     arsenal.innerHTML = '';
@@ -1176,8 +2126,8 @@ function renderDeckModal() {
         btn.addEventListener('click', () => {
             const deck = userData.decks[userData.activeDeck];
             // prevent duplicates
-            if (deck.some(x => x.type === t)) { alert('Esa torre ya está en el mazo.'); return; }
-            if (deck.length >= 7) { alert('Mazo lleno (máx 7).'); return; }
+            if (deck.some(x => x.type === t)) { alert(I18N.t('deck_duplicate')); return; }
+            if (deck.length >= 7) { alert(I18N.t('deck_full')); return; }
 
             // Oleada de desbloqueo automática según precio
             let unlock = _defaultUnlockForType(t);
@@ -1192,7 +2142,6 @@ function renderDeckModal() {
         });
         arsenal.appendChild(btn);
     });
-    } catch(e) { console.error('renderDeckModal error:', e); }
 }
 
 function openDeckModal() {
@@ -1487,7 +2436,7 @@ class Enemy {
                 if (this.variant==='tank') {
                     let stolen = 30;
                     gameState.money = Math.max(0, gameState.money - stolen);
-                    particles.push(new FloatingText(this.x, this.y-30, `-${stolen} DATOS ROBADOS`, '#ff0000'));
+                    particles.push(new FloatingText(this.x, this.y-30, I18N.t('ft_data_stolen').replace('{n}', stolen), '#ff0000'));
                 }
                 updateGameUI(); return false;
             }
@@ -1860,7 +2809,7 @@ function initGame(mode) {
 
     const moneyMap   = {normal:120, infiltracion:200, escasez:80, ddos:250, inestable:150};
     const healthMap  = {normal:20,  infiltracion:10,  escasez:15, ddos:25, inestable:15};
-    const titleMap   = {normal:'MODO ESTÁNDAR', infiltracion:'INFILTRACIÓN', escasez:'ESCASEZ DE RAM', ddos:'EVENTO DDoS', inestable:'CONEXIÓN INESTABLE'};
+    const titleMap   = {normal:I18N.t('mode_standard'), infiltracion:I18N.t('mode_infiltracion'), escasez:I18N.t('mode_escasez'), ddos:I18N.t('mode_ddos'), inestable:I18N.t('mode_inestable')};
     const colorMap   = {normal:'var(--cyan-glow)', infiltracion:'var(--red-alert)', escasez:'var(--yellow-warn)', ddos:'var(--orange-dot)', inestable:'#ff6600'};
 
     gameState = {
@@ -1888,6 +2837,13 @@ function initGame(mode) {
     if (hwBar) hwBar.style.display = (mode==='inestable') ? 'block' : 'none';
     cancelAnimationFrame(gameLoopId);
     gameLoop();
+
+    // ── Tutorial: transición a fase 2 in-game (modo estándar) ──
+    if (mode === 'normal' && typeof TUTORIAL !== 'undefined' && !TUTORIAL.completed) {
+        TUTORIAL.hide();
+        TUTORIAL.clearHighlights();
+        setTimeout(function() { TUTORIAL.initGamePhase(); }, 800);
+    }
 }
 
 function refreshTowerLocks() {
@@ -1952,7 +2908,9 @@ function refreshTowerLocks() {
         // Deck unlock waves
         if (allowed) {
             const req = unlockMap[type] || 1;
-            if (wave < req) locked = true;
+            // Wave 0 = pre-juego: torres con unlock 1 están disponibles
+            if (wave === 0 && req <= 1) { /* permitido */ }
+            else if (wave < req) locked = true;
             // Adaptativo still requires earn
             if (type===3 && !userData.unlockedAdaptive) locked = true;
 
@@ -1963,7 +2921,7 @@ function refreshTowerLocks() {
                 b.className = 'wave-badge';
                 card.appendChild(b);
             }
-            b.textContent = '🔒 OLA ' + req;
+            b.textContent = I18N.t('badge_lock_wave').replace('{n}', req);
             b.style.display = (wave>=req) ? 'none' : 'inline';
 
             card.classList.toggle('locked-card', locked);
@@ -1982,7 +2940,7 @@ function refreshTowerLocks() {
 // ══════════════════════════════════════════════════════════════
 function toggleSellMode() {
     gameState.sellMode=!gameState.sellMode;
-    btnToggleSell.innerText = gameState.sellMode?'MODO VENTA: ON':'MODO VENTA: OFF';
+    btnToggleSell.innerText = gameState.sellMode ? I18N.t('hud_sell_on') : I18N.t('hud_sell_off');
     btnToggleSell.classList.toggle('active', gameState.sellMode);
 }
 btnToggleSell.addEventListener('click', toggleSellMode);
@@ -2024,23 +2982,27 @@ function handleCanvasClick(px,py) {
     // Modo Estándar: desbloqueo por MAZO (oleada 1–15), y a oleada 15 todo el mazo está disponible
     if (gameState.mode==='normal') {
         const allowed = gameState.allowedDeckTypes || [];
-        if (!allowed.includes(selType)) { showGameMessage('NO ESTÁ EN TU MAZO','var(--red-alert)'); return; }
+        if (!allowed.includes(selType)) { showGameMessage(I18N.t('msg_no_tower_deck'),'var(--red-alert)'); return; }
         const m = gameState.deckUnlockMap || {};
         reqWave = Math.max(1, Math.min(15, parseInt(m[selType] || 1)));
     }
-    if(gameState.wave < reqWave) { showGameMessage('DISPONIBLE EN OLEADA '+reqWave,'var(--yellow-warn)'); return; }
-    if(selType===3 && !userData.unlockedAdaptive) { showGameMessage('REQUIERE INFILTRACIÓN','var(--red-alert)'); return; }
-    if(selType===12 && !userData.unlockedSoporteVital && gameState.mode!=='inestable') { showGameMessage('REQUIERE GANAR INESTABLE ×12','#ff6600'); return; }
+    // Wave 0 = pre-juego: permitir colocar torres con unlock 1
+    if(gameState.wave === 0 && reqWave <= 1) { /* permitido */ }
+    else if(gameState.wave < reqWave) { showGameMessage(I18N.t('msg_unlock_wave').replace('{n}',reqWave),'var(--yellow-warn)'); return; }
+    if(selType===3 && !userData.unlockedAdaptive) { showGameMessage(I18N.t('msg_requires_infiltration'),'var(--red-alert)'); return; }
+    if(selType===12 && !userData.unlockedSoporteVital && gameState.mode!=='inestable') { showGameMessage(I18N.t('msg_requires_inestable'),'#ff6600'); return; }
     // Inestable: max 6 towers
-    if(gameState.mode==='inestable' && towers.length>=6) { showGameMessage('MÁXIMO 6 DEFENSAS','var(--red-alert)'); return; }
+    if(gameState.mode==='inestable' && towers.length>=6) { showGameMessage(I18N.t('msg_max_defenses'),'var(--red-alert)'); return; }
 
     let cost=getTowerCost(selType);
     if(gameState.money>=cost){
         gameState.money-=cost;
         towers.push(new Tower(gx,gy,selType));
         updateGameUI();
+        // ── Tutorial: notificar torre colocada ──
+        if(typeof TUTORIAL !== 'undefined') TUTORIAL.onTowerPlaced();
     } else {
-        showGameMessage('DATOS INSUFICIENTES','var(--yellow-warn)');
+        showGameMessage(I18N.t('msg_insufficient'),'var(--yellow-warn)');
     }
 }
 
@@ -2052,26 +3014,26 @@ function startNextWave() {
     gameState.wave++;
     gameState.isWaveActive=true;
     gameState.waveData=buildWave(gameState.wave, gameState.mode);
-    if(gameState.mode==='infiltracion') showGameMessage(`PROTOCOLO ${gameState.wave}/10`,'var(--red-alert)');
-    if(gameState.mode==='ddos') showGameMessage(`OLEADA DDoS ${gameState.wave}`,'var(--orange-dot)');
-    if(gameState.mode==='inestable') showGameMessage(`INESTABLE — OLEADA ${gameState.wave}`,'#ff6600');
+    if(gameState.mode==='infiltracion') showGameMessage(I18N.t('msg_protocol').replace('{n}',gameState.wave),'var(--red-alert)');
+    if(gameState.mode==='ddos') showGameMessage(I18N.t('msg_ddos_wave').replace('{n}',gameState.wave),'var(--orange-dot)');
+    if(gameState.mode==='inestable') showGameMessage(I18N.t('msg_unstable_wave').replace('{n}',gameState.wave),'#ff6600');
     // Wave unlock notifications (Modo Estándar) — basado en tu MAZO
     if(gameState.mode==='normal') {
-        const labels = {
-            0:'ION',1:'TRITURADORA',2:'LÁSER',3:'ADAPTATIVO',4:'SQL',5:'EMP',
-            6:'NODO',7:'LATENCIA',8:'CORRUPTO',9:'MURALLA',10:'SATÉLITE',11:'DESCOMP',12:'SOPORTE'
-        };
+        const labels = {};
+        for (var li=0; li<=12; li++) { labels[li] = I18N.t('tower_unlock_label_' + li); }
         const deck = (userData.decks && userData.decks[userData.activeDeck]) ? userData.decks[userData.activeDeck] : [];
         const unlockedNow = deck.filter(x => x && parseInt(x.unlock)===gameState.wave).map(x => labels[x.type] || ('T'+x.type));
         if(unlockedNow.length>0) {
-            showGameMessage('DESBLOQUEADO: ' + unlockedNow.join(' + '), 'var(--cyan-glow)');
+            showGameMessage(I18N.t('msg_unlocked') + ' ' + unlockedNow.join(' + '), 'var(--cyan-glow)');
         }
         if(gameState.wave===15) {
-            showGameMessage('OLEADA 15: MAZO COMPLETO DESBLOQUEADO', 'var(--yellow-warn)');
+            showGameMessage(I18N.t('msg_deck_complete'), 'var(--yellow-warn)');
         }
     }
     refreshTowerLocks();
     updateGameUI();
+    // ── Tutorial: notificar oleada iniciada ──
+    if(typeof TUTORIAL !== 'undefined') TUTORIAL.onWaveStarted();
 }
 btnStartWave.addEventListener('click', startNextWave);
 
@@ -2088,25 +3050,25 @@ function endGame(victory) {
     cancelAnimationFrame(gameLoopId);
     if(gameState.mode==='normal' && gameState.wave>userData.highScore){
         userData.highScore=gameState.wave;
-        alert(`¡NUEVO RÉCORD: OLEADA ${gameState.wave}!`);
+        alert(I18N.t('msg_new_record').replace('{n}',gameState.wave));
     }
     if(gameState.mode==='infiltracion' && victory){
         if(!userData.unlockedAdaptive){
             userData.unlockedAdaptive=true;
-            alert('¡EXTRACCIÓN EXITOSA!\nDesbloqueado: [Emisor Adaptativo]');
-        } else alert('¡Misión superada! 10 oleadas completadas.');
+            alert(I18N.t('msg_extraction_success'));
+        } else alert(I18N.t('msg_mission_complete'));
     }
-    if(gameState.mode==='ddos' && victory) alert('¡ATAQUE DDoS REPELIDO! Sistema defendido.');
+    if(gameState.mode==='ddos' && victory) alert(I18N.t('msg_ddos_repelled'));
     if(gameState.mode==='inestable' && victory){
         userData.inestableClearCount = (userData.inestableClearCount||0)+1;
         if(!userData.unlockedSoporteVital && userData.inestableClearCount>=12) {
             userData.unlockedSoporteVital=true;
-            alert('¡PROTOCOLO VITAL DESBLOQUEADO!\n[Soporte Vital] disponible en todos los modos.\nInestable completado: '+userData.inestableClearCount+'×');
+            alert(I18N.t('msg_vital_unlocked').replace('{n}',userData.inestableClearCount));
         } else {
-            alert('Conexión Inestable superada. Progreso: '+userData.inestableClearCount+'/12 para desbloquear Soporte Vital.');
+            alert(I18N.t('msg_unstable_progress').replace('{n}',userData.inestableClearCount));
         }
     }
-    if(!victory && gameState.health<=0) alert('SISTEMA COMPROMETIDO. Conexión cortada.');
+    if(!victory && gameState.health<=0) alert(I18N.t('msg_system_compromised'));
     saveData(); refreshTowerLocks();
     screenGame.classList.add('hidden');
     screenStart.classList.remove('hidden');
@@ -2144,6 +3106,8 @@ function updatePhysics() {
         if(allZero && enemies.length===0){
             gameState.isWaveActive=false;
             updateGameUI();
+            // ── Tutorial: notificar oleada completada ──
+            if(typeof TUTORIAL !== 'undefined') TUTORIAL.onWaveComplete();
         }
     }
 
@@ -2238,7 +3202,7 @@ function spawnBoss(pathType) {
     boss.radius = 25; boss.color = '#ff00ff';
     boss.reward = 250; boss.dmgToPlayer = 10;
     enemies.push(boss);
-    showGameMessage('¡JEFE DETECTADO!', '#ff00ff');
+    showGameMessage(I18N.t('msg_boss_detected'), '#ff00ff');
 }
 
 // ══════════════════════════════════════════════════════════════
@@ -2334,12 +3298,12 @@ function updateGameUI() {
     healthEl.innerText = gameState.health;
 
     if(gameState.isWaveActive){
-        waveStatusEl.innerText=`⚡ OLEADA ${gameState.wave} EN CURSO`;
+        waveStatusEl.innerText = I18N.t('hud_wave_active').replace('{n}',gameState.wave);
         waveStatusEl.style.color='var(--red-alert)';
-        btnStartWave.disabled=true; btnStartWave.innerText='SISTEMA EN COMBATE';
+        btnStartWave.disabled=true; btnStartWave.innerText=I18N.t('hud_combat');
     } else {
-        let nextLabel = (gameState.wave>=gameState.maxWaves) ? 'EXTRACCIÓN LISTA' : `INICIAR OLEADA ${gameState.wave+1}`;
-        waveStatusEl.innerText=`✅ ESPERANDO OLEADA ${gameState.wave+1}`;
+        let nextLabel = (gameState.wave>=gameState.maxWaves) ? I18N.t('hud_extraction_ready') : I18N.t('hud_start_wave') + ' ' + (gameState.wave+1);
+        waveStatusEl.innerText = I18N.t('hud_wave_waiting').replace('{n}',gameState.wave+1);
         waveStatusEl.style.color='var(--green-safe)';
         btnStartWave.disabled=false; btnStartWave.innerText=nextLabel;
     }
@@ -2356,7 +3320,7 @@ function updateGameUI() {
     // Advertencia minero
     if(gameState.minerActive){
         moneyEl.style.color='#88aaff';
-        moneyEl.title='⚠ MINERO ACTIVO: Recompensas reducidas al 50%';
+        moneyEl.title = I18N.t('hud_miner_warning');
     } else {
         moneyEl.style.color='#ffd700';
         moneyEl.title='';
@@ -2368,7 +3332,7 @@ function updateGameUI() {
     if (counterEl && counterText) {
         if (gameState.isWaveActive && enemies.length > 0) {
             counterEl.style.display = 'block';
-            counterText.textContent = 'Enemigos restantes: ' + enemies.length;
+            counterText.textContent = I18N.t('hud_enemies_remaining') + ' ' + enemies.length;
         } else {
             counterEl.style.display = 'none';
         }
@@ -2409,25 +3373,9 @@ canvas.addEventListener('mousedown',(e)=>{
     handleCanvasClick((e.clientX-r.left)*scaleX, (e.clientY-r.top)*scaleY);
 });
 
-    // ── PATCH NOTES ────────────────────────────────────────────────
-    (function() {
-        function closePatch() {
-            var m = document.getElementById('patch-modal');
-            if (m) { m.style.display = 'none'; m.classList.add('hidden'); }
-        }
-        function openPatch() {
-            var m = document.getElementById('patch-modal');
-            if (m) { m.style.display = ''; m.classList.remove('hidden'); }
-        }
-        var btnClose  = document.getElementById('btn-close-patch');
-        var btnReopen = document.getElementById('btn-patch-notes-open');
-        if (btnClose)  btnClose.addEventListener('click', closePatch);
-        if (btnReopen) btnReopen.addEventListener('click', openPatch);
-    })();
-
 
 // ════════════════════════════════════════════════════════════════
-//  DEFENSA CIBERNÉTICA v2.5.0 — AUDIO ENGINE + MOBILE
+//  DEFENSA CIBERNÉTICA — AUDIO ENGINE + MOBILE
 // ════════════════════════════════════════════════════════════════
 
 // ── CANVAS DINÁMICO (escala al viewport) ────────────────────────
@@ -2922,7 +3870,6 @@ document.getElementById('btn-mute').addEventListener('click', () => {
 // ── Hooks a botones MENÚ (SFX + música según modo) ───────────
 (function hookMenuSounds() {
     const modal = document.getElementById('codex-modal');
-    const patchModal = document.getElementById('patch-modal');
 
     // Codex
     ['btn-open-codex-menu','btn-open-codex-game'].forEach(id => {
@@ -2933,12 +3880,6 @@ document.getElementById('btn-mute').addEventListener('click', () => {
         const el = document.getElementById(id);
         if (el) el.addEventListener('click', () => AudioEngine.sfxCodexClose());
     });
-
-    // Patch notes
-    const bcp = document.getElementById('btn-close-patch');
-    if (bcp) bcp.addEventListener('click', () => { AudioEngine.sfxCodexClose(); const pm = document.getElementById('patch-modal'); if(pm) pm.classList.add('hidden'); });
-    const bpno = document.getElementById('btn-patch-notes-open');
-    if (bpno) bpno.addEventListener('click', () => { AudioEngine.sfxCodexOpen(); const pm = document.getElementById('patch-modal'); if(pm){ pm.classList.remove('hidden'); pm.style.display=''; } });
 
     // Botones de modo
     const modeMap = {
