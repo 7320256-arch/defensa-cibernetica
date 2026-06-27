@@ -315,6 +315,42 @@
     }
     .btn-tutorial-replay:hover { background: #00ff00; color: #000; box-shadow: 0 0 15px rgba(0,255,0,0.3); }
 
+    /* ── SPEED CONTROLS ── */
+    .speed-controls { display:flex; gap:4px; margin-bottom:8px; }
+    .btn-speed { background:#162032; border:1px solid #334155; color:#94a3b8; padding:6px 4px; font-family:inherit; font-size:11px; cursor:pointer; border-radius:4px; flex:1; transition:all 0.2s; text-align:center; }
+    .btn-speed.spd-active { border-color:var(--cyan-glow); color:var(--cyan-glow); background:rgba(0,240,255,0.08); box-shadow:0 0 8px rgba(0,240,255,0.2); }
+    .btn-speed:hover { border-color:var(--cyan-glow); color:var(--cyan-glow); }
+
+    /* ── STATS MODAL ── */
+    #stats-modal { z-index:300; }
+    .stats-grid { display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; margin:14px 0; }
+    .stat-card { background:#162032; border:1px solid #2a3b5c; padding:10px 8px; border-radius:6px; text-align:center; }
+    .stat-card-value { font-size:1.6rem; font-weight:bold; }
+    .stat-card-label { font-size:0.68rem; color:#94a3b8; margin-top:3px; letter-spacing:1px; }
+    .rank-display { text-align:center; padding:12px; margin:10px 0; border-radius:6px; border:2px solid; }
+    .rank-title { font-size:0.65rem; letter-spacing:3px; margin-bottom:5px; opacity:0.8; }
+    .rank-name { font-size:1.8rem; font-weight:bold; letter-spacing:5px; }
+    .record-row { display:flex; justify-content:space-between; padding:5px 8px; border-bottom:1px solid #1e293b; font-size:11px; }
+    .record-row:last-child { border-bottom:none; }
+    .record-mode-name { color:#94a3b8; }
+    .record-wave { color:var(--cyan-glow); font-weight:bold; }
+
+    /* ── HEALTH VISUAL ── */
+    #health-val { transition:color 0.4s; }
+    @keyframes healthPulse { from { text-shadow:0 0 8px #ff3366; } to { text-shadow:0 0 22px #ff3366, 0 0 4px #ff0000; } }
+    .health-critical { animation:healthPulse 0.5s infinite alternate; }
+
+    /* ── OBJECTIVE BANNER ── */
+    #objective-banner { position:absolute; top:8px; left:50%; transform:translateX(-50%); background:rgba(0,0,0,0.92); border:2px solid #ffcc00; padding:8px 18px; border-radius:6px; font-size:12px; color:#ffcc00; text-align:center; pointer-events:none; z-index:40; min-width:210px; display:none; transition:border-color 0.4s, color 0.4s; }
+    .obj-title { font-size:8px; letter-spacing:2px; color:#ff7700; margin-bottom:3px; }
+    .obj-desc { font-weight:bold; font-size:11px; }
+    .obj-progress { margin-top:4px; font-size:10px; color:#94a3b8; }
+
+    /* ── CACHE WARNING ── */
+    #cache-warning { position:fixed; bottom:64px; right:12px; background:rgba(10,15,30,0.97); border:1px solid #ffcc00; color:#ffcc00; padding:12px 14px; border-radius:6px; font-size:11px; max-width:260px; z-index:9997; line-height:1.6; }
+    #cache-warning .cw-btn { display:inline-block; background:transparent; border:1px solid #ffcc00; color:#ffcc00; padding:4px 12px; cursor:pointer; font-family:inherit; font-size:10px; border-radius:3px; margin-top:8px; }
+    #cache-warning .cw-btn:hover { background:#ffcc00; color:#050814; }
+
     </style>
 </head>
 <body>
@@ -620,6 +656,11 @@
     <div id="game-container">
         <canvas id="gameCanvas" width="800" height="600"></canvas>
         <div id="game-message-overlay">MENSAJE</div>
+        <div id="objective-banner">
+            <div class="obj-title">⚡ OBJETIVO ESPECIAL DE OLEADA</div>
+            <div class="obj-desc" id="obj-desc">Descripción</div>
+            <div class="obj-progress" id="obj-progress"></div>
+        </div>
     </div>
 
     <div id="ui-panel">
@@ -646,6 +687,11 @@
         </div>
 
         <button id="btn-start-wave" class="btn-action" data-i18n="hud_start_wave">INICIAR OLEADA</button>
+        <div class="speed-controls">
+            <button class="btn-speed spd-active" data-speed="1">▶ ×1</button>
+            <button class="btn-speed" data-speed="2">▶▶ ×2</button>
+            <button class="btn-speed" data-speed="3">▶▶▶ ×3</button>
+        </div>
         <button id="btn-toggle-sell" class="btn-action btn-sell" data-i18n="hud_sell_off">MODO VENTA: OFF</button>
 
         <div class="info-tip" data-i18n="hud_info_tip">Hover → rango. Clic torre colocada: cambiar sector. Láser: dual.<br>Modo Estándar: solo torres del mazo activo. Desbloqueo por oleada definido en mazo (1–15). HP visible en torres. Reflector devuelve daño.</div>
@@ -714,6 +760,20 @@
     </div>
 </div>
 
+
+<!-- ═══════════════════ STATS MODAL ═══════════════════ -->
+<div id="stats-modal" class="modal-overlay hidden">
+  <div class="modal-content" style="max-width:600px;">
+    <h2 class="modal-title" id="stats-modal-title" style="color:#00ff66;">MISIÓN COMPLETADA</h2>
+    <div class="rank-display" id="stats-rank-display">
+      <div class="rank-title">RANGO ALCANZADO</div>
+      <div class="rank-name" id="stats-rank-name">ÉLITE</div>
+    </div>
+    <div class="stats-grid" id="stats-grid"></div>
+    <div id="mode-records-display"></div>
+    <button id="btn-close-stats" class="btn-main" style="width:100%;margin-top:15px;">◀ VOLVER AL MENÚ</button>
+  </div>
+</div>
 
 <!-- ═══════════════════ DECK MANAGER MODAL ═══════════════════ -->
 <div id="deck-modal" class="modal-overlay hidden">
@@ -1848,7 +1908,7 @@ function _storageRemove(key) {
     try { localStorage.removeItem(key); return true; } catch(e) { return false; }
 }
 
-let userData = { name:'', highScore:0, unlockedAdaptive:false, unlockedSoporteVital:false, inestableClearCount:0, decks:[[],[],[]], activeDeck:0 };
+let userData = { name:'', highScore:0, unlockedAdaptive:false, unlockedSoporteVital:false, inestableClearCount:0, decks:[[],[],[]], activeDeck:0, modeRecords:{} };
 
 function loadData() {
     // Nunca debe romper el arranque del juego
@@ -1863,7 +1923,7 @@ function loadData() {
                 d = null;
             }
             if (d) {
-                userData = Object.assign({ name:'', highScore:0, unlockedAdaptive:false, unlockedSoporteVital:false, inestableClearCount:0, decks:[[],[],[]], activeDeck:0 }, d);
+                userData = Object.assign({ name:'', highScore:0, unlockedAdaptive:false, unlockedSoporteVital:false, inestableClearCount:0, decks:[[],[],[]], activeDeck:0, modeRecords:{} }, d);
                 const u = document.getElementById('username');
                 if (u) u.value = userData.name || '';
                 _normalizeDeckData();
@@ -2816,11 +2876,16 @@ function initGame(mode) {
         mode, wave:0,
         money:  moneyMap[mode]  ?? 120,
         health: healthMap[mode] ?? 20,
+        maxHealth: healthMap[mode] ?? 20,
         maxWaves: (mode==='infiltracion') ? 10 : (mode==='ddos') ? 10 : (mode==='inestable') ? 10 : Infinity,
         isWaveActive: false, sellMode: false, selectedTowerType: 0, isPlaying: true,
         waveData: null,
-        minerActive: false // flag si hay minero vivo
+        minerActive: false,
+        stats: { enemiesKilled:0, dataEarned:0, towersPlaced:0, towersLost:0, objectivesCompleted:0 }
     };
+    // Reset speed to ×1 on game start
+    window.gameSpeed = 1;
+    document.querySelectorAll('.btn-speed').forEach(b => b.classList.toggle('spd-active', b.getAttribute('data-speed')==='1'));
 
     if(gameState.sellMode) toggleSellMode();
     modeTitleUI.innerText = titleMap[mode] ?? 'MODO';
@@ -2998,6 +3063,8 @@ function handleCanvasClick(px,py) {
     if(gameState.money>=cost){
         gameState.money-=cost;
         towers.push(new Tower(gx,gy,selType));
+        if(gameState.stats) gameState.stats.towersPlaced++;
+        if(typeof recalculateSynergies === 'function') recalculateSynergies();
         updateGameUI();
         // ── Tutorial: notificar torre colocada ──
         if(typeof TUTORIAL !== 'undefined') TUTORIAL.onTowerPlaced();
@@ -3048,30 +3115,39 @@ function showGameMessage(text, color) {
 // ══════════════════════════════════════════════════════════════
 function endGame(victory) {
     cancelAnimationFrame(gameLoopId);
-    if(gameState.mode==='normal' && gameState.wave>userData.highScore){
-        userData.highScore=gameState.wave;
-        alert(I18N.t('msg_new_record').replace('{n}',gameState.wave));
+    const mode = gameState.mode;
+    const wave = gameState.wave;
+    const stats = gameState.stats || {};
+
+    // Update mode records
+    if (!userData.modeRecords) userData.modeRecords = {};
+    const rec = userData.modeRecords[mode];
+    if (!rec || wave > (rec.bestWave || 0)) {
+        userData.modeRecords[mode] = { bestWave: wave, victory: victory };
     }
-    if(gameState.mode==='infiltracion' && victory){
-        if(!userData.unlockedAdaptive){
-            userData.unlockedAdaptive=true;
-            alert(I18N.t('msg_extraction_success'));
-        } else alert(I18N.t('msg_mission_complete'));
+    // Legacy highScore
+    if (mode === 'normal' && wave > userData.highScore) userData.highScore = wave;
+
+    // Unlocks (sin alerts)
+    if (mode === 'infiltracion' && victory && !userData.unlockedAdaptive) userData.unlockedAdaptive = true;
+    if (mode === 'inestable' && victory) {
+        userData.inestableClearCount = (userData.inestableClearCount || 0) + 1;
+        if (!userData.unlockedSoporteVital && userData.inestableClearCount >= 12) userData.unlockedSoporteVital = true;
     }
-    if(gameState.mode==='ddos' && victory) alert(I18N.t('msg_ddos_repelled'));
-    if(gameState.mode==='inestable' && victory){
-        userData.inestableClearCount = (userData.inestableClearCount||0)+1;
-        if(!userData.unlockedSoporteVital && userData.inestableClearCount>=12) {
-            userData.unlockedSoporteVital=true;
-            alert(I18N.t('msg_vital_unlocked').replace('{n}',userData.inestableClearCount));
-        } else {
-            alert(I18N.t('msg_unstable_progress').replace('{n}',userData.inestableClearCount));
-        }
-    }
-    if(!victory && gameState.health<=0) alert(I18N.t('msg_system_compromised'));
+
     saveData(); refreshTowerLocks();
-    screenGame.classList.add('hidden');
-    screenStart.classList.remove('hidden');
+
+    // Hide objective banner
+    const ob = document.getElementById('objective-banner');
+    if (ob) ob.style.display = 'none';
+
+    // Show stats modal instead of alerts
+    if (typeof showStatsModal === 'function') {
+        showStatsModal(victory, mode, wave, stats);
+    } else {
+        screenGame.classList.add('hidden');
+        screenStart.classList.remove('hidden');
+    }
 }
 
 // ══════════════════════════════════════════════════════════════
@@ -3106,6 +3182,8 @@ function updatePhysics() {
         if(allZero && enemies.length===0){
             gameState.isWaveActive=false;
             updateGameUI();
+            // Resolver objetivo especial al completar oleada
+            if(typeof resolveObjective === 'function') resolveObjective(true);
             // ── Tutorial: notificar oleada completada ──
             if(typeof TUTORIAL !== 'undefined') TUTORIAL.onWaveComplete();
         }
@@ -3141,9 +3219,12 @@ function updatePhysics() {
     for(let i=towers.length-1;i>=0;i--) {
         const t=towers[i];
         if(t.maxHp>0 && t.hp<=0) {
-            createParticles(t.x,t.y,'#ff3366',25);
+            if(gameState.stats) gameState.stats.towersLost++;
+            if(typeof TowerExplosionEffect !== 'undefined') particles.push(new TowerExplosionEffect(t.x, t.y, t.col));
+            else createParticles(t.x,t.y,'#ff3366',25);
             particles.push(new FloatingText(t.x,t.y-20,'TORRE DESTRUIDA','#ff3366'));
             towers.splice(i,1);
+            if(typeof recalculateSynergies === 'function') recalculateSynergies();
         }
     }
 
@@ -3160,6 +3241,8 @@ function updatePhysics() {
         if(e.hp<=0){
             let reward = gameState.minerActive && e.variant!=='miner' ? Math.floor(e.reward/2) : e.reward;
             gameState.money+=reward;
+            if(gameState.stats){ gameState.stats.enemiesKilled++; gameState.stats.dataEarned+=reward; }
+            if(window._objStats){ window._objStats.kills++; if(e.variant==='carrier'||e.variant==='tank'||e.variant==='worm') window._objStats.bigKills++; }
             createParticles(e.x,e.y,e.color,e.variant==='carrier'||e.variant==='tank'?30:15);
             particles.push(new FloatingText(e.x,e.y-10,`+${reward}D`,'#ffd700'));
             // Gusano se divide
@@ -3167,7 +3250,11 @@ function updatePhysics() {
             enemies.splice(i,1);
             updateGameUI();
         } else {
-            if(!e.update()) enemies.splice(i,1);
+            if(!e.update()) {
+                // Enemigo llegó a la base - contar como leak
+                if(window._objStats) window._objStats.leaks++;
+                enemies.splice(i,1);
+            }
         }
     }
     for(let i=particles.length-1;i>=0;i--){
@@ -3267,6 +3354,7 @@ function drawScene() {
     projectiles.forEach(p=>p.draw());
     beams.forEach(b=>b.draw());
     particles.forEach(p=>p.draw());
+    if(typeof drawMinimap === 'function') drawMinimap();
 }
 
 let lastFrameTime = 0;
@@ -3278,8 +3366,9 @@ function gameLoop(timestamp) {
     const delta = timestamp - lastFrameTime;
     
     if (delta >= FRAME_TIME * 0.8) {
-        // Run physics step
-        const steps = Math.min(Math.round(delta / FRAME_TIME), 3);
+        const spd = (window.gameSpeed || 1);
+        const baseSteps = Math.min(Math.round(delta / FRAME_TIME), 3);
+        const steps = baseSteps * spd;
         for (let i = 0; i < steps; i++) {
             updatePhysics();
         }
@@ -4040,6 +4129,359 @@ document.getElementById('btn-mute').addEventListener('click', () => {
 
 })();
 
+// ══════════════════════════════════════════════════════════════
+//  NUEVAS FEATURES — BLOQUE PRINCIPAL
+// ══════════════════════════════════════════════════════════════
+
+// ── 1. CONTROL DE VELOCIDAD ──────────────────────────────────
+window.gameSpeed = 1;
+document.querySelectorAll('.btn-speed').forEach(btn => {
+    btn.addEventListener('click', () => {
+        window.gameSpeed = parseInt(btn.getAttribute('data-speed')) || 1;
+        document.querySelectorAll('.btn-speed').forEach(b => b.classList.remove('spd-active'));
+        btn.classList.add('spd-active');
+    });
+});
+
+// ── 2. ADVERTENCIA DE CACHÉ ───────────────────────────────────
+(function showCacheWarning() {
+    try { if (localStorage.getItem('dc_cache_warned')) return; } catch(e) {}
+    const div = document.createElement('div');
+    div.id = 'cache-warning';
+    div.innerHTML = `⚠️ Tu progreso se guarda localmente en este navegador.<br>Si borras los datos del sitio o el caché, perderás récords, desbloqueos y mazos.
+    <br><button class="cw-btn" onclick="this.closest('#cache-warning').remove();try{localStorage.setItem('dc_cache_warned','1');}catch(e){}">Entendido</button>`;
+    document.body.appendChild(div);
+    try { localStorage.setItem('dc_cache_warned', '1'); } catch(e) {}
+    setTimeout(() => { try { div.remove(); } catch(e){} }, 14000);
+})();
+
+// ── 3. SISTEMA DE RANGOS ─────────────────────────────────────
+function getPlayerRank(wave) {
+    if (wave < 3)  return { name:'RECLUTA',       color:'#94a3b8' };
+    if (wave < 8)  return { name:'ANALISTA',      color:'#00f0ff' };
+    if (wave < 15) return { name:'ESPECIALISTA',  color:'#00ff66' };
+    if (wave < 25) return { name:'EXPERTO',       color:'#ffcc00' };
+    if (wave < 40) return { name:'ÉLITE',         color:'#ff7700' };
+    return              { name:'LEYENDA',       color:'#ff66ff' };
+}
+
+// ── 4. MODAL DE ESTADÍSTICAS DE PARTIDA ───────────────────────
+function getModeName(mode) {
+    const n = { normal:'Estándar', infiltracion:'Infiltración', escasez:'Escasez RAM', ddos:'Evento DDoS', inestable:'Inestable' };
+    return n[mode] || mode;
+}
+
+function showStatsModal(victory, mode, wave, stats) {
+    const modal        = document.getElementById('stats-modal');
+    const titleEl      = document.getElementById('stats-modal-title');
+    const rankDisplay  = document.getElementById('stats-rank-display');
+    const rankNameEl   = document.getElementById('stats-rank-name');
+    const grid         = document.getElementById('stats-grid');
+    const recordsDiv   = document.getElementById('mode-records-display');
+    if (!modal) { screenGame.classList.add('hidden'); screenStart.classList.remove('hidden'); return; }
+
+    const rank = getPlayerRank(wave);
+
+    titleEl.textContent = victory ? '✓ MISIÓN COMPLETADA' : '✗ SISTEMA COMPROMETIDO';
+    titleEl.style.color = victory ? '#00ff66' : '#ff3366';
+
+    rankDisplay.style.borderColor = rank.color;
+    rankDisplay.style.color       = rank.color;
+    rankNameEl.textContent        = rank.name;
+    rankDisplay.querySelector('.rank-title').textContent = victory ? 'RANGO OBTENIDO' : 'RANGO ALCANZADO';
+
+    const fmt = (v, col) => `<div class="stat-card"><div class="stat-card-value" style="color:${col}">${v}</div>`;
+    grid.innerHTML =
+        fmt(wave,                         'var(--cyan-glow)') + '<div class="stat-card-label">OLEADAS</div></div>' +
+        fmt(stats.enemiesKilled || 0,     '#ffd700')          + '<div class="stat-card-label">AMENAZAS ELIMINADAS</div></div>' +
+        fmt(stats.dataEarned || 0,        '#00ff66')          + '<div class="stat-card-label">DATOS GANADOS</div></div>' +
+        fmt(stats.towersPlaced || 0,      '#00b4ff')          + '<div class="stat-card-label">TORRES DESPLEGADAS</div></div>' +
+        fmt(stats.towersLost || 0,        '#ff3366')          + '<div class="stat-card-label">TORRES PERDIDAS</div></div>' +
+        fmt(stats.objectivesCompleted||0, '#b266ff')          + '<div class="stat-card-label">OBJETIVOS COMPLETADOS</div></div>';
+
+    // Records por modo
+    const modeRecords = userData.modeRecords || {};
+    const modes = ['normal','infiltracion','escasez','ddos','inestable'];
+    let rHTML = '<div style="margin-top:12px;border-top:1px solid #1e293b;padding-top:10px;">' +
+                '<div class="codex-section-title" style="margin:0 0 8px;font-size:10px;letter-spacing:2px;">🏆 RÉCORDS POR MODO</div>';
+    modes.forEach(m => {
+        const rec = modeRecords[m];
+        const isCurrentNew = (m === mode) && (!rec || wave > (rec.bestWave || 0));
+        const bestWave = rec ? rec.bestWave : '—';
+        rHTML += `<div class="record-row"><span class="record-mode-name">${getModeName(m)}</span>` +
+                 `<span class="record-wave" style="${isCurrentNew?'color:#00ff66':''}">${bestWave}${isCurrentNew?' 🆕':''}</span></div>`;
+    });
+    rHTML += '</div>';
+    recordsDiv.innerHTML = rHTML;
+
+    modal.classList.remove('hidden');
+}
+
+document.getElementById('btn-close-stats').addEventListener('click', () => {
+    document.getElementById('stats-modal').classList.add('hidden');
+    screenGame.classList.add('hidden');
+    screenStart.classList.remove('hidden');
+});
+
+// ── 5. SALUD VISUAL (BARRA / COLOR) ──────────────────────────
+function updateHealthVisual() {
+    const maxHp = (gameState && gameState.maxHealth) || 20;
+    const hp    = (gameState && gameState.health)    || 0;
+    const ratio = maxHp > 0 ? hp / maxHp : 1;
+    const el = document.getElementById('health-val');
+    if (!el) return;
+    el.classList.remove('health-critical');
+    if (ratio > 0.6)      el.style.color = '#00f0ff';
+    else if (ratio > 0.3) el.style.color = '#ffcc00';
+    else { el.style.color = '#ff3366'; el.classList.add('health-critical'); }
+}
+
+// Parchar updateGameUI para llamar a updateHealthVisual
+const _updateGameUI_orig = window.updateGameUI;
+window.updateGameUI = function() {
+    _updateGameUI_orig && _updateGameUI_orig();
+    updateHealthVisual();
+};
+
+// ── 6. EFECTOS DE DESTRUCCIÓN DE TORRE ───────────────────────
+class TowerExplosionEffect {
+    constructor(x, y, col) {
+        this.x = x; this.y = y; this.col = col || '#ff3366';
+        this.life = 42; this.maxLife = 42;
+        this.ringR = 0;
+        this.sparks = Array.from({ length: 22 }, () => ({
+            x, y,
+            vx: (Math.random() - 0.5) * 9,
+            vy: (Math.random() - 0.5) * 9,
+            life: 25 + Math.random() * 18,
+            maxLife: 43,
+            col: Math.random() > 0.45 ? '#ff3366' : col
+        }));
+    }
+    update() {
+        this.life--;
+        this.ringR += 2.8;
+        this.sparks.forEach(s => { s.x += s.vx; s.y += s.vy; s.vx *= 0.91; s.vy *= 0.91; s.life--; });
+    }
+    draw() {
+        if (!ctx) return;
+        ctx.save();
+        // Flash central
+        if (this.life > 32) {
+            const a = (this.life - 32) / 10;
+            ctx.globalAlpha = a * 0.5;
+            ctx.fillStyle = '#ffffff';
+            ctx.beginPath(); ctx.arc(this.x, this.y, 20, 0, Math.PI * 2); ctx.fill();
+        }
+        // Anillo expansivo
+        const ra = Math.max(0, (this.maxLife - this.ringR / 2.8) / this.maxLife);
+        ctx.globalAlpha = ra * 0.9;
+        ctx.beginPath(); ctx.arc(this.x, this.y, this.ringR, 0, Math.PI * 2);
+        ctx.strokeStyle = '#ff3366'; ctx.lineWidth = 3 * ra; ctx.stroke();
+        // Segundo anillo (color de la torre)
+        if (this.ringR > 10) {
+            ctx.globalAlpha = ra * 0.5;
+            ctx.beginPath(); ctx.arc(this.x, this.y, this.ringR * 0.55, 0, Math.PI * 2);
+            ctx.strokeStyle = this.col; ctx.lineWidth = 2 * ra; ctx.stroke();
+        }
+        // Chispas
+        this.sparks.forEach(s => {
+            if (s.life <= 0) return;
+            const sa = s.life / s.maxLife;
+            ctx.globalAlpha = sa;
+            ctx.fillStyle = s.col;
+            ctx.fillRect(s.x - 2, s.y - 2, 4, 4);
+        });
+        ctx.globalAlpha = 1;
+        ctx.restore();
+    }
+}
+
+// ── 7. MINI MAPA ─────────────────────────────────────────────
+function drawMinimap() {
+    const MW = 118, MH = 88, MX = canvas.width - MW - 6, MY = 6;
+    const sx = MW / canvas.width, sy = MH / canvas.height;
+    ctx.save();
+    ctx.fillStyle = 'rgba(4,8,22,0.88)';
+    ctx.strokeStyle = '#1e3a5f'; ctx.lineWidth = 1;
+    ctx.fillRect(MX, MY, MW, MH);
+    ctx.strokeRect(MX, MY, MW, MH);
+    ctx.fillStyle = '#374151'; ctx.font = '7px monospace';
+    ctx.fillText('MAPA TÁCTICO', MX + 3, MY + 8);
+
+    // Ruta B (morada)
+    ctx.beginPath();
+    ctx.moveTo(MX + pathB[0].x * TILE * sx + TILE * sx * 0.5, MY + pathB[0].y * TILE * sy + TILE * sy * 0.5);
+    for (let i = 1; i < pathB.length; i++)
+        ctx.lineTo(MX + pathB[i].x * TILE * sx + TILE * sx * 0.5, MY + pathB[i].y * TILE * sy + TILE * sy * 0.5);
+    ctx.strokeStyle = 'rgba(178,102,255,0.65)'; ctx.lineWidth = 2; ctx.stroke();
+
+    // Ruta A (cyan)
+    ctx.beginPath();
+    ctx.moveTo(MX + pathA[0].x * TILE * sx + TILE * sx * 0.5, MY + pathA[0].y * TILE * sy + TILE * sy * 0.5);
+    for (let i = 1; i < pathA.length; i++)
+        ctx.lineTo(MX + pathA[i].x * TILE * sx + TILE * sx * 0.5, MY + pathA[i].y * TILE * sy + TILE * sy * 0.5);
+    ctx.strokeStyle = 'rgba(0,240,255,0.7)'; ctx.lineWidth = 2; ctx.stroke();
+
+    // Torres
+    towers.forEach(t => {
+        const tx = MX + t.x * sx, ty = MY + t.y * sy;
+        ctx.fillStyle = (t.hasSynergy) ? '#ffdd44' : t.col;
+        ctx.beginPath(); ctx.arc(tx, ty, 3, 0, Math.PI * 2); ctx.fill();
+    });
+    // Enemigos
+    enemies.forEach(e => {
+        const ex = MX + e.x * sx, ey = MY + e.y * sy;
+        ctx.fillStyle = e.color || '#ff3366';
+        ctx.beginPath(); ctx.arc(ex, ey, 2, 0, Math.PI * 2); ctx.fill();
+    });
+    // Indicadores de entrada
+    ctx.fillStyle = '#00ff66'; ctx.font = '6px monospace';
+    ctx.fillText('▶', MX + 1, MY + pathA[0].y * TILE * sy + 12);
+    ctx.fillText('▶', MX + 1, MY + pathB[0].y * TILE * sy + 12);
+    ctx.restore();
+}
+
+// ── 8. SINERGIAS ENTRE TORRES ────────────────────────────────
+const SYNERGIES = [
+    { types:[0,6],   apply:(t,adj) => { if(t.type===0 && adj.some(a=>a.type===6))  t.synergyDmgMult=1.35; } },
+    { types:[4,1],   apply:(t,adj) => { if(t.type===4 && adj.some(a=>a.type===1))  t.synergyDotMult=1.5;  } },
+    { types:[5,7],   apply:(t,adj) => { if(t.type===5 && adj.some(a=>a.type===7))  t.synergyEmpFreeze=true; } },
+    { types:[2,10],  apply:(t,adj) => { if(t.type===2 && adj.some(a=>a.type===10)) t.synergyRangeBonus=45; } },
+    { types:[12,11], apply:(t,adj) => { if(t.type===12&& adj.some(a=>a.type===11)) t.synergyHealMult=2.0; } },
+];
+
+function recalculateSynergies() {
+    towers.forEach(t => {
+        t.synergyDmgMult   = 1.0;
+        t.synergyDotMult   = 1.0;
+        t.synergyEmpFreeze = false;
+        t.synergyRangeBonus= 0;
+        t.synergyHealMult  = 1.0;
+        t.hasSynergy       = false;
+        const adj = towers.filter(o => o !== t && Math.hypot(o.x - t.x, o.y - t.y) <= TILE * 2.6);
+        SYNERGIES.forEach(syn => {
+            if (syn.types.includes(t.type)) {
+                const otherType = syn.types.find(s => s !== t.type);
+                if (adj.some(a => a.type === otherType)) {
+                    syn.apply(t, adj);
+                    t.hasSynergy = true;
+                }
+            }
+        });
+    });
+}
+
+// Parchar Tower.draw para mostrar aura de sinergia
+const _TowerDraw_syn = Tower.prototype.draw;
+Tower.prototype.draw = function() {
+    _TowerDraw_syn.call(this);
+    if (this.hasSynergy) {
+        ctx.save();
+        ctx.translate(this.x, this.y);
+        ctx.beginPath(); ctx.arc(0, 0, 21, 0, Math.PI * 2);
+        ctx.strokeStyle = 'rgba(255,220,50,0.5)';
+        ctx.lineWidth = 2;
+        ctx.shadowBlur = 12; ctx.shadowColor = '#ffdd44';
+        ctx.setLineDash([4, 4]); ctx.stroke();
+        ctx.setLineDash([]); ctx.shadowBlur = 0;
+        ctx.restore();
+    }
+};
+
+// Parchar Tower.fire para aplicar multiplicador de daño de sinergia
+const _TowerFire_syn = Tower.prototype.fire;
+Tower.prototype.fire = function() {
+    const origDmg = this.dmg;
+    if (this.synergyDmgMult && this.synergyDmgMult !== 1.0) this.dmg = Math.round(this.dmg * this.synergyDmgMult);
+    _TowerFire_syn.call(this);
+    this.dmg = origDmg;
+};
+
+// ── 9. OBJETIVOS ESPECIALES DE OLEADA ────────────────────────
+const WAVE_OBJECTIVES = [
+    { id:'no_leak',   desc:'Que ningún enemigo llegue a la base esta oleada', track:'leaks',    target:0,  cmp:'lte', bonus:80  },
+    { id:'kill_fast', desc:'Elimina al menos 20 amenazas en esta oleada',     track:'kills',    target:20, cmp:'gte', bonus:65  },
+    { id:'survive_hp',desc:'Completa la oleada sin perder integridad',        track:'hpLost',   target:0,  cmp:'lte', bonus:100 },
+    { id:'kill_big',  desc:'Destruye 3 amenazas de alto nivel',               track:'bigKills', target:3,  cmp:'gte', bonus:70  },
+    { id:'no_sell',   desc:'No vendas ninguna defensa esta oleada',           track:'sells',    target:0,  cmp:'lte', bonus:50  },
+];
+
+window._objStats    = null;
+let _currentObj     = null;
+let _objStartHealth = 0;
+
+function pickSpecialObjective() {
+    _currentObj     = Object.assign({}, WAVE_OBJECTIVES[Math.floor(Math.random() * WAVE_OBJECTIVES.length)]);
+    window._objStats = { leaks:0, kills:0, hpLost:0, bigKills:0, sells:0 };
+    _objStartHealth  = gameState ? gameState.health : 999;
+
+    const banner = document.getElementById('objective-banner');
+    if (banner) {
+        banner.style.display = 'block';
+        banner.style.borderColor = '#ffcc00'; banner.style.color = '#ffcc00';
+        document.getElementById('obj-desc').textContent    = _currentObj.desc;
+        document.getElementById('obj-progress').textContent = '+' + _currentObj.bonus + 'D al completar ✦';
+    }
+}
+
+function _updateObjProgress() {
+    if (!_currentObj || !window._objStats) return;
+    const pr = document.getElementById('obj-progress');
+    if (!pr) return;
+    const val = window._objStats[_currentObj.track];
+    const t   = _currentObj.target;
+    if (_currentObj.cmp === 'gte') pr.textContent = val + '/' + t + ' — +' + _currentObj.bonus + 'D';
+    else pr.textContent = val === 0 ? '✓ Sin infracciones — +' + _currentObj.bonus + 'D' : '✗ Infracciones: ' + val;
+}
+
+function resolveObjective(waveClean) {
+    if (!_currentObj || !window._objStats) return;
+
+    // Detectar HP perdida durante la oleada
+    if (_currentObj.track === 'hpLost' && gameState) {
+        window._objStats.hpLost = Math.max(0, _objStartHealth - gameState.health);
+    }
+
+    const val = window._objStats[_currentObj.track];
+    const success = waveClean && (_currentObj.cmp === 'gte' ? val >= _currentObj.target : val <= _currentObj.target);
+
+    const banner = document.getElementById('objective-banner');
+    if (banner) {
+        if (success) {
+            banner.style.borderColor = '#00ff66'; banner.style.color = '#00ff66';
+            document.getElementById('obj-desc').textContent     = '✓ OBJETIVO COMPLETADO';
+            document.getElementById('obj-progress').textContent = '+' + _currentObj.bonus + ' datos recibidos';
+            gameState.money += _currentObj.bonus;
+            if (gameState.stats) gameState.stats.objectivesCompleted++;
+            updateGameUI();
+        } else {
+            banner.style.borderColor = '#ff3366'; banner.style.color = '#ff3366';
+            document.getElementById('obj-desc').textContent     = '✗ OBJETIVO FALLIDO';
+            document.getElementById('obj-progress').textContent = '';
+        }
+        setTimeout(() => { banner.style.display = 'none'; }, 3500);
+    }
+    _currentObj = null; window._objStats = null;
+}
+
+// Parchar startNextWave para lanzar objetivo cada 5 oleadas en modo estándar
+const _swOrigRef = startNextWave; // referencia original ANTES de parchear
+window.startNextWave = function() {
+    _swOrigRef();
+    if (gameState && gameState.mode === 'normal' && gameState.wave % 5 === 0 && gameState.wave > 0) {
+        pickSpecialObjective();
+    }
+};
+btnStartWave.removeEventListener('click', _swOrigRef);      // eliminar listener original
+btnStartWave.addEventListener('click', window.startNextWave); // agregar listener parchado
+
+// Actualizar progreso de objetivo en cada frame (parchar el loop de fisica)
+const _updatePhysics_obj = window.updatePhysics;
+window.updatePhysics = function() {
+    _updatePhysics_obj();
+    _updateObjProgress();
+};
 
 </script>
 
